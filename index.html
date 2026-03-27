@@ -3,57 +3,89 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI Healthcare English Helper</title>
+  <title>HEAL English - AI Communication</title>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
 </head>
 <body>
 
 <div class="app-container">
   <header>
-    <div class="logo">
-      <i class="fas fa-user-md"></i>
+    <div class="logo-wrapper">
+      <div class="logo-icon"><i class="fas fa-stethoscope"></i></div>
       <h1>HEAL English</h1>
     </div>
-    <p>AI Assistant for Healthcare Staff</p>
+    <p class="subtitle">AI-assisted Basic English Communication<br>for Healthcare Provider</p>
   </header>
 
   <section class="card">
-    <h3><i class="fas fa-list"></i> Select Scenario</h3>
+    <div class="card-header">
+      <h3><i class="fas fa-layer-group"></i> Select Scenario</h3>
+      <span class="hint-text">เลือกสถานการณ์ที่ต้องการฝึกฝน</span>
+    </div>
     <div class="category-grid">
-      <button class="btn-cat active" onclick="loadScenario('greeting')">Greeting</button>
-      <button class="btn-cat" onclick="loadScenario('registration')">Registration</button>
-      <button class="btn-cat" onclick="loadScenario('direction')">Direction</button>
-      <button class="btn-cat" onclick="loadScenario('care')">During Care</button>
+      <button class="btn-cat active" onclick="loadScenario('greeting')">
+        <span class="en-text">Greeting</span>
+        <span class="th-text">การทักทาย</span>
+      </button>
+      <button class="btn-cat" onclick="loadScenario('registration')">
+        <span class="en-text">Registration</span>
+        <span class="th-text">การลงทะเบียน</span>
+      </button>
+      <button class="btn-cat" onclick="loadScenario('direction')">
+        <span class="en-text">Direction</span>
+        <span class="th-text">การบอกทาง</span>
+      </button>
+      <button class="btn-cat" onclick="loadScenario('care')">
+        <span class="en-text">During Care</span>
+        <span class="th-text">ขณะรับบริการ</span>
+      </button>
     </div>
   </section>
 
   <section class="card">
-    <h3><i class="fas fa-comment-dots"></i> Useful Phrases</h3>
+    <div class="card-header">
+      <h3><i class="fas fa-volume-up"></i> Quick Phrases</h3>
+      <span class="hint-text">แตะที่ไอคอนลำโพงเพื่อฟังการออกเสียงที่ถูกต้อง</span>
+    </div>
     <div id="phraseList" class="phrase-container">
       </div>
   </section>
 
   <section class="card practice-zone">
-    <h3><i class="fas fa-microphone"></i> Speaking Practice</h3>
+    <div class="card-header center">
+      <h3><i class="fas fa-microphone-alt"></i> Speaking Practice</h3>
+      <span class="hint-text">กดปุ่มไมค์ด้านล่าง แล้วลองพูดประโยคภาษาอังกฤษดูนะคะ</span>
+    </div>
+    
     <div class="recognition-box">
-      <p id="instruction">กดปุ่มไมค์แล้วลองพูดตามประโยคด้านบน</p>
-      <div id="speechResult" class="result-text">...</div>
+      <div id="speechResult" class="result-text placeholder-text">Waiting for your voice... (รอฟังเสียงของคุณ)</div>
       <div id="feedback" class="feedback"></div>
     </div>
-    <button id="micBtn" class="btn-record" onclick="startSpeaking()">
-      <i class="fas fa-microphone-alt"></i> Tap to Speak
+    
+    <button id="micBtn" class="btn-record" onclick="toggleSpeaking()">
+      <div class="pulse-ring"></div>
+      <i class="fas fa-microphone"></i> <span id="micText">Tap to Speak (กดเพื่อพูด)</span>
     </button>
   </section>
 
   <section class="card chat-section">
-    <h3><i class="fas fa-robot"></i> Role Play with AI</h3>
-    <div id="chatBox" class="chat-box">
-      <div class="msg ai">Hello! I'm your patient. How can I help you today?</div>
+    <div class="card-header">
+      <h3><i class="fas fa-robot"></i> AI Role Play</h3>
+      <span class="hint-text">จำลองการคุยกับผู้ป่วยต่างชาติ พิมพ์ตอบโต้ได้เลย</span>
     </div>
+    
+    <div id="chatBox" class="chat-box">
+      <div class="msg ai">
+        <div class="msg-bubble">Hello! I'm your patient. How can I help you today?</div>
+        <div class="msg-hint">สวัสดีค่ะ ฉันคือคนไข้ของคุณ วันนี้มีอะไรให้ฉันช่วยไหมคะ?</div>
+      </div>
+    </div>
+    
     <div class="chat-input-area">
-      <input type="text" id="userInput" placeholder="Type your response...">
-      <button onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
+      <input type="text" id="userInput" placeholder="Type here... (พิมพ์ภาษาอังกฤษที่นี่)" onkeypress="handleEnter(event)">
+      <button class="btn-send" onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
     </div>
   </section>
 </div>
