@@ -2,44 +2,60 @@
 <html lang="th">
 <head>
   <meta charset="UTF-8">
-  <title>AI English Helper</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Healthcare English Helper</title>
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
 
-<div class="container">
-  <h1>🩺 English Helper</h1>
-  <p class="subtitle">ฝึกสื่อสารภาษาอังกฤษสำหรับบุคลากร</p>
+<div class="app-container">
+  <header>
+    <div class="logo">
+      <i class="fas fa-user-md"></i>
+      <h1>HEAL English</h1>
+    </div>
+    <p>AI Assistant for Healthcare Staff</p>
+  </header>
 
-  <!-- หมวด -->
-  <div class="section">
-    <h2>📚 เลือกสถานการณ์</h2>
-    <button onclick="loadScenario('greeting')">Greeting</button>
-    <button onclick="loadScenario('registration')">Registration</button>
-    <button onclick="loadScenario('direction')">Direction</button>
-  </div>
+  <section class="card">
+    <h3><i class="fas fa-list"></i> Select Scenario</h3>
+    <div class="category-grid">
+      <button class="btn-cat active" onclick="loadScenario('greeting')">Greeting</button>
+      <button class="btn-cat" onclick="loadScenario('registration')">Registration</button>
+      <button class="btn-cat" onclick="loadScenario('direction')">Direction</button>
+      <button class="btn-cat" onclick="loadScenario('care')">During Care</button>
+    </div>
+  </section>
 
-  <!-- แสดงประโยค -->
-  <div class="section">
-    <h2>💬 ประโยคที่ใช้</h2>
-    <ul id="phraseList"></ul>
-  </div>
+  <section class="card">
+    <h3><i class="fas fa-comment-dots"></i> Useful Phrases</h3>
+    <div id="phraseList" class="phrase-container">
+      </div>
+  </section>
 
-  <!-- ฝึกพูด -->
-  <div class="section">
-    <h2>🎤 ฝึกพูด</h2>
-    <button onclick="startSpeaking()">🎙️ เริ่มพูด</button>
-    <p id="speechResult"></p>
-  </div>
+  <section class="card practice-zone">
+    <h3><i class="fas fa-microphone"></i> Speaking Practice</h3>
+    <div class="recognition-box">
+      <p id="instruction">กดปุ่มไมค์แล้วลองพูดตามประโยคด้านบน</p>
+      <div id="speechResult" class="result-text">...</div>
+      <div id="feedback" class="feedback"></div>
+    </div>
+    <button id="micBtn" class="btn-record" onclick="startSpeaking()">
+      <i class="fas fa-microphone-alt"></i> Tap to Speak
+    </button>
+  </section>
 
-  <!-- AI Chat mock -->
-  <div class="section">
-    <h2>🤖 ฝึกกับ AI (จำลอง)</h2>
-    <div id="chatBox"></div>
-    <input type="text" id="userInput" placeholder="พิมพ์..." />
-    <button onclick="sendMessage()">ส่ง</button>
-  </div>
-
+  <section class="card chat-section">
+    <h3><i class="fas fa-robot"></i> Role Play with AI</h3>
+    <div id="chatBox" class="chat-box">
+      <div class="msg ai">Hello! I'm your patient. How can I help you today?</div>
+    </div>
+    <div class="chat-input-area">
+      <input type="text" id="userInput" placeholder="Type your response...">
+      <button onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
+    </div>
+  </section>
 </div>
 
 <script src="script.js"></script>
