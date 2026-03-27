@@ -82,13 +82,15 @@
         <div class="msg-hint">สวัสดีค่ะ ฉันคือคนไข้ของคุณ วันนี้มีอะไรให้ฉันช่วยไหมคะ?</div>
       </div>
     </div>
-    
-    <div class="chat-input-area">
-      <input type="text" id="userInput" placeholder="Type here... (พิมพ์ภาษาอังกฤษที่นี่)" onkeypress="handleEnter(event)">
+        <div class="chat-input-area">
+      <button id="chatMicBtn" class="btn-mic-chat" onclick="toggleChatMic()" title="กดเพื่อพูดแทนพิมพ์">
+        <i class="fas fa-microphone"></i>
+      </button>
+      
+      <input type="text" id="userInput" placeholder="พิมพ์หรือพูดภาษาไทย / English..." onkeypress="handleEnter(event)">
+      
       <button class="btn-send" onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
     </div>
-  </section>
-</div>
 
 <script src="script.js"></script>
 </body>
