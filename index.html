@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <title>AI English Helper</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+  <h1>🩺 English Helper</h1>
+  <p class="subtitle">ฝึกสื่อสารภาษาอังกฤษสำหรับบุคลากร</p>
+
+  <!-- หมวด -->
+  <div class="section">
+    <h2>📚 เลือกสถานการณ์</h2>
+    <button onclick="loadScenario('greeting')">Greeting</button>
+    <button onclick="loadScenario('registration')">Registration</button>
+    <button onclick="loadScenario('direction')">Direction</button>
+  </div>
+
+  <!-- แสดงประโยค -->
+  <div class="section">
+    <h2>💬 ประโยคที่ใช้</h2>
+    <ul id="phraseList"></ul>
+  </div>
+
+  <!-- ฝึกพูด -->
+  <div class="section">
+    <h2>🎤 ฝึกพูด</h2>
+    <button onclick="startSpeaking()">🎙️ เริ่มพูด</button>
+    <p id="speechResult"></p>
+  </div>
+
+  <!-- AI Chat mock -->
+  <div class="section">
+    <h2>🤖 ฝึกกับ AI (จำลอง)</h2>
+    <div id="chatBox"></div>
+    <input type="text" id="userInput" placeholder="พิมพ์..." />
+    <button onclick="sendMessage()">ส่ง</button>
+  </div>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
