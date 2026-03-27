@@ -1,55 +1,154 @@
-body {
-  font-family: Arial, sans-serif;
-  background: #f0f7f5;
-  margin: 0;
+:root {
+  --primary: #00a884;
+  --primary-dark: #008f6f;
+  --bg-color: #f0f4f8;
+  --card-bg: #ffffff;
+  --text-main: #333;
+  --text-sub: #666;
+  --ai-msg: #e8f5e9;
+  --user-msg: #e3f2fd;
 }
 
-.container {
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-main);
+  margin: 0;
+  display: flex;
+  justify-content: center;
+}
+
+.app-container {
+  width: 100%;
   max-width: 500px;
-  margin: auto;
   padding: 20px;
 }
 
-h1 {
-  color: #0a7c66;
+header {
   text-align: center;
+  margin-bottom: 25px;
 }
 
-.subtitle {
-  text-align: center;
-  color: #555;
+.logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: var(--primary);
 }
 
-.section {
-  background: white;
+.logo h1 { margin: 0; font-size: 24px; }
+
+.card {
+  background: var(--card-bg);
+  border-radius: 15px;
   padding: 15px;
-  margin-top: 15px;
-  border-radius: 10px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
 }
 
-button {
-  background: #0a7c66;
-  color: white;
-  border: none;
+h3 {
+  margin-top: 0;
+  font-size: 16px;
+  color: var(--primary-dark);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Category Buttons */
+.category-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.btn-cat {
+  background: #f8f9fa;
+  border: 1px solid #ddd;
   padding: 10px;
-  margin: 5px 5px 5px 0;
   border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.btn-cat.active {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+
+/* Phrase List */
+.phrase-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  border-bottom: 1px solid #eee;
   cursor: pointer;
 }
 
-button:hover {
-  background: #095c4d;
+.phrase-item:hover { background: #f9f9f9; }
+
+.btn-play {
+  background: none;
+  border: none;
+  color: var(--primary);
+  font-size: 18px;
+  cursor: pointer;
 }
 
-ul {
-  padding-left: 20px;
+/* Speaking Practice */
+.recognition-box {
+  text-align: center;
+  padding: 15px;
+  background: #fdfdfd;
+  border: 2px dashed #ccc;
+  border-radius: 10px;
+  margin-bottom: 15px;
 }
 
-#chatBox {
-  height: 150px;
+.result-text { font-weight: bold; color: var(--primary); min-height: 24px; }
+
+.btn-record {
+  width: 100%;
+  padding: 12px;
+  border-radius: 30px;
+  border: none;
+  background: #ff5252;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* Chat */
+.chat-box {
+  height: 200px;
   overflow-y: auto;
-  background: #eef;
-  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
   margin-bottom: 10px;
-  border-radius: 8px;
+}
+
+.msg {
+  padding: 8px 12px;
+  border-radius: 12px;
+  max-width: 80%;
+  font-size: 14px;
+}
+
+.ai { align-self: flex-start; background: var(--ai-msg); }
+.user { align-self: flex-end; background: var(--user-msg); }
+
+.chat-input-area {
+  display: flex;
+  gap: 5px;
+}
+
+input[type="text"] {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 20px;
 }
