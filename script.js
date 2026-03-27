@@ -11,7 +11,7 @@ const scenarios = {
   ],
   direction: [
     { en: "Go straight and turn left.", th: "เดินตรงไปแล้วเลี้ยวซ้ายค่ะ" },
-    { en: "The X-ray room is on the second floor.", th: "ห้องเอกซเรย์อยู่ชั้นสองค่ะ" }
+    { en: "The X-ray room is on the first floor.", th: "ห้องเอกซเรย์อยู่ชั้นหนึ่งค่ะ" }
   ],
   care: [
     { en: "Are you in pain?", th: "คุณเจ็บไหมคะ?" },
