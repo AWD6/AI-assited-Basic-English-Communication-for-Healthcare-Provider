@@ -1,194 +1,154 @@
+// ข้อมูลสถานการณ์
 const scenarios = {
   greeting: [
     { en: "Hello, welcome to our hospital.", th: "สวัสดีค่ะ ยินดีต้อนรับสู่โรงพยาบาลค่ะ" },
     { en: "How can I help you today?", th: "วันนี้มีอะไรให้ช่วยไหมคะ?" },
-    { en: "Please have a seat here.", th: "เชิญนั่งตรงนี้ก่อนค่ะ" }
+    { en: "Please wait here.", th: "กรุณารอสักครู่ตรงนี้ค่ะ" }
   ],
   registration: [
     { en: "May I have your name, please?", th: "ขอทราบชื่อด้วยค่ะ" },
-    { en: "Do you have an appointment?", th: "ได้นัดไว้หรือเปล่าคะ?" },
-    { en: "Please wait a moment.", th: "กรุณารอสักครู่ค่ะ" }
+    { en: "Do you have an appointment?", th: "ได้นัดไว้หรือเปล่าคะ?" }
   ],
   direction: [
-    { en: "Go straight and turn left.", th: "เดินตรงไปแล้วเลี้ยวซ้ายค่ะ" },
-    { en: "The X-ray room is on the first floor.", th: "ห้องเอกซเรย์อยู่ชั้นหนึ่งค่ะ" }
+    { en: "The pharmacy is on the 1st floor.", th: "ห้องยาอยู่ที่ชั้น 1 ค่ะ" },
+    { en: "Go straight and turn left.", th: "เดินตรงไปแล้วเลี้ยวซ้ายค่ะ" }
   ],
   care: [
-    { en: "Are you in pain?", th: "คุณเจ็บไหมคะ?" },
-    { en: "I will take your temperature.", th: "เดี๋ยวจะขอวัดไข้นะคะ" }
+    { en: "Are you feeling better?", th: "รู้สึกดีขึ้นไหมคะ?" },
+    { en: "Please take this medicine.", th: "กรุณาทานยานี้ค่ะ" }
   ]
 };
 
-let preferredVoice = null;
 let isRecording = false;
+let isChatRecording = false;
 let recognition = null;
+let chatRec = null;
 
-// โหลดข้อมูลตอนเริ่ม
-window.onload = () => {
-  loadScenario('greeting');
-  initVoice();
-};
-
-// ค้นหาเสียง AI ที่นุ่มนวลที่สุดเท่าที่เครื่องรองรับ
-function initVoice() {
+// --- 1. ฟังก์ชันเสียงผู้หญิง (พยายามหาเสียงผู้หญิงไทย/อังกฤษ) ---
+function speak(text) {
   const synth = window.speechSynthesis;
-  const setVoice = () => {
-    const voices = synth.getVoices();
-    // พยายามหาเสียงผู้หญิงพรีเมียม (Google, Apple, หรือเสียง UK/US)
-    preferredVoice = voices.find(v => v.name.includes('Google UK English Female')) ||
-                     voices.find(v => v.name.includes('Samantha')) ||
-                     voices.find(v => v.lang === 'en-US' || v.lang === 'en-GB');
-  };
-  
-  if (synth.onvoiceschanged !== undefined) {
-    synth.onvoiceschanged = setVoice;
+  const utterance = new SpeechSynthesisUtterance(text);
+  const voices = synth.getVoices();
+  const isThai = /[\u0E00-\u0E7F]/.test(text);
+
+  let selectedVoice = null;
+  if (isThai) {
+    selectedVoice = voices.find(v => v.lang.includes('th') && v.name.includes('Female')) || voices.find(v => v.lang.includes('th'));
+  } else {
+    selectedVoice = voices.find(v => v.name.includes('Samantha')) || voices.find(v => v.name.includes('Google UK English Female')) || voices.find(v => v.lang.includes('en'));
   }
-  setVoice();
+
+  if (selectedVoice) utterance.voice = selectedVoice;
+  utterance.rate = 0.95; 
+  utterance.pitch = 1.15; // ปรับโทนให้เป็นผู้หญิงนุ่มนวล
+  synth.speak(utterance);
 }
 
+// --- 2. โหลดรายการประโยค ---
 function loadScenario(type) {
-  document.querySelectorAll('.btn-cat').forEach(btn => btn.classList.remove('active'));
+  // เปลี่ยนปุ่ม Active
+  document.querySelectorAll('.btn-cat').forEach(b => b.classList.remove('active'));
   event.currentTarget.classList.add('active');
 
   const list = document.getElementById("phraseList");
   list.innerHTML = "";
-
   scenarios[type].forEach(item => {
     const div = document.createElement("div");
     div.className = "phrase-item";
     div.innerHTML = `
-      <div>
-        <div class="phrase-en">${item.en}</div>
-        <div class="phrase-th">${item.th}</div>
-      </div>
-      <button class="btn-play" onclick="speak('${item.en}')">
-        <i class="fas fa-play"></i>
-      </button>
-    `;
+      <div><div class="phrase-en">${item.en}</div><div class="phrase-th">${item.th}</div></div>
+      <button class="btn-play" onclick="speak('${item.en}')"><i class="fas fa-volume-up"></i></button>`;
     list.appendChild(div);
   });
 }
 
-function speak(text) {
-  const synth = window.speechSynthesis;
-  const utterance = new SpeechSynthesisUtterance(text);
-  
-  if (preferredVoice) utterance.voice = preferredVoice;
-  utterance.rate = 0.85; // พูดช้าลงนิดนึงให้ฟังชัด
-  utterance.pitch = 1.1; // ปรับโทนเสียงให้ดูสดใสขึ้น
-  
-  synth.speak(utterance);
-}
-
-// ระบบฟังเสียง (Speech Recognition)
+// --- 3. ฝึกพูด (Speaking Practice) ---
 function toggleSpeaking() {
   const micBtn = document.getElementById("micBtn");
-  const micText = document.getElementById("micText");
   const resultDisp = document.getElementById("speechResult");
-  const feedbackDisp = document.getElementById("feedback");
+  const feedback = document.getElementById("feedback");
 
-  if (!window.SpeechRecognition && !window.webkitSpeechRecognition) {
-    alert("เบราว์เซอร์ของคุณไม่รองรับระบบสั่งงานด้วยเสียง กรุณาใช้ Google Chrome หรือ Safari");
-    return;
-  }
-
-  if (isRecording) {
-    if(recognition) recognition.stop();
-    return;
-  }
+  if (isRecording) { recognition.stop(); return; }
 
   recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
   recognition.lang = 'en-US';
-  
+
   recognition.onstart = () => {
     isRecording = true;
     micBtn.classList.add("recording");
-    micText.innerText = "Listening... (กำลังฟัง)";
-    resultDisp.innerText = "...";
-    resultDisp.classList.remove("placeholder-text");
-    feedbackDisp.innerHTML = "";
+    resultDisp.innerText = "Listening... (พูดประโยคภาษาอังกฤษ)";
+    feedback.innerHTML = "";
   };
 
   recognition.onresult = (event) => {
-    const transcript = event.results[0][0].transcript;
-    resultDisp.innerText = `"${transcript}"`;
-    
-    // ลูกเล่นจำลองการให้คะแนน
-    const randomScore = Math.floor(Math.random() * (100 - 80 + 1)) + 80; 
-    feedbackDisp.className = "feedback good";
-    feedbackDisp.innerHTML = `<i class="fas fa-check-circle"></i> ความแม่นยำ ${randomScore}% - ออกเสียงได้ดีมาก!`;
+    const text = event.results[0][0].transcript;
+    resultDisp.innerText = `You said: "${text}"`;
+    const score = Math.floor(Math.random() * 16) + 85; // จำลองคะแนน
+    feedback.innerHTML = `<span class="feedback good">✨ Accuracy: ${score}% - สำเนียงดีมากค่ะ!</span>`;
   };
 
-  recognition.onend = () => {
-    isRecording = false;
-    micBtn.classList.remove("recording");
-    micText.innerText = "Tap to Speak (กดเพื่อพูด)";
-  };
-
+  recognition.onend = () => { isRecording = false; micBtn.classList.remove("recording"); };
   recognition.start();
 }
 
-function handleEnter(e) {
-  if (e.key === 'Enter') sendMessage();
+// --- 4. Smart AI Role Play (พูดไทย/อังกฤษได้) ---
+function toggleChatMic() {
+  const micBtn = document.getElementById("chatMicBtn");
+  const input = document.getElementById("userInput");
+
+  if (isChatRecording) { chatRec.stop(); return; }
+
+  chatRec = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+  chatRec.lang = 'th-TH'; // เน้นไทยแต่จับอังกฤษได้
+
+  chatRec.onstart = () => { isChatRecording = true; micBtn.classList.add("recording"); };
+  chatRec.onresult = (event) => { input.value = event.results[0][0].transcript; sendMessage(); };
+  chatRec.onend = () => { isChatRecording = false; micBtn.classList.remove("recording"); };
+  chatRec.start();
 }
 
-function sendMessage() {
+async function sendMessage() {
   const input = document.getElementById("userInput");
   const chatBox = document.getElementById("chatBox");
   const text = input.value.trim();
-  
   if (!text) return;
 
-  // ข้อความผู้ใช้
-  chatBox.innerHTML += `
-    <div class="msg user">
-      <div class="msg-bubble">${text}</div>
-    </div>
-  `;
+  // เพิ่มข้อความผู้ใช้
+  chatBox.innerHTML += `<div class="msg user"><div class="msg-bubble">${text}</div></div>`;
   input.value = "";
   chatBox.scrollTop = chatBox.scrollHeight;
 
-  // AI กำลังพิมพ์...
-  const typingId = "typing-" + Date.now();
+  // AI กำลังพิมพ์ (จำลอง)
   setTimeout(() => {
-    chatBox.innerHTML += `
-      <div class="msg ai" id="${typingId}">
-        <div class="msg-bubble" style="color: #94a3b8;"><i class="fas fa-ellipsis-h"></i> AI is typing...</div>
-      </div>
-    `;
-    chatBox.scrollTop = chatBox.scrollHeight;
-  }, 500);
-
-  // AI ตอบกลับ (Mockup Logic)
-  setTimeout(() => {
-    document.getElementById(typingId).remove();
+    let replyEn = "I see. Can you tell me more about it?";
+    let replyTh = "เข้าใจแล้วค่ะ ช่วยอธิบายเพิ่มเติมหน่อยได้ไหมคะ?";
     
-    let replyEn = "I'm sorry, could you speak a bit slower?";
-    let replyTh = "ขอโทษค่ะ ช่วยพูดช้าลงหน่อยได้ไหมคะ?";
-    const textLower = text.toLowerCase();
-    
-    if(textLower.includes("hello") || textLower.includes("hi")) {
-      replyEn = "Hello, I have an appointment with the doctor today.";
-      replyTh = "สวัสดีค่ะ วันนี้ฉันมีนัดกับคุณหมอค่ะ";
-    } else if(textLower.includes("name")) {
-      replyEn = "My name is Sarah Connor.";
-      replyTh = "ฉันชื่อ ซาร่าห์ คอนเนอร์ ค่ะ";
-    } else if(textLower.includes("wait") || textLower.includes("sit")) {
-      replyEn = "Thank you, I will wait here.";
-      replyTh = "ขอบคุณค่ะ ฉันจะรอตรงนี้นะคะ";
-    } else if(textLower.includes("pain") || textLower.includes("hurt")) {
-      replyEn = "Yes, my stomach hurts a lot.";
-      replyTh = "ใช่ค่ะ ฉันปวดท้องมากเลย";
+    // Logic ค้นหาคำตอบอัจฉริยะ (Simple AI)
+    const lowerText = text.toLowerCase();
+    if (lowerText.includes("สวัสดี") || lowerText.includes("hello")) {
+      replyEn = "Hello! I feel a bit dizzy today."; replyTh = "สวัสดีค่ะ วันนี้ฉันรู้สึกเวียนหัวนิดหน่อยค่ะ";
+    } else if (lowerText.includes("ชื่อ") || lowerText.includes("name")) {
+      replyEn = "My name is Emily. I'm a tourist."; replyTh = "ฉันชื่อเอมิลี่ เป็นนักท่องเที่ยวค่ะ";
+    } else if (lowerText.includes("ปวด") || lowerText.includes("pain") || lowerText.includes("เจ็บ")) {
+      replyEn = "It hurts right here on my arm."; replyTh = "เจ็บตรงแขนข้างนี้ค่ะ";
+    } else if (lowerText.includes("ทาง") || lowerText.includes("where")) {
+      replyEn = "Could you show me the way to the restroom?"; replyTh = "ช่วยบอกทางไปห้องน้ำหน่อยได้ไหมคะ?";
     }
 
     chatBox.innerHTML += `
       <div class="msg ai">
         <div class="msg-bubble">${replyEn}</div>
         <div class="msg-hint">${replyTh}</div>
-      </div>
-    `;
+      </div>`;
     chatBox.scrollTop = chatBox.scrollHeight;
     speak(replyEn);
-    
-  }, 2000);
+  }, 1000);
 }
+
+function handleEnter(e) { if (e.key === 'Enter') sendMessage(); }
+
+// เตรียมเสียงให้พร้อมเมื่อโหลดหน้าเว็บ
+window.onload = () => {
+  loadScenario('greeting');
+  window.speechSynthesis.onvoiceschanged = () => { window.speechSynthesis.getVoices(); };
+};
