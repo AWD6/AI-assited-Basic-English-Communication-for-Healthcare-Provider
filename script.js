@@ -19,13 +19,36 @@ const scenarios = {
   ]
 };
 
-// โหลดประโยคเมื่อเริ่มแอป
-window.onload = () => loadScenario('greeting');
+let preferredVoice = null;
+let isRecording = false;
+let recognition = null;
+
+// โหลดข้อมูลตอนเริ่ม
+window.onload = () => {
+  loadScenario('greeting');
+  initVoice();
+};
+
+// ค้นหาเสียง AI ที่นุ่มนวลที่สุดเท่าที่เครื่องรองรับ
+function initVoice() {
+  const synth = window.speechSynthesis;
+  const setVoice = () => {
+    const voices = synth.getVoices();
+    // พยายามหาเสียงผู้หญิงพรีเมียม (Google, Apple, หรือเสียง UK/US)
+    preferredVoice = voices.find(v => v.name.includes('Google UK English Female')) ||
+                     voices.find(v => v.name.includes('Samantha')) ||
+                     voices.find(v => v.lang === 'en-US' || v.lang === 'en-GB');
+  };
+  
+  if (synth.onvoiceschanged !== undefined) {
+    synth.onvoiceschanged = setVoice;
+  }
+  setVoice();
+}
 
 function loadScenario(type) {
-  // Update UI buttons
   document.querySelectorAll('.btn-cat').forEach(btn => btn.classList.remove('active'));
-  event.target.classList.add('active');
+  event.currentTarget.classList.add('active');
 
   const list = document.getElementById("phraseList");
   list.innerHTML = "";
@@ -35,71 +58,137 @@ function loadScenario(type) {
     div.className = "phrase-item";
     div.innerHTML = `
       <div>
-        <div style="font-weight:500">${item.en}</div>
-        <div style="font-size:12px; color:#888">${item.th}</div>
+        <div class="phrase-en">${item.en}</div>
+        <div class="phrase-th">${item.th}</div>
       </div>
-      <button class="btn-play"><i class="fas fa-volume-up"></i></button>
+      <button class="btn-play" onclick="speak('${item.en}')">
+        <i class="fas fa-play"></i>
+      </button>
     `;
-    div.onclick = () => speak(item.en);
     list.appendChild(div);
   });
 }
 
 function speak(text) {
-  const speech = new SpeechSynthesisUtterance(text);
-  speech.lang = "en-US";
-  speech.rate = 0.9; // หน่วงให้ช้าลงนิดนึงเพื่อให้ฟังง่าย
-  window.speechSynthesis.speak(speech);
+  const synth = window.speechSynthesis;
+  const utterance = new SpeechSynthesisUtterance(text);
+  
+  if (preferredVoice) utterance.voice = preferredVoice;
+  utterance.rate = 0.85; // พูดช้าลงนิดนึงให้ฟังชัด
+  utterance.pitch = 1.1; // ปรับโทนเสียงให้ดูสดใสขึ้น
+  
+  synth.speak(utterance);
 }
 
-// ระบบ AI Recognition ของจริง
-function startSpeaking() {
-  const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+// ระบบฟังเสียง (Speech Recognition)
+function toggleSpeaking() {
+  const micBtn = document.getElementById("micBtn");
+  const micText = document.getElementById("micText");
+  const resultDisp = document.getElementById("speechResult");
+  const feedbackDisp = document.getElementById("feedback");
+
+  if (!window.SpeechRecognition && !window.webkitSpeechRecognition) {
+    alert("เบราว์เซอร์ของคุณไม่รองรับระบบสั่งงานด้วยเสียง กรุณาใช้ Google Chrome หรือ Safari");
+    return;
+  }
+
+  if (isRecording) {
+    if(recognition) recognition.stop();
+    return;
+  }
+
+  recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
   recognition.lang = 'en-US';
   
-  const micBtn = document.getElementById("micBtn");
-  const resultDisp = document.getElementById("speechResult");
-
-  micBtn.style.background = "#444";
-  resultDisp.innerText = "Listening...";
+  recognition.onstart = () => {
+    isRecording = true;
+    micBtn.classList.add("recording");
+    micText.innerText = "Listening... (กำลังฟัง)";
+    resultDisp.innerText = "...";
+    resultDisp.classList.remove("placeholder-text");
+    feedbackDisp.innerHTML = "";
+  };
 
   recognition.onresult = (event) => {
     const transcript = event.results[0][0].transcript;
-    resultDisp.innerText = "You said: " + transcript;
-    micBtn.style.background = "#ff5252";
+    resultDisp.innerText = `"${transcript}"`;
     
-    // ตรงนี้สามารถเพิ่ม Logic การให้คะแนนความถูกต้องได้
+    // ลูกเล่นจำลองการให้คะแนน
+    const randomScore = Math.floor(Math.random() * (100 - 80 + 1)) + 80; 
+    feedbackDisp.className = "feedback good";
+    feedbackDisp.innerHTML = `<i class="fas fa-check-circle"></i> ความแม่นยำ ${randomScore}% - ออกเสียงได้ดีมาก!`;
   };
 
-  recognition.onerror = () => {
-    resultDisp.innerText = "Error occurred. Try again.";
-    micBtn.style.background = "#ff5252";
+  recognition.onend = () => {
+    isRecording = false;
+    micBtn.classList.remove("recording");
+    micText.innerText = "Tap to Speak (กดเพื่อพูด)";
   };
 
   recognition.start();
 }
 
+function handleEnter(e) {
+  if (e.key === 'Enter') sendMessage();
+}
+
 function sendMessage() {
   const input = document.getElementById("userInput");
   const chatBox = document.getElementById("chatBox");
-  if (!input.value) return;
-
-  // User Message
-  chatBox.innerHTML += `<div class="msg user">${input.value}</div>`;
+  const text = input.value.trim();
   
-  // Simple AI Response Logic
-  setTimeout(() => {
-    let reply = "I'm sorry, I don't understand. Could you repeat?";
-    const text = input.value.toLowerCase();
-    
-    if(text.includes("hello") || text.includes("hi")) reply = "Hello! I have a headache.";
-    if(text.includes("name")) reply = "My name is John Doe.";
-    if(text.includes("wait")) reply = "Sure, I can wait here.";
+  if (!text) return;
 
-    chatBox.innerHTML += `<div class="msg ai">${reply}</div>`;
-    chatBox.scrollTop = chatBox.scrollHeight;
-    speak(reply);
-  }, 1000);
-
+  // ข้อความผู้ใช้
+  chatBox.innerHTML += `
+    <div class="msg user">
+      <div class="msg-bubble">${text}</div>
+    </div>
+  `;
   input.value = "";
+  chatBox.scrollTop = chatBox.scrollHeight;
+
+  // AI กำลังพิมพ์...
+  const typingId = "typing-" + Date.now();
+  setTimeout(() => {
+    chatBox.innerHTML += `
+      <div class="msg ai" id="${typingId}">
+        <div class="msg-bubble" style="color: #94a3b8;"><i class="fas fa-ellipsis-h"></i> AI is typing...</div>
+      </div>
+    `;
+    chatBox.scrollTop = chatBox.scrollHeight;
+  }, 500);
+
+  // AI ตอบกลับ (Mockup Logic)
+  setTimeout(() => {
+    document.getElementById(typingId).remove();
+    
+    let replyEn = "I'm sorry, could you speak a bit slower?";
+    let replyTh = "ขอโทษค่ะ ช่วยพูดช้าลงหน่อยได้ไหมคะ?";
+    const textLower = text.toLowerCase();
+    
+    if(textLower.includes("hello") || textLower.includes("hi")) {
+      replyEn = "Hello, I have an appointment with the doctor today.";
+      replyTh = "สวัสดีค่ะ วันนี้ฉันมีนัดกับคุณหมอค่ะ";
+    } else if(textLower.includes("name")) {
+      replyEn = "My name is Sarah Connor.";
+      replyTh = "ฉันชื่อ ซาร่าห์ คอนเนอร์ ค่ะ";
+    } else if(textLower.includes("wait") || textLower.includes("sit")) {
+      replyEn = "Thank you, I will wait here.";
+      replyTh = "ขอบคุณค่ะ ฉันจะรอตรงนี้นะคะ";
+    } else if(textLower.includes("pain") || textLower.includes("hurt")) {
+      replyEn = "Yes, my stomach hurts a lot.";
+      replyTh = "ใช่ค่ะ ฉันปวดท้องมากเลย";
+    }
+
+    chatBox.innerHTML += `
+      <div class="msg ai">
+        <div class="msg-bubble">${replyEn}</div>
+        <div class="msg-hint">${replyTh}</div>
+      </div>
+    `;
+    chatBox.scrollTop = chatBox.scrollHeight;
+    speak(replyEn);
+    
+  }, 2000);
 }
