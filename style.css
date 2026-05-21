@@ -488,31 +488,193 @@ body {
 }
 
 /* ─── Practice Panel ─── */
+/* ═══════════════════════════════════════════════════════════════
+   HEAL English v6 — Phrase Chips UI Improvements
+   Modern Pill-Shaped Buttons with Glassmorphism
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ─── Phrase Chips Container ─── */
 .phrase-chips {
   display: flex;
   flex-wrap: wrap;
-  gap: 7px;
-  margin-bottom: 14px;
+  gap: 8px;
+  margin-bottom: 16px;
+  padding: 0;
 }
 
-.chip {
-  padding: 6px 12px;
-  border-radius: 50px;
-  border: 1.5px solid var(--border);
-  background: #fff;
+/* ─── Individual Phrase Chip (Pill Button) ─── */
+.phrase-chip {
+  padding: 10px 16px;
+  border-radius: 24px;
+  border: 1.5px solid rgba(13, 148, 136, 0.2);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(240, 253, 250, 0.95) 100%);
   font-family: 'Prompt', sans-serif;
-  font-size: 12px;
+  font-size: 13px;
+  font-weight: 500;
   color: var(--text-sub);
   cursor: pointer;
-  transition: all 0.18s;
-  max-width: 200px;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  max-width: 220px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  box-shadow: 0 2px 8px rgba(13, 148, 136, 0.08);
+  backdrop-filter: blur(4px);
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
-.chip:hover { border-color: var(--primary); color: var(--primary); }
-.chip.active { background: var(--gradient); color: #fff; border-color: transparent; }
 
+/* ─── Phrase Chip Hover State ─── */
+.phrase-chip:hover {
+  border-color: rgba(13, 148, 136, 0.4);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(230, 248, 245, 0.98) 100%);
+  color: var(--primary);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(13, 148, 136, 0.15);
+}
+
+/* ─── Phrase Chip Active/Selected State ─── */
+.phrase-chip.active {
+  background: linear-gradient(135deg, var(--primary), var(--primary-mid), #2dd4bf);
+  color: #fff;
+  border-color: transparent;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(13, 148, 136, 0.3);
+  font-weight: 600;
+}
+
+.phrase-chip.active::after {
+  content: '✓';
+  margin-left: 6px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* ─── Phrase Chip Focus State (Accessibility) ─── */
+.phrase-chip:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.2), 0 2px 8px rgba(13, 148, 136, 0.08);
+}
+
+/* ─── Phrase Chip Active Focus ─── */
+.phrase-chip.active:focus {
+  box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.3), 0 6px 16px rgba(13, 148, 136, 0.3);
+}
+
+/* ─── Phrase Chip Disabled State ─── */
+.phrase-chip:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.phrase-chip:disabled:hover {
+  transform: none;
+  box-shadow: 0 2px 8px rgba(13, 148, 136, 0.08);
+}
+
+/* ─── Responsive Design ─── */
+@media (max-width: 480px) {
+  .phrase-chips {
+    gap: 7px;
+    margin-bottom: 14px;
+  }
+
+  .phrase-chip {
+    padding: 9px 14px;
+    font-size: 12px;
+    border-radius: 20px;
+    max-width: 180px;
+  }
+
+  .phrase-chip:hover {
+    transform: translateY(-1px);
+  }
+
+  .phrase-chip.active {
+    transform: translateY(-1px);
+  }
+
+  .phrase-chip.active::after {
+    margin-left: 4px;
+    font-size: 11px;
+  }
+}
+
+/* ─── Extra Small Screens ─── */
+@media (max-width: 360px) {
+  .phrase-chips {
+    gap: 6px;
+  }
+
+  .phrase-chip {
+    padding: 8px 12px;
+    font-size: 11px;
+    border-radius: 18px;
+    max-width: 150px;
+  }
+}
+
+/* ─── Dark Mode Support ─── */
+@media (prefers-color-scheme: dark) {
+  .phrase-chip {
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.9) 100%);
+    border-color: rgba(13, 148, 136, 0.3);
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  .phrase-chip:hover {
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.95) 0%, rgba(15, 23, 42, 0.95) 100%);
+    border-color: rgba(13, 148, 136, 0.5);
+    color: var(--primary-light);
+  }
+
+  .phrase-chip.active {
+    background: linear-gradient(135deg, var(--primary), var(--primary-mid), #2dd4bf);
+    color: #fff;
+  }
+}
+
+/* ─── Reduced Motion Support ─── */
+@media (prefers-reduced-motion: reduce) {
+  .phrase-chip {
+    transition: none;
+  }
+
+  .phrase-chip:hover,
+  .phrase-chip.active {
+    transform: none;
+  }
+}
+
+/* ─── Animation for New Chips ─── */
+@keyframes chip-pop-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.phrase-chip {
+  animation: chip-pop-in 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ─── Chip with Icon (Optional) ─── */
+.phrase-chip.with-icon {
+  padding-left: 12px;
+}
+
+.phrase-chip.with-icon::before {
+  content: '📌';
+  margin-right: 6px;
+  font-size: 12px;
+}
 /* ═══════════════════════════════════════════════════════════════
    HEAL English v5 — Practice UI Improvements
    Modern Medical Theme with Glassmorphism & Minimalist Design
