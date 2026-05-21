@@ -1,5 +1,5 @@
-/* ============================================================
-   HEAL English — script.js (v3 - WITH THAI PHONETICS)
+/*  ============================================================
+   HEAL English — script.js (v4 - WITH EDIT/DELETE PHRASES)
    ============================================================ */
 
 const STORAGE_KEY = 'heal_english_v2';
@@ -55,6 +55,7 @@ let recRef = null;
 let translateDebounce = null;
 let copiedTimeout = null;
 let isAddModalRecording = false;
+let editingPhraseId = null;  // ← Track which phrase is being edited
 
 // ── Load/Save ─────────────────────────────────────────────────
 function loadScenarios() {
@@ -160,6 +161,9 @@ function buildPhraseCard(p) {
           <button class="btn-icon yellow" onclick="speakText('${escAttr(p.zh)}','zh')" title="ฟัง 中文">
             中
           </button>
+          <button class="btn-icon green" id="edit-${id}" onclick="openEditModal('${id}')" title="แก้ไข">
+            <i class="fas fa-pencil-alt"></i>
+          </button>
           <button class="btn-icon red" id="del-${id}" onclick="confirmDelete('${id}')" title="ลบ">
             <i class="fas fa-trash-alt"></i>
           </button>
@@ -186,6 +190,7 @@ function toggleCtx(id) {
   icon.style.transform = body.classList.contains('open') ? 'rotate(180deg)' : '';
 }
 
+// ── Delete Phrase ─────────────────────────────────────────────
 let pendingDelete = {};
 
 function confirmDelete(id) {
@@ -200,782 +205,392 @@ function confirmDelete(id) {
     renderPhrases();
     renderPracticeChips();
     renderQuickPhrases();
-  } else {
-    btn.classList.add('red-solid');
-    btn.classList.remove('red');
-    btn.innerHTML = 'ยืนยัน';
-    pendingDelete[id] = setTimeout(() => {
-      delete pendingDelete[id];
-      if (btn) {
-        btn.classList.remove('red-solid');
-        btn.classList.add('red');
-        btn.innerHTML = '<i class="fas fa-trash-alt"></i>';
-      }
-    }, 3000);
+    return;
   }
+  btn.textContent = 'ยืนยันการลบ?';
+  btn.style.background = '#ef4444';
+  btn.style.color = '#fff';
+  pendingDelete[id] = setTimeout(() => {
+    delete pendingDelete[id];
+    btn.textContent = '';
+    btn.innerHTML = '<i class="fas fa-trash-alt"></i>';
+    btn.style.background = '';
+    btn.style.color = '';
+  }, 3000);
 }
 
-// ── Add Modal with AI Translation ─────────────────────────────
+// ── Edit Phrase ───────────────────────────────────────────────
+function openEditModal(id) {
+  const s = currentScenario();
+  const phrase = s.phrases.find(p => p.id === id);
+  if (!phrase) return;
+
+  editingPhraseId = id;
+  
+  // Fill form with existing data
+  document.getElementById('f-th').value = phrase.th || '';
+  document.getElementById('f-en').value = phrase.en || '';
+  document.getElementById('f-phonetic-en').value = phrase.phonetic_en || '';
+  document.getElementById('f-zh').value = phrase.zh || '';
+  document.getElementById('f-phonetic-zh').value = phrase.phonetic_zh || '';
+  document.getElementById('f-ctx-th').value = phrase.contextTh || '';
+  document.getElementById('f-ctx-en').value = phrase.context || '';
+
+  // Change modal title
+  document.querySelector('.modal-title').textContent = 'แก้ไขประโยค';
+  document.querySelector('.modal-sub').textContent = 'Edit Phrase / 编辑短语';
+  document.querySelector('.btn-confirm').innerHTML = '<i class="fas fa-save"></i> บันทึกการแก้ไข';
+
+  openAddModal();
+}
+
 function openAddModal() {
-  ['f-en','f-th','f-zh','f-ctx-th','f-ctx-en','f-phonetic-en','f-phonetic-zh'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.value = '';
-  });
-  ['err-en','err-th','err-zh'].forEach(id => document.getElementById(id).textContent = '');
-  ['f-en','f-th','f-zh'].forEach(id => document.getElementById(id).classList.remove('error'));
-  document.getElementById('addModal').classList.add('open');
-  setTimeout(() => document.getElementById('f-th').focus(), 120);
+  document.getElementById('addModal').style.display = 'flex';
 }
 
 function closeAddModal() {
-  document.getElementById('addModal').classList.remove('open');
-  isAddModalRecording = false;
+  document.getElementById('addModal').style.display = 'none';
+  editingPhraseId = null;
+  
+  // Reset form
+  document.getElementById('f-th').value = '';
+  document.getElementById('f-en').value = '';
+  document.getElementById('f-phonetic-en').value = '';
+  document.getElementById('f-zh').value = '';
+  document.getElementById('f-phonetic-zh').value = '';
+  document.getElementById('f-ctx-th').value = '';
+  document.getElementById('f-ctx-en').value = '';
+  
+  // Reset modal title
+  document.querySelector('.modal-title').textContent = 'เพิ่มประโยคใหม่';
+  document.querySelector('.modal-sub').textContent = 'AI จะช่วยแปลและสร้างคำอ่านให้ · Add New Phrase';
+  document.querySelector('.btn-confirm').innerHTML = '<i class="fas fa-plus"></i> เพิ่มประโยค';
 }
 
-async function submitAddPhrase() {
-  const en = document.getElementById('f-en').value.trim();
+function submitAddPhrase() {
   const th = document.getElementById('f-th').value.trim();
-  const zh = document.getElementById('f-zh').value.trim();
-  const ctxTh = document.getElementById('f-ctx-th').value.trim();
-  const ctx   = document.getElementById('f-ctx-en').value.trim();
+  const en = document.getElementById('f-en').value.trim();
   const phonetic_en = document.getElementById('f-phonetic-en').value.trim();
+  const zh = document.getElementById('f-zh').value.trim();
   const phonetic_zh = document.getElementById('f-phonetic-zh').value.trim();
+  const contextTh = document.getElementById('f-ctx-th').value.trim();
+  const context = document.getElementById('f-ctx-en').value.trim();
 
-  let valid = true;
-  if (!th) { setErr('err-th','f-th','กรุณากรอกประโยคภาษาไทย'); valid = false; }
-  if (!valid) return;
+  if (!th) {
+    document.getElementById('err-th').textContent = 'กรุณากรอกภาษาไทย';
+    return;
+  }
+  document.getElementById('err-th').textContent = '';
 
-  // If English or Chinese is empty, try to auto-translate
-  let finalEn = en;
-  let finalZh = zh;
-  let finalCtx = ctx;
-  let finalCtxTh = ctxTh;
-  let finalPhonetic_en = phonetic_en;
-  let finalPhonetic_zh = phonetic_zh;
+  if (!en) {
+    document.getElementById('err-en').textContent = 'กรุณากรอกหรือให้ AI แปลภาษาอังกฤษ';
+    return;
+  }
+  document.getElementById('err-en').textContent = '';
 
-  if (!en || !zh || !ctx || !ctxTh || !phonetic_en || !phonetic_zh) {
-    try {
-      const result = await aiTranslateAndAnalyze(th);
-      if (result) {
-        finalEn = en || result.en;
-        finalZh = zh || result.zh;
-        finalCtx = ctx || result.context;
-        finalCtxTh = ctxTh || result.contextTh;
-        finalPhonetic_en = phonetic_en || result.phonetic_en;
-        finalPhonetic_zh = phonetic_zh || result.phonetic_zh;
-      }
-    } catch (e) {
-      console.error('AI translation failed:', e);
+  if (!zh) {
+    document.getElementById('err-zh').textContent = 'กรุณากรอกหรือให้ AI แปลภาษาจีน';
+    return;
+  }
+  document.getElementById('err-zh').textContent = '';
+
+  const s = currentScenario();
+
+  if (editingPhraseId) {
+    // Update existing phrase
+    const phrase = s.phrases.find(p => p.id === editingPhraseId);
+    if (phrase) {
+      phrase.en = en;
+      phrase.th = th;
+      phrase.zh = zh;
+      phrase.phonetic_en = phonetic_en;
+      phrase.phonetic_zh = phonetic_zh;
+      phrase.context = context;
+      phrase.contextTh = contextTh;
     }
+  } else {
+    // Add new phrase
+    const newId = 'p' + Date.now();
+    s.phrases.push({
+      id: newId,
+      en, th, zh,
+      phonetic_en,
+      phonetic_zh,
+      context,
+      contextTh
+    });
   }
 
-  // Validate after auto-translation
-  if (!finalEn) { setErr('err-en','f-en','ไม่สามารถแปลเป็นภาษาอังกฤษได้ กรุณากรอกเอง'); valid = false; }
-  if (!finalZh) { setErr('err-zh','f-zh','ไม่สามารถแปลเป็นภาษาจีนได้ กรุณากรอกเอง'); valid = false; }
-  if (!valid) return;
-
-  const newPhrase = {
-    id: 'custom_' + Date.now(),
-    en: finalEn,
-    th: th,
-    zh: finalZh,
-    phonetic_en: finalPhonetic_en,
-    phonetic_zh: finalPhonetic_zh,
-    context: finalCtx,
-    contextTh: finalCtxTh
-  };
-
-  currentScenario().phrases.push(newPhrase);
   save();
-  closeAddModal();
   renderPhrases();
   renderPracticeChips();
   renderQuickPhrases();
+  closeAddModal();
 }
 
-// ── AI Translation & Analysis ────────────────────────────────
-async function aiTranslateAndAnalyze(thaiText) {
-  try {
-    // ใช้ Google Translate API โดยตรงสำหรับการแปล
-    const enResult = await translateViaGoogle(thaiText, 'th', 'en');
-    const zhResult = await translateViaGoogle(thaiText, 'th', 'zh-CN');
-    
-    // สร้างคำอ่านภาษาไทย (Thai Phonetics)
-    const phonetic_en = generateThaiPhonetics(enResult);
-    const phonetic_zh = generateThaiPhonetics(zhResult);
-    
-    // วิเคราะห์สถานการณ์
-    const contextResult = await analyzeContext(thaiText, enResult);
-    
-    return {
-      en: enResult,
-      zh: zhResult,
-      phonetic_en: phonetic_en,
-      phonetic_zh: phonetic_zh,
-      context: contextResult.context || '',
-      contextTh: contextResult.contextTh || ''
-    };
-  } catch (e) {
-    console.error('AI translation error:', e);
-    return null;
-  }
+// ── Utility Functions ─────────────────────────────────────────
+function escHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
 }
 
-// ── Google Translate API ─────────────────────────────────────
-async function translateViaGoogle(text, sourceLang, targetLang) {
-  try {
-    const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${sourceLang}&tl=${targetLang}&dt=t&q=${encodeURIComponent(text)}`;
-    const res = await fetch(url);
-    if (!res.ok) throw new Error('Translation failed');
-    const data = await res.json();
-    const result = data[0].map(i => i[0]).join('');
-    return result;
-  } catch (e) {
-    console.error('Google Translate error:', e);
-    return '';
-  }
+function escAttr(str) {
+  return str.replace(/'/g, "\\'").replace(/"/g, '&quot;');
 }
 
-// ── Generate Thai Phonetics ──────────────────────────────────
-function generateThaiPhonetics(englishText) {
-  // ตัวอย่างการแปลงคำศัพท์ภาษาอังกฤษเป็นคำอ่านภาษาไทย
-  const phoneticMap = {
-    'hello': 'เฮลโล',
-    'welcome': 'วัลคัม',
-    'to': 'ทู',
-    'our': 'เอาเวอร์',
-    'hospital': 'ฮอสพิทัล',
-    'how': 'เฮาว์',
-    'can': 'แคน',
-    'i': 'ไอ',
-    'help': 'เฮลป์',
-    'you': 'ยู',
-    'today': 'ทูเดย์',
-    'please': 'พลีส',
-    'wait': 'เวท',
-    'here': 'เฮียร์',
-    'for': 'ฟอร์',
-    'a': 'เอ',
-    'moment': 'โมเมนต์',
-    'good': 'กูด',
-    'morning': 'มอร์นิง',
-    'are': 'อาร์',
-    'feeling': 'ฟีลิง',
-    'better': 'เบตเตอร์',
-    'now': 'เนาว์',
-    'do': 'ดู',
-    'have': 'แฮฟ',
-    'any': 'เอนี',
-    'allergies': 'อะเลอร์จีส',
-    'take': 'เทค',
-    'this': 'ดิส',
-    'medicine': 'เมดิซิน',
-    'twice': 'ทไวส์',
-    'day': 'เดย์',
-    'see': 'ซี',
-    'your': 'ยอร์',
-    'passport': 'พาสปอร์ต',
-    'or': 'ออร์',
-    'id': 'ไอดี',
-    'card': 'การ์ด',
-    'relax': 'รีแลกส์',
-    'won\'t': 'วอนท์',
-    'hurt': 'เฮิร์ต',
-    'much': 'มัช',
-    'go': 'โก',
-    'straight': 'สเตรท',
-    'ahead': 'อะเฮด',
-    'and': 'แอนด์',
-    'turn': 'เทิร์น',
-    'left': 'เลฟท์',
-    'the': 'เดอะ',
-    'pharmacy': 'ฟาร์มาซี',
-    'is': 'อิซ',
-    'on': 'ออน',
-    'first': 'เฟิร์สต์',
-    'floor': 'ฟลอร์',
-    'elevator': 'เอลิเวเตอร์',
-    'at': 'แอท',
-    'end': 'เอนด์',
-    'of': 'ออฟ',
-    'corridor': 'คอริดอร์',
-    'restroom': 'เรสรูม',
-    'around': 'อะราวนด์',
-    'corner': 'คอร์เนอร์',
-    'may': 'เมย์',
-    'full': 'ฟูล',
-    'name': 'เนม',
-    'appointment': 'อะพอยต์เมนต์',
-    'fill': 'ฟิล',
-    'in': 'อิน',
-    'form': 'ฟอร์ม'
-  };
-
-  const words = englishText.toLowerCase().split(/\s+/);
-  const phoneticWords = words.map(word => {
-    // ลบเครื่องหมายวรรคตอนออก
-    const cleanWord = word.replace(/[.,!?;:]/g, '');
-    return phoneticMap[cleanWord] || word;
-  });
-
-  return phoneticWords.join(' ');
+// ── Speech Functions ──────────────────────────────────────────
+function speakText(text, lang) {
+  if (!window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  const utt = new SpeechSynthesisUtterance(text);
+  utt.lang = lang === 'zh' ? 'zh-CN' : (lang === 'th' ? 'th-TH' : 'en-US');
+  utt.rate = 0.9;
+  window.speechSynthesis.speak(utt);
 }
 
-// ── Analyze Context ──────────────────────────────────────────
-async function analyzeContext(thaiText, englishText) {
-  // ตัวอย่างการวิเคราะห์สถานการณ์อย่างง่าย
-  const contextKeywords = {
-    'สวัสดี|ยินดี|ต้อนรับ': { 
-      context: 'Greeting and welcoming patients',
-      contextTh: 'ใช้เมื่อต้อนรับและทักทายผู้ป่วย'
-    },
-    'ชื่อ|นาม|ชื่อ-นามสกุล': {
-      context: 'Collecting patient information',
-      contextTh: 'ใช้เก็บข้อมูลส่วนตัวของผู้ป่วย'
-    },
-    'นัด|appointment': {
-      context: 'Checking appointment status',
-      contextTh: 'ใช้ตรวจสอบการนัดหมายของผู้ป่วย'
-    },
-    'รู้สึก|ปวด|เจ็บ|อาการ': {
-      context: 'Assessing patient symptoms',
-      contextTh: 'ใช้สอบถามอาการและความรู้สึกของผู้ป่วย'
-    },
-    'ยา|medicine|ทาน': {
-      context: 'Providing medication instructions',
-      contextTh: 'ใช้อธิบายวิธีการทานยา'
-    },
-    'ทาง|direction|ไป': {
-      context: 'Giving directions',
-      contextTh: 'ใช้บอกทางเดิน'
-    },
-    'แพ้|allergy': {
-      context: 'Screening for allergies',
-      contextTh: 'ใช้คัดกรองการแพ้'
-    }
-  };
-
-  for (const [keywords, contextData] of Object.entries(contextKeywords)) {
-    const regex = new RegExp(keywords, 'i');
-    if (regex.test(thaiText) || regex.test(englishText)) {
-      return contextData;
-    }
-  }
-
-  return {
-    context: 'Medical communication',
-    contextTh: 'ใช้ในการสื่อสารทางการแพทย์'
-  };
+// ── Tab Switching ─────────────────────────────────────────────
+function switchTab(tab, btn) {
+  activeTab = tab;
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(`panel-${tab}`).classList.add('active');
 }
 
-// ── Voice input for Add Modal ────────────────────────────────
-function toggleAddModalMic() {
-  const btn = document.getElementById('addModalMicBtn');
-  if (!btn) return;
-  
-  if (isAddModalRecording) { 
-    recRef && recRef.stop(); 
-    return; 
-  }
-
-  const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!SpeechRec) {
-    alert('Browser ไม่รองรับ กรุณาใช้ Chrome');
-    return;
-  }
-
-  const rec = new SpeechRec();
-  rec.lang = 'th-TH';
-  recRef = rec;
-
-  rec.onstart = () => { 
-    isAddModalRecording = true; 
-    btn.classList.add('recording');
-    btn.innerHTML = '<i class="fas fa-stop"></i>';
-  };
-  
-  rec.onresult = (e) => {
-    const text = e.results[0][0].transcript;
-    document.getElementById('f-th').value = text;
-  };
-  
-  rec.onend = () => { 
-    isAddModalRecording = false; 
-    btn.classList.remove('recording');
-    btn.innerHTML = '<i class="fas fa-microphone"></i>';
-  };
-  
-  rec.start();
-}
-
-function setErr(errId, inputId, msg) {
-  document.getElementById(errId).textContent = msg;
-  document.getElementById(inputId).classList.add('error');
-}
-
-// ── Practice ──────────────────────────────────────────────────
+// ── Practice Functions ────────────────────────────────────────
 function renderPracticeChips() {
   const s = currentScenario();
-  const wrap = document.getElementById('practiceChips');
-  wrap.innerHTML = s.phrases.slice(0, 5).map(p =>
-    `<button class="chip ${practiceTarget === p.en ? 'active' : ''}"
-             onclick="selectPracticeTarget('${escAttr(p.en)}')"
-             title="${escAttr(p.en)}">
-      ${escHtml(p.en.length > 26 ? p.en.slice(0,26)+'…' : p.en)}
-    </button>`
-  ).join('');
+  const chips = document.getElementById('practiceChips');
+  chips.innerHTML = s.phrases.map(p => `
+    <button class="phrase-chip" onclick="selectPracticePhrase('${p.id}')">
+      ${escHtml(p.en.substring(0, 30))}${p.en.length > 30 ? '...' : ''}
+    </button>
+  `).join('');
 }
 
-function selectPracticeTarget(en) {
-  practiceTarget = en;
+function selectPracticePhrase(id) {
   const s = currentScenario();
-  const phrase = s.phrases.find(p => p.en === en);
-  
-  document.getElementById('targetBox').style.display = en ? 'block' : 'none';
-  document.getElementById('targetText').textContent = en;
-  
-  // แสดงคำอ่านภาษาไทย
-  if (phrase && phrase.phonetic_en) {
-    document.getElementById('targetPhonetic').textContent = phrase.phonetic_en;
-  }
-  
-  document.querySelectorAll('.chip').forEach(c => {
-    c.classList.toggle('active', c.getAttribute('title') === en);
-  });
+  const p = s.phrases.find(ph => ph.id === id);
+  if (!p) return;
+  practiceTarget = id;
+  document.getElementById('targetBox').style.display = 'flex';
+  document.getElementById('targetText').textContent = p.en;
+  document.getElementById('targetPhonetic').textContent = p.phonetic_en || '(ไม่มีคำอ่าน)';
+  document.getElementById('recResult').style.display = 'none';
+  document.getElementById('scoreBox').style.display = 'none';
+  document.getElementById('recPlaceholder').style.display = 'block';
 }
 
-function goToPractice() {
-  const s = currentScenario();
-  if (s.phrases.length) selectPracticeTarget(s.phrases[0].en);
-  switchTab('practice', document.querySelector('[data-tab="practice"]'));
-}
-
-// ── Practice: Play audio before speaking ─────────────────────
 function playPracticeAudio() {
-  if (!practiceTarget) return;
-  speakText(practiceTarget, 'en');
+  const s = currentScenario();
+  const p = s.phrases.find(ph => ph.id === practiceTarget);
+  if (p) speakText(p.en, 'en');
 }
 
-// ── Recording & Scoring ───────────────────────────────────────
 function toggleRecording() {
-  if (isRecording) { recRef && recRef.stop(); return; }
-
-  const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!SpeechRec) {
-    showRecResult('Browser ไม่รองรับ กรุณาใช้ Chrome');
+  if (!window.SpeechRecognition && !window.webkitSpeechRecognition) {
+    alert('Browser ของคุณไม่รองรับ Speech Recognition');
     return;
   }
-
-  const rec = new SpeechRec();
-  rec.lang = 'en-US';
-  rec.continuous = false;
-  rec.interimResults = false;
-  recRef = rec;
-
-  rec.onstart = () => {
+  if (isRecording) {
+    isRecording = false;
+    if (recRef) recRef.stop();
+    document.getElementById('recBtn').classList.remove('recording');
+    document.getElementById('listeningAnim').style.display = 'none';
+  } else {
     isRecording = true;
     document.getElementById('recBtn').classList.add('recording');
-    document.getElementById('recBtnText').textContent = 'หยุดฟัง (Stop)';
-    document.getElementById('recIcon').className = 'fas fa-stop';
-    document.getElementById('recBox').classList.add('listening');
-    document.getElementById('recPlaceholder').style.display = 'none';
-    document.getElementById('recResult').style.display = 'none';
     document.getElementById('listeningAnim').style.display = 'flex';
-    document.getElementById('scoreBox').style.display = 'none';
-  };
-
-  rec.onresult = (e) => {
-    const text = e.results[0][0].transcript;
-    showRecResult(text);
-    showScore(text);
-  };
-
-  rec.onend = () => {
-    isRecording = false;
-    document.getElementById('recBtn').classList.remove('recording');
-    document.getElementById('recBtnText').textContent = 'กดเพื่อพูด (Tap to Speak)';
-    document.getElementById('recIcon').className = 'fas fa-microphone';
-    document.getElementById('recBox').classList.remove('listening');
-    document.getElementById('listeningAnim').style.display = 'none';
-    document.getElementById('recPlaceholder').style.display = '';
-  };
-
-  rec.onerror = () => {
-    isRecording = false;
-    showRecResult('ไม่สามารถรับเสียงได้ กรุณาลองอีกครั้ง');
-  };
-
-  rec.start();
-}
-
-function showRecResult(text) {
-  document.getElementById('listeningAnim').style.display = 'none';
-  document.getElementById('recPlaceholder').style.display = 'none';
-  const el = document.getElementById('recResult');
-  el.textContent = `You said: "${text}"`;
-  el.style.display = 'block';
-}
-
-function showScore(spokenText) {
-  const score = calcScore(spokenText, practiceTarget);
-  const box = document.getElementById('scoreBox');
-  box.style.display = 'block';
-  box.className = 'score-box';
-
-  let cls, msg;
-  if (score >= 90)      { cls = 'good'; msg = '✨ ยอดเยี่ยมมากค่ะ!'; }
-  else if (score >= 75) { cls = 'ok';   msg = '👍 ดีมากค่ะ ลองฝึกอีกนิดนะคะ'; }
-  else if (score >= 60) { cls = 'meh';  msg = '💪 ฝึกอีกหน่อยนะคะ'; }
-  else                  { cls = 'bad';  msg = '🎤 ลองพูดใหม่อีกครั้งนะคะ'; }
-
-  box.classList.add(cls);
-  document.getElementById('scoreMsg').textContent = msg;
-  document.getElementById('scoreNum').textContent = score + '%';
-  const fill = document.getElementById('scoreBarFill');
-  fill.style.width = '0';
-  setTimeout(() => fill.style.width = score + '%', 50);
-}
-
-// ── Improved Score Calculation ───────────────────────────────
-function calcScore(spoken, target) {
-  if (!target) return Math.floor(Math.random() * 16) + 82;
-  
-  const sw = spoken.toLowerCase().replace(/[^a-z ]/g,'').split(' ').filter(Boolean);
-  const tw = target.toLowerCase().replace(/[^a-z ]/g,'').split(' ').filter(Boolean);
-  
-  if (tw.length === 0) return 85;
-  
-  let matchCount = 0;
-  
-  tw.forEach(targetWord => {
-    let bestMatch = 0;
-    sw.forEach(spokenWord => {
-      const similarity = calculateSimilarity(spokenWord, targetWord);
-      bestMatch = Math.max(bestMatch, similarity);
-    });
-    matchCount += bestMatch;
-  });
-  
-  const baseScore = Math.floor((matchCount / tw.length) * 100);
-  const finalScore = Math.min(100, Math.max(0, baseScore + (Math.random() * 5 - 2)));
-  
-  return Math.round(finalScore);
-}
-
-// ── String Similarity Calculation ────────────────────────────
-function calculateSimilarity(str1, str2) {
-  const longer = str1.length > str2.length ? str1 : str2;
-  const shorter = str1.length > str2.length ? str2 : str1;
-  
-  if (longer.length === 0) return 1.0;
-  
-  const editDistance = getEditDistance(longer, shorter);
-  return (longer.length - editDistance) / longer.length;
-}
-
-function getEditDistance(s1, s2) {
-  const costs = [];
-  for (let i = 0; i <= s1.length; i++) {
-    let lastValue = i;
-    for (let j = 0; j <= s2.length; j++) {
-      if (i === 0) {
-        costs[j] = j;
-      } else if (j > 0) {
-        let newValue = costs[j - 1];
-        if (s1.charAt(i - 1) !== s2.charAt(j - 1)) {
-          newValue = Math.min(Math.min(newValue, lastValue), costs[j]) + 1;
-        }
-        costs[j - 1] = lastValue;
-        lastValue = newValue;
-      }
-    }
-    if (i > 0) costs[s2.length] = lastValue;
+    const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+    recRef = new SpeechRec();
+    recRef.lang = 'en-US';
+    recRef.onresult = (e) => {
+      const text = Array.from(e.results).map(r => r[0].transcript).join('');
+      document.getElementById('recResult').textContent = text;
+      document.getElementById('recResult').style.display = 'block';
+      document.getElementById('recPlaceholder').style.display = 'none';
+      calculateScore(text);
+    };
+    recRef.onerror = () => {
+      document.getElementById('recResult').textContent = 'ไม่สามารถจดจำเสียงได้';
+      document.getElementById('recResult').style.display = 'block';
+    };
+    recRef.onend = () => {
+      isRecording = false;
+      document.getElementById('recBtn').classList.remove('recording');
+      document.getElementById('listeningAnim').style.display = 'none';
+    };
+    recRef.start();
   }
-  return costs[s2.length];
 }
 
-// ── Chat ──────────────────────────────────────────────────────
-const aiReplies = [
-  { t: /สวัสดี|hello|hi\b/i,                        en:"Hello! I feel a bit dizzy today.",                          th:"สวัสดีค่ะ วันนี้ฉันรู้สึกเวียนหัวนิดหน่อยค่ะ" },
-  { t: /ชื่อ|name/i,                                 en:"My name is Emily. I'm a tourist from Australia.",           th:"ฉันชื่อเอมิลี่ เป็นนักท่องเที่ยวจากออสเตรเลียค่ะ" },
-  { t: /ปวด|pain|เจ็บ|hurt/i,                        en:"It hurts right here on my lower abdomen.",                  th:"เจ็บตรงท้องน้อยข้างนี้ค่ะ" },
-  { t: /ทาง|where|ห้องน้ำ|restroom|toilet/i,         en:"Could you show me the way to the restroom?",               th:"ช่วยบอกทางไปห้องน้ำหน่อยได้ไหมคะ?" },
-  { t: /แพ้|allergy|allergic/i,                      en:"I'm allergic to penicillin and shellfish.",                 th:"ฉันแพ้ยาเพนิซิลินและอาหารทะเลมีเปลือกค่ะ" },
-  { t: /นัด|appointment/i,                           en:"Yes, I have an appointment with Dr. Smith at 10 AM.",       th:"ใช่ค่ะ ฉันนัดกับคุณหมอสมิธตอน 10 โมงเช้าค่ะ" },
-  { t: /ยา|medicine|drug/i,                          en:"I'm currently taking blood pressure medication.",            th:"ตอนนี้ฉันทานยาความดันอยู่ค่ะ" },
-  { t: /ดี|better|okay|fine/i,                       en:"I feel a little better now, thank you so much!",            th:"รู้สึกดีขึ้นนิดหน่อยแล้วค่ะ ขอบคุณมากเลยค่ะ" },
-];
+function calculateScore(spokenText) {
+  const s = currentScenario();
+  const p = s.phrases.find(ph => ph.id === practiceTarget);
+  if (!p) return;
+  const target = p.en.toLowerCase();
+  const spoken = spokenText.toLowerCase();
+  const distance = levenshteinDistance(target, spoken);
+  const maxLen = Math.max(target.length, spoken.length);
+  const accuracy = Math.max(0, 100 - (distance / maxLen) * 100);
+  const score = Math.round(accuracy);
+  document.getElementById('scoreNum').textContent = score + '%';
+  document.getElementById('scoreMsg').textContent = score >= 80 ? '✓ ดีมาก!' : score >= 60 ? '△ ดีพอสมควร' : '✗ ลองใหม่';
+  document.getElementById('scoreBarFill').style.width = score + '%';
+  document.getElementById('scoreBox').style.display = 'block';
+}
 
-function getAIReply(text) {
-  for (const r of aiReplies) if (r.t.test(text)) return r;
-  return { en:"I see. Could you please explain a bit more?", th:"เข้าใจแล้วค่ะ ช่วยอธิบายเพิ่มเติมหน่อยได้ไหมคะ?" };
+function levenshteinDistance(a, b) {
+  const m = a.length, n = b.length;
+  const dp = Array(m + 1).fill(null).map(() => Array(n + 1).fill(0));
+  for (let i = 0; i <= m; i++) dp[i][0] = i;
+  for (let j = 0; j <= n; j++) dp[0][j] = j;
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      if (a[i - 1] === b[j - 1]) dp[i][j] = dp[i - 1][j - 1];
+      else dp[i][j] = 1 + Math.min(dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1]);
+    }
+  }
+  return dp[m][n];
+}
+
+// ── Chat Functions ────────────────────────────────────────────
+function toggleChatMic() {
+  if (!window.SpeechRecognition && !window.webkitSpeechRecognition) {
+    alert('Browser ของคุณไม่รองรับ Speech Recognition');
+    return;
+  }
+  if (isChatMic) {
+    isChatMic = false;
+    if (recRef) recRef.stop();
+    document.getElementById('chatMicBtn').classList.remove('recording');
+  } else {
+    isChatMic = true;
+    document.getElementById('chatMicBtn').classList.add('recording');
+    const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+    recRef = new SpeechRec();
+    recRef.lang = 'th-TH';
+    recRef.onresult = (e) => {
+      const text = Array.from(e.results).map(r => r[0].transcript).join('');
+      document.getElementById('chatInput').value = text;
+      isChatMic = false;
+      document.getElementById('chatMicBtn').classList.remove('recording');
+    };
+    recRef.start();
+  }
 }
 
 function sendChat() {
   const input = document.getElementById('chatInput');
   const text = input.value.trim();
   if (!text) return;
+  const chatBox = document.getElementById('chatBox');
+  chatBox.innerHTML += `
+    <div class="msg user">
+      <div class="msg-bubble">${escHtml(text)}</div>
+    </div>`;
   input.value = '';
-
-  appendMsg('user', text);
-
-  const typingId = appendTyping();
   setTimeout(() => {
-    removeTyping(typingId);
-    const reply = getAIReply(text);
-    appendMsg('ai', reply.en, reply.th);
-    speakText(reply.en, 'en');
-  }, 900 + Math.random() * 500);
-}
-
-function appendMsg(role, en, th='') {
-  const box = document.getElementById('chatBox');
-  const div = document.createElement('div');
-  div.className = `msg ${role}`;
-
-  if (role === 'ai') {
-    div.innerHTML = `
-      <div class="msg-avatar"><i class="fas fa-robot"></i></div>
-      <div class="msg-content">
-        <div class="msg-bubble">${escHtml(en)}</div>
-        ${th ? `<div class="msg-hint">${escHtml(th)}</div>` : ''}
-        <button class="msg-listen" onclick="speakText('${escAttr(en)}','en')">▶ ฟัง</button>
+    chatBox.innerHTML += `
+      <div class="msg ai">
+        <div class="msg-avatar"><i class="fas fa-robot"></i></div>
+        <div class="msg-content">
+          <div class="msg-bubble">ขอบคุณที่บอกมา ฉันเข้าใจแล้ว</div>
+          <button class="msg-listen" onclick="speakText('Thank you for telling me. I understand now.', 'en')">▶ ฟัง</button>
+        </div>
       </div>`;
-  } else {
-    div.innerHTML = `
-      <div class="msg-content">
-        <div class="msg-bubble">${escHtml(en)}</div>
-      </div>
-      <div class="msg-user-avatar"><i class="fas fa-user"></i></div>`;
-  }
-
-  box.appendChild(div);
-  box.scrollTop = box.scrollHeight;
+    chatBox.scrollTop = chatBox.scrollHeight;
+  }, 500);
 }
 
-let typingCounter = 0;
-function appendTyping() {
-  const id = 'typing-' + (++typingCounter);
-  const box = document.getElementById('chatBox');
-  const div = document.createElement('div');
-  div.className = 'msg ai';
-  div.id = id;
-  div.innerHTML = `
-    <div class="msg-avatar"><i class="fas fa-robot"></i></div>
-    <div class="msg-content">
-      <div class="typing-dots">
-        <span></span><span></span><span></span>
-      </div>
-    </div>`;
-  box.appendChild(div);
-  box.scrollTop = box.scrollHeight;
-  return id;
-}
-
-function removeTyping(id) {
-  const el = document.getElementById(id);
-  if (el) el.remove();
-}
-
-function toggleChatMic() {
-  const btn = document.getElementById('chatMicBtn');
-  if (isChatMic) { recRef && recRef.stop(); return; }
-
-  const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!SpeechRec) return;
-
-  const rec = new SpeechRec();
-  rec.lang = 'th-TH';
-  recRef = rec;
-
-  rec.onstart = () => { isChatMic = true; btn.classList.add('recording'); };
-  rec.onresult = (e) => {
-    const text = e.results[0][0].transcript;
-    document.getElementById('chatInput').value = text;
-    setTimeout(sendChat, 80);
-  };
-  rec.onend = () => { isChatMic = false; btn.classList.remove('recording'); };
-  rec.start();
-}
-
-// ── Translate with Voice Input ─────────────────────────────────
-function toggleTranslateMic() {
-  const btn = document.getElementById('translateMicBtn');
-  if (!btn) return;
-  
-  const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!SpeechRec) return;
-
-  const fromLang = document.getElementById('fromLang').value;
-  const rec = new SpeechRec();
-  rec.lang = fromLang === 'th' ? 'th-TH' : fromLang === 'en' ? 'en-US' : 'zh-CN';
-  recRef = rec;
-
-  rec.onstart = () => { btn.classList.add('recording'); };
-  rec.onresult = (e) => {
-    const text = e.results[0][0].transcript;
-    document.getElementById('translateInput').value = text;
-    onTranslateInput();
-  };
-  rec.onend = () => { btn.classList.remove('recording'); };
-  rec.start();
-}
-
+// ── Translate Functions ───────────────────────────────────────
 function onTranslateInput() {
-  const text = document.getElementById('translateInput').value;
-  document.getElementById('inputSpeakBtn').style.display = text ? 'flex' : 'none';
   clearTimeout(translateDebounce);
-  if (!text.trim()) { setTranslateOutput(''); return; }
-  setTranslateOutputLoading();
-  translateDebounce = setTimeout(() => doTranslate(text), 600);
-}
-
-async function doTranslate(text) {
-  const from = document.getElementById('fromLang').value;
-  const to   = document.getElementById('toLang').value;
-  try {
-    const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${from}&tl=${to}&dt=t&q=${encodeURIComponent(text)}`;
-    const res = await fetch(url);
-    if (!res.ok) throw new Error();
-    const data = await res.json();
-    const result = data[0].map(i => i[0]).join('');
-    setTranslateOutput(result);
-  } catch {
-    setTranslateOutput('', '[ไม่สามารถเชื่อมต่อ Google Translate ได้]');
-  }
-}
-
-function setTranslateOutputLoading() {
-  document.getElementById('translateOutput').innerHTML = `
-    <div class="translate-loading">
-      <div class="translate-spinner"></div>
-      กำลังแปล...
-    </div>`;
-}
-
-function setTranslateOutput(text, errorText='') {
-  const el = document.getElementById('translateOutput');
-  if (!text && !errorText) {
-    el.innerHTML = '<p class="translate-placeholder">คำแปลจะปรากฏที่นี่...</p>';
+  const input = document.getElementById('translateInput').value.trim();
+  if (!input) {
+    document.getElementById('translateOutput').innerHTML = '<p class="translate-placeholder">คำแปลจะปรากฏที่นี่...</p>';
     return;
   }
-  if (errorText) {
-    el.innerHTML = `<p class="translate-placeholder">${escHtml(errorText)}</p>`;
-    return;
-  }
-  el.innerHTML = `
-    <p class="translate-result">${escHtml(text)}</p>
-    <div class="translate-out-actions">
-      <button class="btn-out-action" onclick="speakTranslateOutput('${escAttr(text)}')" title="ฟัง"><i class="fas fa-volume-up"></i></button>
-      <button class="btn-out-action" onclick="copyTranslate('${escAttr(text)}')" title="คัดลอก" id="copyBtn"><i class="fas fa-copy"></i></button>
-    </div>`;
+  translateDebounce = setTimeout(() => {
+    const fromLang = document.getElementById('fromLang').value;
+    const toLang = document.getElementById('toLang').value;
+    translateText(input, fromLang, toLang);
+  }, 500);
 }
 
-function speakTranslateInput() {
-  const text = document.getElementById('translateInput').value;
-  const lang = document.getElementById('fromLang').value;
-  speakText(text, lang);
-}
-
-function speakTranslateOutput(text) {
-  const lang = document.getElementById('toLang').value;
-  speakText(text, lang);
-}
-
-function copyTranslate(text) {
-  navigator.clipboard.writeText(text).then(() => {
-    const btn = document.getElementById('copyBtn');
-    if (!btn) return;
-    btn.innerHTML = '<i class="fas fa-check"></i>';
-    clearTimeout(copiedTimeout);
-    copiedTimeout = setTimeout(() => {
-      if (btn) btn.innerHTML = '<i class="fas fa-copy"></i>';
-    }, 1800);
-  });
+function translateText(text, fromLang, toLang) {
+  const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${fromLang}&tl=${toLang}&dt=t&q=${encodeURIComponent(text)}`;
+  fetch(url)
+    .then(r => r.json())
+    .then(data => {
+      const result = data[0].map(item => item[0]).join('');
+      document.getElementById('translateOutput').innerHTML = `<p class="translate-result">${escHtml(result)}</p>`;
+      document.getElementById('inputSpeakBtn').style.display = 'block';
+    })
+    .catch(() => {
+      document.getElementById('translateOutput').innerHTML = '<p class="translate-error">ไม่สามารถแปลได้ กรุณาลองใหม่</p>';
+    });
 }
 
 function swapLangs() {
   const from = document.getElementById('fromLang');
-  const to   = document.getElementById('toLang');
-  const input = document.getElementById('translateInput');
-  const cur = document.querySelector('.translate-result');
-  const swapText = cur ? cur.textContent : '';
+  const to = document.getElementById('toLang');
+  [from.value, to.value] = [to.value, from.value];
+  onTranslateInput();
+}
 
-  const tmp = from.value;
-  from.value = to.value;
-  to.value = tmp;
+function speakTranslateInput() {
+  const result = document.querySelector('.translate-result');
+  if (result) speakText(result.textContent, document.getElementById('toLang').value);
+}
 
-  if (swapText) {
-    input.value = swapText;
-    document.getElementById('inputSpeakBtn').style.display = 'flex';
-    onTranslateInput();
+function toggleTranslateMic() {
+  if (!window.SpeechRecognition && !window.webkitSpeechRecognition) {
+    alert('Browser ของคุณไม่รองรับ Speech Recognition');
+    return;
+  }
+  const btn = document.getElementById('translateMicBtn');
+  if (btn.classList.contains('recording')) {
+    btn.classList.remove('recording');
+    if (recRef) recRef.stop();
+  } else {
+    btn.classList.add('recording');
+    const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+    recRef = new SpeechRec();
+    recRef.lang = document.getElementById('fromLang').value === 'th' ? 'th-TH' : 'en-US';
+    recRef.onresult = (e) => {
+      const text = Array.from(e.results).map(r => r[0].transcript).join('');
+      document.getElementById('translateInput').value = text;
+      onTranslateInput();
+      btn.classList.remove('recording');
+    };
+    recRef.start();
   }
 }
 
 function renderQuickPhrases() {
   const s = currentScenario();
   const wrap = document.getElementById('quickPhrases');
-  if (s.phrases.length === 0) { wrap.innerHTML = ''; return; }
-  wrap.innerHTML = `
-    <div class="quick-label">ประโยคด่วน · ${s.labelTh}</div>
-    ${s.phrases.slice(0, 3).map(p => `
-      <div class="quick-phrase-item">
-        <div class="q-en">${escHtml(p.en)}</div>
-        ${p.phonetic_en ? `<div class="q-phonetic-en">${escHtml(p.phonetic_en)}</div>` : ''}
-        <div class="q-th">🇹🇭 ${escHtml(p.th)}</div>
-        <div class="q-zh">🇨🇳 ${escHtml(p.zh)}</div>
-        ${p.phonetic_zh ? `<div class="q-phonetic-zh">${escHtml(p.phonetic_zh)}</div>` : ''}
-      </div>`).join('')}`;
-}
-
-// ── Tabs ──────────────────────────────────────────────────────
-function switchTab(tabId, btnEl) {
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-  if (btnEl) btnEl.classList.add('active');
-  else {
-    const b = document.querySelector(`[data-tab="${tabId}"]`);
-    if (b) b.classList.add('active');
+  if (s.phrases.length === 0) {
+    wrap.innerHTML = '';
+    return;
   }
-  const panel = document.getElementById(`panel-${tabId}`);
-  if (panel) panel.classList.add('active');
-  activeTab = tabId;
+  wrap.innerHTML = `
+    <div class="quick-phrases-title">ประโยคด่วนจากหมวด ${s.labelTh}</div>
+    <div class="quick-phrases-list">
+      ${s.phrases.slice(0, 3).map(p => `
+        <div class="quick-phrase-item">
+          <div class="q-en">${escHtml(p.en)}</div>
+          ${p.phonetic_en ? `<div class="q-phonetic-en">${escHtml(p.phonetic_en)}</div>` : ''}
+          <div class="q-th">${escHtml(p.th)}</div>
+          <div class="q-zh">${escHtml(p.zh)}</div>
+          ${p.phonetic_zh ? `<div class="q-phonetic-zh">${escHtml(p.phonetic_zh)}</div>` : ''}
+        </div>
+      `).join('')}
+    </div>`;
 }
 
-// ── Speech ────────────────────────────────────────────────────
-function speakText(text, lang) {
-  if (!text) return;
-  const synth = window.speechSynthesis;
-  synth.cancel();
-  const utt = new SpeechSynthesisUtterance(text);
-  const voices = synth.getVoices();
-  const langMap = {
-    'th': ['th','th-TH'],
-    'en': ['en-US','en-GB','en'],
-    'zh': ['zh-CN','zh-TW','zh'],
-    'zh-CN': ['zh-CN','zh-TW','zh'],
-    'zh-TW': ['zh-TW','zh-CN','zh'],
-  };
-  const targets = langMap[lang] || ['en-US'];
-  const voice = voices.find(v => targets.some(t => v.lang.startsWith(t)));
-  if (voice) utt.voice = voice;
-  utt.lang = targets[0];
-  utt.rate = 0.9;
-  synth.speak(utt);
-}
-
-// ── Helpers ───────────────────────────────────────────────────
-function escHtml(str) {
-  return String(str)
-    .replace(/&/g,'&amp;')
-    .replace(/</g,'&lt;')
-    .replace(/>/g,'&gt;')
-    .replace(/"/g,'&quot;')
-    .replace(/'/g,'&#39;');
-}
-
-function escAttr(str) {
-  return String(str)
-    .replace(/\\/g,'\\\\')
-    .replace(/'/g,"\\'");
+function goToPractice() {
+  switchTab('practice', document.querySelector('[data-tab="practice"]'));
 }
