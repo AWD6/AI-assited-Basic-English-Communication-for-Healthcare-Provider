@@ -101,7 +101,8 @@
       <div class="target-box" id="targetBox" style="display:none">
         <div class="target-label">ลองพูดประโยคนี้:</div>
         <div class="target-text" id="targetText"></div>
-        <button class="btn-play-audio" id="playAudioBtn" onclick="playPracticeAudio()" title="ฟังเสียงก่อน">
+        <div class="target-phonetic" id="targetPhonetic"></div>
+        <button class="btn-play-audio" onclick="playPracticeAudio()" title="ฟังเสียงตัวอย่าง">
           <i class="fas fa-volume-up"></i> ฟัง
         </button>
       </div>
@@ -188,7 +189,7 @@
       <div class="translate-input-wrap">
         <textarea id="translateInput" class="translate-input" rows="3" placeholder="พิมพ์ข้อความที่ต้องการแปล... / Type text to translate..." oninput="onTranslateInput()"></textarea>
         <button class="translate-speak-btn" id="inputSpeakBtn" onclick="speakTranslateInput()" style="display:none" title="ฟังเสียง"><i class="fas fa-volume-up"></i></button>
-        <button class="translate-mic-btn" id="translateMicBtn" onclick="toggleTranslateMic()" title="พูดเพื่อแปล"><i class="fas fa-microphone"></i></button>
+        <button class="translate-mic-btn" id="translateMicBtn" onclick="toggleTranslateMic()" title="กดเพื่อพูด"><i class="fas fa-microphone"></i></button>
       </div>
       <div class="translate-output-wrap" id="translateOutput">
         <p class="translate-placeholder">คำแปลจะปรากฏที่นี่...</p>
@@ -210,7 +211,7 @@
     <div class="modal-header">
       <div>
         <div class="modal-title">เพิ่มประโยคใหม่</div>
-        <div class="modal-sub">Add New Phrase / 添加新短语</div>
+        <div class="modal-sub">AI จะช่วยแปลและสร้างคำอ่านให้ · Add New Phrase</div>
       </div>
       <button class="modal-close" onclick="closeAddModal()"><i class="fas fa-times"></i></button>
     </div>
@@ -218,30 +219,41 @@
       <div class="field-group">
         <label class="field-label">
           <span class="badge-lang th">TH</span> ภาษาไทย <span class="required">*</span>
-          <button class="btn-field-mic" id="addModalMicBtn" onclick="toggleAddModalMic()" type="button" title="พูดแทนการพิมพ์">
+          <button type="button" class="btn-field-mic" id="addModalMicBtn" onclick="toggleAddModalMic()" title="กดเพื่อพูด">
             <i class="fas fa-microphone"></i>
           </button>
         </label>
         <input type="text" id="f-th" class="field-input" placeholder="เช่น รู้สึกดีขึ้นไหมคะ?">
         <div class="field-error" id="err-th"></div>
       </div>
+
       <div class="field-group">
-        <label class="field-label"><span class="badge-lang en">EN</span> English (AI จะแปลให้)</label>
-        <input type="text" id="f-en" class="field-input" placeholder="AI จะแปลเป็นอังกฤษให้โดยอัตโนมัติ">
+        <label class="field-label"><span class="badge-lang en">EN</span> English (AI จะช่วยแปล)</label>
+        <input type="text" id="f-en" class="field-input" placeholder="AI จะแปลให้ หรือคุณพิมพ์เอง">
         <div class="field-error" id="err-en"></div>
       </div>
       <div class="field-group">
-        <label class="field-label"><span class="badge-lang zh">中</span> 中文 (AI จะแปลให้)</label>
-        <input type="text" id="f-zh" class="field-input" placeholder="AI จะแปลเป็นจีนให้โดยอัตโนมัติ">
+        <label class="field-label"><span class="badge-phonetic">🔤</span> คำอ่านภาษาไทย (English)</label>
+        <input type="text" id="f-phonetic-en" class="field-input" placeholder="เช่น เฮลโล ยู ฟีลิง เบตเตอร์">
+      </div>
+
+      <div class="field-group">
+        <label class="field-label"><span class="badge-lang zh">中</span> 中文 (AI จะช่วยแปล)</label>
+        <input type="text" id="f-zh" class="field-input" placeholder="AI 将为您翻译">
         <div class="field-error" id="err-zh"></div>
       </div>
       <div class="field-group">
-        <label class="field-label"><span class="badge-ctx">?</span> ใช้ในสถานการณ์ไหน (AI จะวิเคราะห์ให้)</label>
-        <input type="text" id="f-ctx-th" class="field-input" placeholder="AI จะวิเคราะห์สถานการณ์ให้โดยอัตโนมัติ">
+        <label class="field-label"><span class="badge-phonetic">🔤</span> คำอ่านภาษาไทย (中文)</label>
+        <input type="text" id="f-phonetic-zh" class="field-input" placeholder="เช่น หนี่ว เฮา เกินจวี่ ฮ่าว">
+      </div>
+
+      <div class="field-group">
+        <label class="field-label"><span class="badge-ctx">?</span> ใช้ในสถานการณ์ไหน (ไทย)</label>
+        <input type="text" id="f-ctx-th" class="field-input" placeholder="AI จะวิเคราะห์ให้ หรือคุณพิมพ์เอง">
       </div>
       <div class="field-group">
-        <label class="field-label"><span class="badge-ctx">!</span> When to use (AI จะวิเคราะห์ให้)</label>
-        <input type="text" id="f-ctx-en" class="field-input" placeholder="AI จะวิเคราะห์สถานการณ์ให้โดยอัตโนมัติ">
+        <label class="field-label"><span class="badge-ctx">!</span> When to use (English)</label>
+        <input type="text" id="f-ctx-en" class="field-input" placeholder="e.g. Use after treatment to check patient's condition">
       </div>
     </div>
     <div class="modal-footer">
