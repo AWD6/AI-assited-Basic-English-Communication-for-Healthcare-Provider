@@ -101,6 +101,9 @@
       <div class="target-box" id="targetBox" style="display:none">
         <div class="target-label">ลองพูดประโยคนี้:</div>
         <div class="target-text" id="targetText"></div>
+        <button class="btn-play-audio" id="playAudioBtn" onclick="playPracticeAudio()" title="ฟังเสียงก่อน">
+          <i class="fas fa-volume-up"></i> ฟัง
+        </button>
       </div>
       <div class="recognition-box" id="recBox">
         <div class="rec-placeholder" id="recPlaceholder">กดปุ่มไมค์แล้วพูดประโยคภาษาอังกฤษ</div>
@@ -185,6 +188,7 @@
       <div class="translate-input-wrap">
         <textarea id="translateInput" class="translate-input" rows="3" placeholder="พิมพ์ข้อความที่ต้องการแปล... / Type text to translate..." oninput="onTranslateInput()"></textarea>
         <button class="translate-speak-btn" id="inputSpeakBtn" onclick="speakTranslateInput()" style="display:none" title="ฟังเสียง"><i class="fas fa-volume-up"></i></button>
+        <button class="translate-mic-btn" id="translateMicBtn" onclick="toggleTranslateMic()" title="พูดเพื่อแปล"><i class="fas fa-microphone"></i></button>
       </div>
       <div class="translate-output-wrap" id="translateOutput">
         <p class="translate-placeholder">คำแปลจะปรากฏที่นี่...</p>
@@ -212,27 +216,32 @@
     </div>
     <div class="modal-body">
       <div class="field-group">
-        <label class="field-label"><span class="badge-lang en">EN</span> English <span class="required">*</span></label>
-        <input type="text" id="f-en" class="field-input" placeholder="e.g. Are you feeling better?">
-        <div class="field-error" id="err-en"></div>
-      </div>
-      <div class="field-group">
-        <label class="field-label"><span class="badge-lang th">TH</span> ภาษาไทย <span class="required">*</span></label>
+        <label class="field-label">
+          <span class="badge-lang th">TH</span> ภาษาไทย <span class="required">*</span>
+          <button class="btn-field-mic" id="addModalMicBtn" onclick="toggleAddModalMic()" type="button" title="พูดแทนการพิมพ์">
+            <i class="fas fa-microphone"></i>
+          </button>
+        </label>
         <input type="text" id="f-th" class="field-input" placeholder="เช่น รู้สึกดีขึ้นไหมคะ?">
         <div class="field-error" id="err-th"></div>
       </div>
       <div class="field-group">
-        <label class="field-label"><span class="badge-lang zh">中</span> 中文 <span class="required">*</span></label>
-        <input type="text" id="f-zh" class="field-input" placeholder="例如：您感觉好些了吗？">
+        <label class="field-label"><span class="badge-lang en">EN</span> English (AI จะแปลให้)</label>
+        <input type="text" id="f-en" class="field-input" placeholder="AI จะแปลเป็นอังกฤษให้โดยอัตโนมัติ">
+        <div class="field-error" id="err-en"></div>
+      </div>
+      <div class="field-group">
+        <label class="field-label"><span class="badge-lang zh">中</span> 中文 (AI จะแปลให้)</label>
+        <input type="text" id="f-zh" class="field-input" placeholder="AI จะแปลเป็นจีนให้โดยอัตโนมัติ">
         <div class="field-error" id="err-zh"></div>
       </div>
       <div class="field-group">
-        <label class="field-label"><span class="badge-ctx">?</span> ใช้ในสถานการณ์ไหน (ไทย)</label>
-        <input type="text" id="f-ctx-th" class="field-input" placeholder="เช่น ใช้เมื่อตรวจสอบอาการหลังรักษา">
+        <label class="field-label"><span class="badge-ctx">?</span> ใช้ในสถานการณ์ไหน (AI จะวิเคราะห์ให้)</label>
+        <input type="text" id="f-ctx-th" class="field-input" placeholder="AI จะวิเคราะห์สถานการณ์ให้โดยอัตโนมัติ">
       </div>
       <div class="field-group">
-        <label class="field-label"><span class="badge-ctx">!</span> When to use (English)</label>
-        <input type="text" id="f-ctx-en" class="field-input" placeholder="e.g. Use after treatment to check patient's condition">
+        <label class="field-label"><span class="badge-ctx">!</span> When to use (AI จะวิเคราะห์ให้)</label>
+        <input type="text" id="f-ctx-en" class="field-input" placeholder="AI จะวิเคราะห์สถานการณ์ให้โดยอัตโนมัติ">
       </div>
     </div>
     <div class="modal-footer">
