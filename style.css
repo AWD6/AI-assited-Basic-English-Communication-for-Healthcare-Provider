@@ -1156,3 +1156,153 @@ body {
   color: var(--text-hint);
   margin-top: 4px;
 }
+/* ═══════════════════════════════════════════════════════════════
+   HEAL English — Additional CSS for New Features
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ─── Play Audio Button in Practice ─── */
+.btn-play-audio {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  background: #dbeafe;
+  color: #2563eb;
+  border: none;
+  font-family: 'Prompt', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 8px;
+}
+.btn-play-audio:hover {
+  background: #2563eb;
+  color: #fff;
+}
+.btn-play-audio i {
+  font-size: 13px;
+}
+
+/* ─── Mic Button in Add Modal ─── */
+.btn-field-mic {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: #e6f8f5;
+  color: var(--primary);
+  border: none;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-left: 8px;
+  flex-shrink: 0;
+}
+.btn-field-mic:hover {
+  background: #ccfbf1;
+  color: var(--primary-dark);
+}
+.btn-field-mic.recording {
+  background: #ef4444;
+  color: #fff;
+  animation: pulse-red 1.5s infinite;
+}
+
+/* ─── Mic Button in Translate ─── */
+.translate-mic-btn {
+  position: absolute;
+  right: 46px;
+  bottom: 10px;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  border: none;
+  background: #e6f8f5;
+  color: var(--primary);
+  font-size: 13px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+.translate-mic-btn:hover {
+  background: #ccfbf1;
+}
+.translate-mic-btn.recording {
+  background: #ef4444;
+  color: #fff;
+  animation: pulse-red 1.5s infinite;
+}
+
+/* ─── Adjust Translate Input for Mic Button ─── */
+.translate-input-wrap {
+  position: relative;
+  margin-bottom: 10px;
+}
+
+.translate-input {
+  padding-right: 90px; /* Space for both buttons */
+}
+
+/* ─── Field Label with Mic Button ─── */
+.field-label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-sub);
+}
+
+/* ─── Target Box Enhancement ─── */
+.target-box {
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  margin-bottom: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.target-label {
+  font-size: 11px;
+  color: #3b82f6;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.target-text {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1e40af;
+  margin-bottom: 8px;
+}
+
+/* ─── Pulse Animation (if not already defined) ─── */
+@keyframes pulse-red {
+  0%, 100% { box-shadow: 0 4px 14px rgba(220,38,38,0.32); }
+  50% { box-shadow: 0 4px 24px rgba(220,38,38,0.52); }
+}
+
+/* ─── Responsive Adjustments ─── */
+@media (max-width: 480px) {
+  .btn-play-audio {
+    font-size: 11px;
+    padding: 6px 12px;
+  }
+  
+  .translate-mic-btn {
+    right: 46px;
+  }
+  
+  .translate-input {
+    padding-right: 90px;
+  }
+}
