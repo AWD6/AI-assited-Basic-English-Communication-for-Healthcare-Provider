@@ -1157,129 +1157,264 @@ body {
   margin-top: 4px;
 }
 /* ═══════════════════════════════════════════════════════════════
-   HEAL English v3 — Additional CSS for Thai Phonetics & New Features
+   HEAL English v4 — Additional CSS for Edit/Delete Phrases
    ═══════════════════════════════════════════════════════════════ */
 
-/* ─── Thai Phonetics Display ─── */
-.phrase-phonetic {
-  font-size: 11px;
-  color: #7c3aed;
-  font-weight: 500;
-  font-style: italic;
-  margin-top: 3px;
-  padding: 4px 6px;
-  background: #f3e8ff;
-  border-radius: 4px;
-  display: inline-block;
-}
-
-.target-phonetic {
-  font-size: 12px;
-  color: #7c3aed;
-  font-weight: 500;
-  margin-top: 6px;
-  padding: 6px 8px;
-  background: #f3e8ff;
-  border-radius: 6px;
-  display: block;
-  text-align: center;
-}
-
-/* ─── Quick Phonetics ─── */
-.q-phonetic-en,
-.q-phonetic-zh {
-  font-size: 10px;
-  color: #7c3aed;
-  font-weight: 500;
-  margin-top: 2px;
-  padding: 2px 4px;
-  background: #f3e8ff;
-  border-radius: 3px;
-  display: inline-block;
-}
-
-/* ─── Play Audio Button in Practice ─── */
-.btn-play-audio {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 14px;
+/* ─── Edit Button (Green) ─── */
+.btn-icon.green {
+  background: #d1fae5;
+  color: #059669;
+  border: none;
+  width: 32px;
+  height: 32px;
   border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.btn-icon.green:hover {
+  background: #a7f3d0;
+  color: #047857;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);
+}
+
+.btn-icon.green:active {
+  transform: translateY(0);
+}
+
+/* ─── Delete Button (Red) ─── */
+.btn-icon.red {
+  background: #fee2e2;
+  color: #dc2626;
+  border: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.btn-icon.red:hover {
+  background: #fecaca;
+  color: #b91c1c;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+}
+
+.btn-icon.red:active {
+  transform: translateY(0);
+}
+
+/* ─── Play Audio Button (Blue) ─── */
+.btn-icon.blue {
   background: #dbeafe;
   color: #2563eb;
   border: none;
-  font-family: 'Prompt', sans-serif;
-  font-size: 12px;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.btn-icon.blue:hover {
+  background: #bfdbfe;
+  color: #1d4ed8;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+.btn-icon.blue:active {
+  transform: translateY(0);
+}
+
+/* ─── Yellow Button (for Chinese) ─── */
+.btn-icon.yellow {
+  background: #fef3c7;
+  color: #b45309;
+  border: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.btn-icon.yellow:hover {
+  background: #fde68a;
+  color: #92400e;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(180, 83, 9, 0.3);
+}
+
+.btn-icon.yellow:active {
+  transform: translateY(0);
+}
+
+/* ─── Phrase Actions Container ─── */
+.phrase-actions {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
   margin-top: 8px;
 }
-.btn-play-audio:hover {
-  background: #2563eb;
-  color: #fff;
-  transform: translateY(-1px);
-}
-.btn-play-audio i {
-  font-size: 13px;
+
+/* ─── Modal Footer Buttons ─── */
+.modal-footer {
+  display: flex;
+  gap: 10px;
+  padding: 16px;
+  border-top: 1px solid var(--border);
+  background: #f8fafc;
 }
 
-/* ─── Mic Button in Add Modal ─── */
-.btn-field-mic {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  border-radius: 6px;
-  background: #e6f8f5;
-  color: var(--primary);
-  border: none;
-  font-size: 12px;
+.btn-cancel {
+  flex: 1;
+  padding: 10px 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: #fff;
+  color: var(--text);
+  font-family: 'Prompt', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
-  margin-left: 8px;
-  flex-shrink: 0;
-  vertical-align: middle;
-}
-.btn-field-mic:hover {
-  background: #ccfbf1;
-  color: var(--primary-dark);
-}
-.btn-field-mic.recording {
-  background: #ef4444;
-  color: #fff;
-  animation: pulse-red 1.5s infinite;
 }
 
-/* ─── Mic Button in Translate ─── */
-.translate-mic-btn {
-  position: absolute;
-  right: 46px;
-  bottom: 10px;
-  width: 30px;
-  height: 30px;
-  border-radius: 8px;
+.btn-cancel:hover {
+  background: #f1f5f9;
+  border-color: var(--text-hint);
+}
+
+.btn-confirm {
+  flex: 1;
+  padding: 10px 16px;
   border: none;
-  background: #e6f8f5;
-  color: var(--primary);
+  border-radius: var(--radius-sm);
+  background: var(--gradient);
+  color: #fff;
+  font-family: 'Prompt', sans-serif;
   font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.btn-confirm:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-btn);
+}
+
+.btn-confirm:active {
+  transform: translateY(0);
+}
+
+/* ─── Modal Styling ─── */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.modal {
+  background: #fff;
+  border-radius: var(--radius-lg);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  max-width: 500px;
+  width: 100%;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.modal-header {
+  padding: 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.modal-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.modal-sub {
+  font-size: 12px;
+  color: var(--text-sub);
+}
+
+.modal-close {
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 8px;
+  background: #f1f5f9;
+  color: var(--text);
+  font-size: 16px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.2s;
-}
-.translate-mic-btn:hover {
-  background: #ccfbf1;
-}
-.translate-mic-btn.recording {
-  background: #ef4444;
-  color: #fff;
-  animation: pulse-red 1.5s infinite;
+  transition: all 0.2s;
+  flex-shrink: 0;
 }
 
-/* ─── Field Label with Mic Button ─── */
+.modal-close:hover {
+  background: #e2e8f0;
+  color: var(--text);
+}
+
+.modal-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+}
+
+/* ─── Form Fields ─── */
+.field-group {
+  margin-bottom: 14px;
+}
+
 .field-label {
   display: flex;
   align-items: center;
@@ -1288,91 +1423,6 @@ body {
   font-weight: 500;
   color: var(--text-sub);
   margin-bottom: 6px;
-}
-
-/* ─── Badge for Phonetics ─── */
-.badge-phonetic {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 22px;
-  height: 22px;
-  border-radius: 4px;
-  background: #f3e8ff;
-  color: #7c3aed;
-  font-size: 11px;
-  font-weight: 600;
-  flex-shrink: 0;
-}
-
-/* ─── Target Box Enhancement ─── */
-.target-box {
-  background: #eff6ff;
-  border: 1px solid #bfdbfe;
-  border-radius: var(--radius-sm);
-  padding: 12px 14px;
-  margin-bottom: 12px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-}
-
-.target-label {
-  font-size: 11px;
-  color: #3b82f6;
-  font-weight: 600;
-  margin-bottom: 4px;
-}
-
-.target-text {
-  font-size: 14px;
-  font-weight: 600;
-  color: #1e40af;
-  margin-bottom: 8px;
-}
-
-/* ─── Pulse Animation ─── */
-@keyframes pulse-red {
-  0%, 100% { box-shadow: 0 4px 14px rgba(220,38,38,0.32); }
-  50% { box-shadow: 0 4px 24px rgba(220,38,38,0.52); }
-}
-
-/* ─── Quick Phrases Enhancement ─── */
-.quick-phrase-item {
-  background: #f8f9fa;
-  border-left: 3px solid var(--primary);
-  padding: 10px 12px;
-  border-radius: 6px;
-  margin-bottom: 8px;
-  font-size: 12px;
-}
-
-.q-en {
-  font-weight: 600;
-  color: #1e40af;
-  margin-bottom: 2px;
-}
-
-.q-th {
-  color: var(--text);
-  margin-top: 4px;
-  font-size: 11px;
-}
-
-.q-zh {
-  color: var(--text);
-  margin-top: 2px;
-  font-size: 11px;
-}
-
-/* ─── Modal Enhancements ─── */
-.modal-body {
-  max-height: 70vh;
-  overflow-y: auto;
-}
-
-.field-group {
-  margin-bottom: 14px;
 }
 
 .field-input {
@@ -1389,7 +1439,7 @@ body {
 .field-input:focus {
   outline: none;
   border-color: var(--primary);
-  box-shadow: 0 0 0 2px rgba(13,148,136,0.1);
+  box-shadow: 0 0 0 2px rgba(13, 148, 136, 0.1);
 }
 
 .field-input.error {
@@ -1408,45 +1458,12 @@ body {
   display: block;
 }
 
-/* ─── Responsive Adjustments ─── */
-@media (max-width: 480px) {
-  .btn-play-audio {
-    font-size: 11px;
-    padding: 6px 12px;
-  }
-  
-  .translate-mic-btn {
-    right: 46px;
-  }
-  
-  .translate-input {
-    padding-right: 90px;
-  }
-  
-  .target-phonetic {
-    font-size: 11px;
-  }
-  
-  .phrase-phonetic {
-    font-size: 10px;
-  }
-  
-  .modal-body {
-    max-height: 60vh;
-  }
+.required {
+  color: #ef4444;
+  font-weight: 700;
 }
 
-/* ─── Translate Input Wrap ─── */
-.translate-input-wrap {
-  position: relative;
-  margin-bottom: 10px;
-}
-
-.translate-input {
-  padding-right: 90px;
-}
-
-/* ─── Badge Styles ─── */
+/* ─── Badges ─── */
 .badge-lang {
   display: inline-flex;
   align-items: center;
@@ -1476,6 +1493,20 @@ body {
   color: var(--primary);
 }
 
+.badge-phonetic {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 4px;
+  background: #f3e8ff;
+  color: #7c3aed;
+  font-size: 11px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
 .badge-ctx {
   display: inline-flex;
   align-items: center;
@@ -1488,6 +1519,184 @@ body {
   font-size: 11px;
   font-weight: 700;
   flex-shrink: 0;
+}
+
+.badge-mini {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  background: #e6f8f5;
+  color: var(--primary);
+  font-size: 10px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.badge-mini.en {
+  background: #dbeafe;
+  color: #2563eb;
+}
+
+.badge-mini.th {
+  background: #e6f8f5;
+  color: var(--primary);
+}
+
+.badge-mini.zh {
+  background: #fce7f3;
+  color: #be185d;
+}
+
+/* ─── Phrase Card ─── */
+.phrase-card {
+  background: #f8f9fa;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  margin-bottom: 10px;
+  transition: all 0.2s;
+}
+
+.phrase-card:hover {
+  background: #fff;
+  border-color: var(--primary-light);
+  box-shadow: 0 2px 8px rgba(13, 148, 136, 0.1);
+}
+
+.phrase-main {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.phrase-texts {
+  flex: 1;
+  min-width: 0;
+}
+
+.phrase-row {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  margin-bottom: 6px;
+  font-size: 12px;
+}
+
+.phrase-row:last-child {
+  margin-bottom: 0;
+}
+
+.phrase-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.phrase-en-text,
+.phrase-th-text,
+.phrase-zh-text {
+  font-weight: 500;
+  color: var(--text);
+  word-break: break-word;
+}
+
+.phrase-phonetic {
+  font-size: 10px;
+  color: #7c3aed;
+  font-style: italic;
+  padding: 2px 4px;
+  background: #f3e8ff;
+  border-radius: 3px;
+  display: inline-block;
+}
+
+/* ─── Phrase Context ─── */
+.phrase-context-toggle {
+  width: 100%;
+  padding: 8px 12px;
+  border: none;
+  background: transparent;
+  color: var(--primary);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+  transition: all 0.2s;
+}
+
+.phrase-context-toggle:hover {
+  background: rgba(13, 148, 136, 0.05);
+}
+
+.phrase-context-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s;
+  padding: 0 12px;
+}
+
+.phrase-context-body.open {
+  max-height: 200px;
+  padding: 8px 12px;
+}
+
+.ctx-line {
+  font-size: 11px;
+  color: var(--text-sub);
+  margin-bottom: 4px;
+  line-height: 1.4;
+}
+
+.ctx-line:last-child {
+  margin-bottom: 0;
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 480px) {
+  .modal {
+    max-width: 100%;
+    border-radius: var(--radius);
+  }
+
+  .modal-header {
+    padding: 16px;
+  }
+
+  .modal-body {
+    padding: 12px;
+  }
+
+  .modal-footer {
+    padding: 12px;
+    gap: 8px;
+  }
+
+  .phrase-actions {
+    gap: 4px;
+  }
+
+  .btn-icon {
+    width: 28px;
+    height: 28px;
+    font-size: 12px;
+  }
+
+  .field-input {
+    font-size: 12px;
+    padding: 8px 10px;
+  }
+
+  .field-label {
+    font-size: 12px;
+    gap: 6px;
+  }
 }
 
 /* ─── Scrollbar Styling ─── */
