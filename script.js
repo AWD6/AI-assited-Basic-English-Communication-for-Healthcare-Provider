@@ -1,5 +1,5 @@
 /* ============================================================
-   HEAL English — script.js (UPDATED WITH AI FEATURES)
+   HEAL English — script.js (v3 - WITH THAI PHONETICS)
    ============================================================ */
 
 const STORAGE_KEY = 'heal_english_v2';
@@ -9,37 +9,37 @@ const defaultScenarios = [
   {
     id: 'greeting', labelEn: 'Greeting', labelTh: 'การทักทาย', icon: '👋',
     phrases: [
-      { id:'g1', en:'Hello, welcome to our hospital.', th:'สวัสดีค่ะ ยินดีต้อนรับสู่โรงพยาบาลค่ะ', zh:'您好，欢迎来到我们医院。', context:'First contact with patient at entrance or reception', contextTh:'ใช้เมื่อต้อนรับผู้ป่วยที่ทางเข้าหรือเคาน์เตอร์' },
-      { id:'g2', en:'How can I help you today?', th:'วันนี้มีอะไรให้ช่วยไหมคะ?', zh:'我今天能帮您什么？', context:'Opening a patient encounter or service interaction', contextTh:'ใช้เปิดการสนทนาเพื่อสอบถามความต้องการผู้ป่วย' },
-      { id:'g3', en:'Please wait here for a moment.', th:'กรุณารอสักครู่ตรงนี้ค่ะ', zh:'请在这里稍等片刻。', context:'Asking patient to wait while you prepare or check information', contextTh:'ใช้ขอให้ผู้ป่วยรอขณะเตรียมข้อมูลหรือดำเนินการ' },
-      { id:'g4', en:'Good morning! How are you feeling today?', th:'สวัสดีตอนเช้าค่ะ วันนี้รู้สึกเป็นอย่างไรบ้างคะ?', zh:'早上好！今天感觉怎么样？', context:'Morning greeting when visiting a patient in ward', contextTh:'ใช้ทักทายตอนเช้าเมื่อเยี่ยมผู้ป่วยในหอผู้ป่วย' }
+      { id:'g1', en:'Hello, welcome to our hospital.', th:'สวัสดีค่ะ ยินดีต้อนรับสู่โรงพยาบาลค่ะ', zh:'您好，欢迎来到我们医院。', phonetic_en:'เฮลโล วัลคัม ทู เอาเวอร์ ฮอสพิทัล', phonetic_zh:'หนี่ว เฮา 欢迎 ไหลไต่ว่อ เหวอ่ เหมิน หยี่หยวน', context:'First contact with patient at entrance or reception', contextTh:'ใช้เมื่อต้อนรับผู้ป่วยที่ทางเข้าหรือเคาน์เตอร์' },
+      { id:'g2', en:'How can I help you today?', th:'วันนี้มีอะไรให้ช่วยไหมคะ?', zh:'我今天能帮您什么？', phonetic_en:'เฮาว์ แคน ไอ เฮลป์ ยู ทูเดย์', phonetic_zh:'โว่ จิ่นเทียน เหนิง บ้านหวู่ หนิน', context:'Opening a patient encounter or service interaction', contextTh:'ใช้เปิดการสนทนาเพื่อสอบถามความต้องการผู้ป่วย' },
+      { id:'g3', en:'Please wait here for a moment.', th:'กรุณารอสักครู่ตรงนี้ค่ะ', zh:'请在这里稍等片刻。', phonetic_en:'พลีส เวท เฮียร์ ฟอร์ เอ โมเมนต์', phonetic_zh:'ชิ่ง ไจ่ จ่างหลี่ เซา เต่ง เพี่ยนเกอะ', context:'Asking patient to wait while you prepare or check information', contextTh:'ใช้ขอให้ผู้ป่วยรอขณะเตรียมข้อมูลหรือดำเนินการ' },
+      { id:'g4', en:'Good morning! How are you feeling today?', th:'สวัสดีตอนเช้าค่ะ วันนี้รู้สึกเป็นอย่างไรบ้างคะ?', zh:'早上好！今天感觉怎么样？', phonetic_en:'กูด มอร์นิง เฮาว์ อาร์ ยู ฟีลิง ทูเดย์', phonetic_zh:'จ้าว เซิ่ง ฮ่าว จิ่นเทียน เกินจวี่ เจ่นมะ ยาง', context:'Morning greeting when visiting a patient in ward', contextTh:'ใช้ทักทายตอนเช้าเมื่อเยี่ยมผู้ป่วยในหอผู้ป่วย' }
     ]
   },
   {
     id: 'registration', labelEn: 'Registration', labelTh: 'การลงทะเบียน', icon: '📋',
     phrases: [
-      { id:'r1', en:'May I have your full name, please?', th:'ขอทราบชื่อ-นามสกุลด้วยค่ะ', zh:'请问您的全名是什么？', context:'Collecting patient identity at registration desk', contextTh:'ใช้เก็บข้อมูลตัวตนผู้ป่วยที่เคาน์เตอร์ลงทะเบียน' },
-      { id:'r2', en:'Do you have an appointment today?', th:'ได้นัดไว้หรือเปล่าคะ?', zh:'您今天有预约吗？', context:'Checking if patient has a prior appointment', contextTh:'ใช้ตรวจสอบว่าผู้ป่วยมีนัดล่วงหน้าหรือไม่' },
-      { id:'r3', en:'Please fill in this form.', th:'กรุณากรอกแบบฟอร์มนี้ด้วยค่ะ', zh:'请填写这张表格。', context:'Handing over a patient registration form', contextTh:'ใช้ขณะมอบแบบฟอร์มลงทะเบียนให้ผู้ป่วยกรอก' },
-      { id:'r4', en:'Can I see your passport or ID card?', th:'ขอดูหนังสือเดินทางหรือบัตรประชาชนได้ไหมคะ?', zh:'我可以看一下您的护照或身份证吗？', context:'Verifying identity of foreign or new patients', contextTh:'ใช้ยืนยันตัวตนผู้ป่วยต่างชาติหรือผู้ป่วยใหม่' }
+      { id:'r1', en:'May I have your full name, please?', th:'ขอทราบชื่อ-นามสกุลด้วยค่ะ', zh:'请问您的全名是什么？', phonetic_en:'เมย์ ไอ แฮฟ ยอร์ ฟูล เนม พลีส', phonetic_zh:'ชิ่ง เวิ่น หนิน ตี่ ชวน่อ ชือ่ เม่อ', context:'Collecting patient identity at registration desk', contextTh:'ใช้เก็บข้อมูลตัวตนผู้ป่วยที่เคาน์เตอร์ลงทะเบียน' },
+      { id:'r2', en:'Do you have an appointment today?', th:'ได้นัดไว้หรือเปล่าคะ?', zh:'您今天有预约吗？', phonetic_en:'ดู ยู แฮฟ แอน อะพอยต์เมนต์ ทูเดย์', phonetic_zh:'หนิน จิ่นเทียน หยวว ยู่เยว่ม่า', context:'Checking if patient has a prior appointment', contextTh:'ใช้ตรวจสอบว่าผู้ป่วยมีนัดล่วงหน้าหรือไม่' },
+      { id:'r3', en:'Please fill in this form.', th:'กรุณากรอกแบบฟอร์มนี้ด้วยค่ะ', zh:'请填写这张表格。', phonetic_en:'พลีส ฟิล อิน ดิส ฟอร์ม', phonetic_zh:'ชิ่ง เที่ยนเสียะ จ่างจ้าง เปี่ยวเก่อ', context:'Handing over a patient registration form', contextTh:'ใช้ขณะมอบแบบฟอร์มลงทะเบียนให้ผู้ป่วยกรอก' },
+      { id:'r4', en:'Can I see your passport or ID card?', th:'ขอดูหนังสือเดินทางหรือบัตรประชาชนได้ไหมคะ?', zh:'我可以看一下您的护照或身份证吗？', phonetic_en:'แคน ไอ ซี ยอร์ พาสปอร์ต ออร์ ไอดี การ์ด', phonetic_zh:'โว่ เกอะ อี่ เซี่ยะ หนิน ตี่ ฮู่จ้าว หวือ เซิ่นฟี่ จ่าง ม่า', context:'Verifying identity of foreign or new patients', contextTh:'ใช้ยืนยันตัวตนผู้ป่วยต่างชาติหรือผู้ป่วยใหม่' }
     ]
   },
   {
     id: 'direction', labelEn: 'Direction', labelTh: 'การบอกทาง', icon: '🗺️',
     phrases: [
-      { id:'d1', en:'The pharmacy is on the first floor.', th:'ห้องยาอยู่ที่ชั้น 1 ค่ะ', zh:'药房在一楼。', context:'Directing patient to the pharmacy after consultation', contextTh:'ใช้บอกทางไปห้องยาหลังพบแพทย์' },
-      { id:'d2', en:'Go straight ahead and turn left.', th:'เดินตรงไปแล้วเลี้ยวซ้ายค่ะ', zh:'一直走，然后左转。', context:'Giving basic directions within the hospital building', contextTh:'ใช้บอกทิศทางพื้นฐานภายในอาคารโรงพยาบาล' },
-      { id:'d3', en:'The elevator is at the end of the corridor.', th:'ลิฟต์อยู่ที่ปลายทางเดินค่ะ', zh:'电梯在走廊尽头。', context:'Helping patient find the elevator to another floor', contextTh:'ใช้ช่วยผู้ป่วยหาลิฟต์เพื่อขึ้น-ลงชั้น' },
-      { id:'d4', en:'The restroom is around the corner.', th:'ห้องน้ำอยู่แถวหัวมุมค่ะ', zh:'洗手间就在转角处。', context:'Pointing patient to the nearest restroom', contextTh:'ใช้บอกทางไปห้องน้ำที่ใกล้ที่สุด' }
+      { id:'d1', en:'The pharmacy is on the first floor.', th:'ห้องยาอยู่ที่ชั้น 1 ค่ะ', zh:'药房在一楼。', phonetic_en:'เดอะ ฟาร์มาซี อิซ ออน เดอะ เฟิร์สต์ ฟลอร์', phonetic_zh:'ยาว่ว ฟาง ไจ่ อี่ หลาว', context:'Directing patient to the pharmacy after consultation', contextTh:'ใช้บอกทางไปห้องยาหลังพบแพทย์' },
+      { id:'d2', en:'Go straight ahead and turn left.', th:'เดินตรงไปแล้วเลี้ยวซ้ายค่ะ', zh:'一直走，然后左转。', phonetic_en:'โก สเตรท อะเฮด แอนด์ เทิร์น เลฟท์', phonetic_zh:'อี่ จือ่ จ้าว เหรนเฮา จ้วว โจ่ว', context:'Giving basic directions within the hospital building', contextTh:'ใช้บอกทิศทางพื้นฐานภายในอาคารโรงพยาบาล' },
+      { id:'d3', en:'The elevator is at the end of the corridor.', th:'ลิฟต์อยู่ที่ปลายทางเดินค่ะ', zh:'电梯在走廊尽头。', phonetic_en:'เดอะ เอลิเวเตอร์ อิซ แอท เดอะ เอนด์ ออฟ เดอะ คอริดอร์', phonetic_zh:'เตียนต้ี ไจ่ จ้าว หลาง จิ่นเตว่', context:'Helping patient find the elevator to another floor', contextTh:'ใช้ช่วยผู้ป่วยหาลิฟต์เพื่อขึ้น-ลงชั้น' },
+      { id:'d4', en:'The restroom is around the corner.', th:'ห้องน้ำอยู่แถวหัวมุมค่ะ', zh:'洗手间就在转角处。', phonetic_en:'เดอะ เรสรูม อิซ อะราวนด์ เดอะ คอร์เนอร์', phonetic_zh:'ซี่โซ่วจี่ง จิ่ว ไจ่ จวน่ว จ้าว เฉิ่ว', context:'Pointing patient to the nearest restroom', contextTh:'ใช้บอกทางไปห้องน้ำที่ใกล้ที่สุด' }
     ]
   },
   {
     id: 'care', labelEn: 'During Care', labelTh: 'ขณะรับบริการ', icon: '🩺',
     phrases: [
-      { id:'c1', en:'Are you feeling better now?', th:'รู้สึกดีขึ้นไหมคะ?', zh:'您现在感觉好一些了吗？', context:'Checking patient\'s condition after treatment or medication', contextTh:'ใช้ตรวจสอบอาการผู้ป่วยหลังรับการรักษาหรือทานยา' },
-      { id:'c2', en:'Please take this medicine twice a day.', th:'กรุณาทานยานี้วันละ 2 ครั้งค่ะ', zh:'请每天服用此药两次。', context:'Giving medication instructions to patient', contextTh:'ใช้อธิบายวิธีทานยาให้ผู้ป่วย' },
-      { id:'c3', en:'Do you have any allergies?', th:'คุณมีอาการแพ้อะไรบ้างไหมคะ?', zh:'您有任何过敏症吗？', context:'Screening for drug or food allergies before treatment', contextTh:'ใช้คัดกรองการแพ้ยาหรืออาหารก่อนให้การรักษา' },
-      { id:'c4', en:'Please relax, this won\'t hurt much.', th:'กรุณาผ่อนคลายนะคะ จะไม่เจ็บมากค่ะ', zh:'请放松，这不会太疼的。', context:'Reassuring patient before a procedure like injection or blood draw', contextTh:'ใช้ให้กำลังใจผู้ป่วยก่อนทำหัตถการ เช่น ฉีดยา หรือเจาะเลือด' }
+      { id:'c1', en:'Are you feeling better now?', th:'รู้สึกดีขึ้นไหมคะ?', zh:'您现在感觉好一些了吗？', phonetic_en:'อาร์ ยู ฟีลิง เบตเตอร์ เนาว์', phonetic_zh:'หนิน เซี่ยนไจ่ เกินจวี่ ฮ่าว อี่เซี่ยะ ลิ่ว ม่า', context:'Checking patient\'s condition after treatment or medication', contextTh:'ใช้ตรวจสอบอาการผู้ป่วยหลังรับการรักษาหรือทานยา' },
+      { id:'c2', en:'Please take this medicine twice a day.', th:'กรุณาทานยานี้วันละ 2 ครั้งค่ะ', zh:'请每天服用此药两次。', phonetic_en:'พลีส เทค ดิส เมดิซิน ทไวส์ เอ เดย์', phonetic_zh:'ชิ่ง เมี่ยเทียน ฟู่หยง ซือ่ ยาว เลี่ยง ซือ่', context:'Giving medication instructions to patient', contextTh:'ใช้อธิบายวิธีทานยาให้ผู้ป่วย' },
+      { id:'c3', en:'Do you have any allergies?', th:'คุณมีอาการแพ้อะไรบ้างไหมคะ?', zh:'您有任何过敏症吗？', phonetic_en:'ดู ยู แฮฟ เอนี อะเลอร์จีส', phonetic_zh:'หนิน หยวว เหรนเฮา กวว่อ เมิ่นจ่ง ม่า', context:'Screening for drug or food allergies before treatment', contextTh:'ใช้คัดกรองการแพ้ยาหรืออาหารก่อนให้การรักษา' },
+      { id:'c4', en:'Please relax, this won\'t hurt much.', th:'กรุณาผ่อนคลายนะคะ จะไม่เจ็บมากค่ะ', zh:'请放松，这不会太疼的。', phonetic_en:'พลีส รีแลกส์ ดิส วอนท์ เฮิร์ต มัช', phonetic_zh:'ชิ่ง ฟ่างซ่อง จ่ะ บู่ฮวี่ ไต่ เทิ่ง ตี่', context:'Reassuring patient before a procedure like injection or blood draw', contextTh:'ใช้ให้กำลังใจผู้ป่วยก่อนทำหัตถการ เช่น ฉีดยา หรือเจาะเลือด' }
     ]
   }
 ];
@@ -76,7 +76,6 @@ window.addEventListener('DOMContentLoaded', () => {
   renderPhrases();
   renderPracticeChips();
   renderQuickPhrases();
-  // preload voices
   window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
 });
 
@@ -137,7 +136,10 @@ function buildPhraseCard(p) {
         <div class="phrase-texts">
           <div class="phrase-row">
             <span class="badge-mini en">EN</span>
-            <span class="phrase-en-text">${escHtml(p.en)}</span>
+            <div class="phrase-col">
+              <div class="phrase-en-text">${escHtml(p.en)}</div>
+              ${p.phonetic_en ? `<div class="phrase-phonetic">${escHtml(p.phonetic_en)}</div>` : ''}
+            </div>
           </div>
           <div class="phrase-row">
             <span class="badge-mini th">TH</span>
@@ -145,7 +147,10 @@ function buildPhraseCard(p) {
           </div>
           <div class="phrase-row">
             <span class="badge-mini zh">中</span>
-            <span class="phrase-zh-text">${escHtml(p.zh)}</span>
+            <div class="phrase-col">
+              <div class="phrase-zh-text">${escHtml(p.zh)}</div>
+              ${p.phonetic_zh ? `<div class="phrase-phonetic">${escHtml(p.phonetic_zh)}</div>` : ''}
+            </div>
           </div>
         </div>
         <div class="phrase-actions">
@@ -212,7 +217,10 @@ function confirmDelete(id) {
 
 // ── Add Modal with AI Translation ─────────────────────────────
 function openAddModal() {
-  ['f-en','f-th','f-zh','f-ctx-th','f-ctx-en'].forEach(id => document.getElementById(id).value = '');
+  ['f-en','f-th','f-zh','f-ctx-th','f-ctx-en','f-phonetic-en','f-phonetic-zh'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
   ['err-en','err-th','err-zh'].forEach(id => document.getElementById(id).textContent = '');
   ['f-en','f-th','f-zh'].forEach(id => document.getElementById(id).classList.remove('error'));
   document.getElementById('addModal').classList.add('open');
@@ -230,6 +238,8 @@ async function submitAddPhrase() {
   const zh = document.getElementById('f-zh').value.trim();
   const ctxTh = document.getElementById('f-ctx-th').value.trim();
   const ctx   = document.getElementById('f-ctx-en').value.trim();
+  const phonetic_en = document.getElementById('f-phonetic-en').value.trim();
+  const phonetic_zh = document.getElementById('f-phonetic-zh').value.trim();
 
   let valid = true;
   if (!th) { setErr('err-th','f-th','กรุณากรอกประโยคภาษาไทย'); valid = false; }
@@ -240,8 +250,10 @@ async function submitAddPhrase() {
   let finalZh = zh;
   let finalCtx = ctx;
   let finalCtxTh = ctxTh;
+  let finalPhonetic_en = phonetic_en;
+  let finalPhonetic_zh = phonetic_zh;
 
-  if (!en || !zh || !ctx || !ctxTh) {
+  if (!en || !zh || !ctx || !ctxTh || !phonetic_en || !phonetic_zh) {
     try {
       const result = await aiTranslateAndAnalyze(th);
       if (result) {
@@ -249,6 +261,8 @@ async function submitAddPhrase() {
         finalZh = zh || result.zh;
         finalCtx = ctx || result.context;
         finalCtxTh = ctxTh || result.contextTh;
+        finalPhonetic_en = phonetic_en || result.phonetic_en;
+        finalPhonetic_zh = phonetic_zh || result.phonetic_zh;
       }
     } catch (e) {
       console.error('AI translation failed:', e);
@@ -265,6 +279,8 @@ async function submitAddPhrase() {
     en: finalEn,
     th: th,
     zh: finalZh,
+    phonetic_en: finalPhonetic_en,
+    phonetic_zh: finalPhonetic_zh,
     context: finalCtx,
     contextTh: finalCtxTh
   };
@@ -280,54 +296,176 @@ async function submitAddPhrase() {
 // ── AI Translation & Analysis ────────────────────────────────
 async function aiTranslateAndAnalyze(thaiText) {
   try {
-    // Use OpenAI API to translate and analyze
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${window.OPENAI_API_KEY || ''}`
-      },
-      body: JSON.stringify({
-        model: 'gpt-4-1-mini',
-        messages: [{
-          role: 'user',
-          content: `You are a medical English translator. Translate this Thai medical phrase to English and Chinese, and analyze its usage context.
-
-Thai phrase: "${thaiText}"
-
-Respond in JSON format:
-{
-  "en": "English translation",
-  "zh": "Chinese translation",
-  "context": "When to use in English (brief, one sentence)",
-  "contextTh": "ใช้ในสถานการณ์ไหน (ภาษาไทย, ประโยคเดียว)"
-}
-
-Only respond with valid JSON, no other text.`
-        }],
-        temperature: 0.7,
-        max_tokens: 300
-      })
-    });
-
-    if (!response.ok) {
-      console.error('OpenAI API error:', response.status);
-      return null;
-    }
-
-    const data = await response.json();
-    const content = data.choices[0].message.content;
+    // ใช้ Google Translate API โดยตรงสำหรับการแปล
+    const enResult = await translateViaGoogle(thaiText, 'th', 'en');
+    const zhResult = await translateViaGoogle(thaiText, 'th', 'zh-CN');
     
-    // Parse JSON response
-    const jsonMatch = content.match(/\{[\s\S]*\}/);
-    if (jsonMatch) {
-      return JSON.parse(jsonMatch[0]);
-    }
-    return null;
+    // สร้างคำอ่านภาษาไทย (Thai Phonetics)
+    const phonetic_en = generateThaiPhonetics(enResult);
+    const phonetic_zh = generateThaiPhonetics(zhResult);
+    
+    // วิเคราะห์สถานการณ์
+    const contextResult = await analyzeContext(thaiText, enResult);
+    
+    return {
+      en: enResult,
+      zh: zhResult,
+      phonetic_en: phonetic_en,
+      phonetic_zh: phonetic_zh,
+      context: contextResult.context || '',
+      contextTh: contextResult.contextTh || ''
+    };
   } catch (e) {
     console.error('AI translation error:', e);
     return null;
   }
+}
+
+// ── Google Translate API ─────────────────────────────────────
+async function translateViaGoogle(text, sourceLang, targetLang) {
+  try {
+    const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${sourceLang}&tl=${targetLang}&dt=t&q=${encodeURIComponent(text)}`;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('Translation failed');
+    const data = await res.json();
+    const result = data[0].map(i => i[0]).join('');
+    return result;
+  } catch (e) {
+    console.error('Google Translate error:', e);
+    return '';
+  }
+}
+
+// ── Generate Thai Phonetics ──────────────────────────────────
+function generateThaiPhonetics(englishText) {
+  // ตัวอย่างการแปลงคำศัพท์ภาษาอังกฤษเป็นคำอ่านภาษาไทย
+  const phoneticMap = {
+    'hello': 'เฮลโล',
+    'welcome': 'วัลคัม',
+    'to': 'ทู',
+    'our': 'เอาเวอร์',
+    'hospital': 'ฮอสพิทัล',
+    'how': 'เฮาว์',
+    'can': 'แคน',
+    'i': 'ไอ',
+    'help': 'เฮลป์',
+    'you': 'ยู',
+    'today': 'ทูเดย์',
+    'please': 'พลีส',
+    'wait': 'เวท',
+    'here': 'เฮียร์',
+    'for': 'ฟอร์',
+    'a': 'เอ',
+    'moment': 'โมเมนต์',
+    'good': 'กูด',
+    'morning': 'มอร์นิง',
+    'are': 'อาร์',
+    'feeling': 'ฟีลิง',
+    'better': 'เบตเตอร์',
+    'now': 'เนาว์',
+    'do': 'ดู',
+    'have': 'แฮฟ',
+    'any': 'เอนี',
+    'allergies': 'อะเลอร์จีส',
+    'take': 'เทค',
+    'this': 'ดิส',
+    'medicine': 'เมดิซิน',
+    'twice': 'ทไวส์',
+    'day': 'เดย์',
+    'see': 'ซี',
+    'your': 'ยอร์',
+    'passport': 'พาสปอร์ต',
+    'or': 'ออร์',
+    'id': 'ไอดี',
+    'card': 'การ์ด',
+    'relax': 'รีแลกส์',
+    'won\'t': 'วอนท์',
+    'hurt': 'เฮิร์ต',
+    'much': 'มัช',
+    'go': 'โก',
+    'straight': 'สเตรท',
+    'ahead': 'อะเฮด',
+    'and': 'แอนด์',
+    'turn': 'เทิร์น',
+    'left': 'เลฟท์',
+    'the': 'เดอะ',
+    'pharmacy': 'ฟาร์มาซี',
+    'is': 'อิซ',
+    'on': 'ออน',
+    'first': 'เฟิร์สต์',
+    'floor': 'ฟลอร์',
+    'elevator': 'เอลิเวเตอร์',
+    'at': 'แอท',
+    'end': 'เอนด์',
+    'of': 'ออฟ',
+    'corridor': 'คอริดอร์',
+    'restroom': 'เรสรูม',
+    'around': 'อะราวนด์',
+    'corner': 'คอร์เนอร์',
+    'may': 'เมย์',
+    'full': 'ฟูล',
+    'name': 'เนม',
+    'appointment': 'อะพอยต์เมนต์',
+    'fill': 'ฟิล',
+    'in': 'อิน',
+    'form': 'ฟอร์ม'
+  };
+
+  const words = englishText.toLowerCase().split(/\s+/);
+  const phoneticWords = words.map(word => {
+    // ลบเครื่องหมายวรรคตอนออก
+    const cleanWord = word.replace(/[.,!?;:]/g, '');
+    return phoneticMap[cleanWord] || word;
+  });
+
+  return phoneticWords.join(' ');
+}
+
+// ── Analyze Context ──────────────────────────────────────────
+async function analyzeContext(thaiText, englishText) {
+  // ตัวอย่างการวิเคราะห์สถานการณ์อย่างง่าย
+  const contextKeywords = {
+    'สวัสดี|ยินดี|ต้อนรับ': { 
+      context: 'Greeting and welcoming patients',
+      contextTh: 'ใช้เมื่อต้อนรับและทักทายผู้ป่วย'
+    },
+    'ชื่อ|นาม|ชื่อ-นามสกุล': {
+      context: 'Collecting patient information',
+      contextTh: 'ใช้เก็บข้อมูลส่วนตัวของผู้ป่วย'
+    },
+    'นัด|appointment': {
+      context: 'Checking appointment status',
+      contextTh: 'ใช้ตรวจสอบการนัดหมายของผู้ป่วย'
+    },
+    'รู้สึก|ปวด|เจ็บ|อาการ': {
+      context: 'Assessing patient symptoms',
+      contextTh: 'ใช้สอบถามอาการและความรู้สึกของผู้ป่วย'
+    },
+    'ยา|medicine|ทาน': {
+      context: 'Providing medication instructions',
+      contextTh: 'ใช้อธิบายวิธีการทานยา'
+    },
+    'ทาง|direction|ไป': {
+      context: 'Giving directions',
+      contextTh: 'ใช้บอกทางเดิน'
+    },
+    'แพ้|allergy': {
+      context: 'Screening for allergies',
+      contextTh: 'ใช้คัดกรองการแพ้'
+    }
+  };
+
+  for (const [keywords, contextData] of Object.entries(contextKeywords)) {
+    const regex = new RegExp(keywords, 'i');
+    if (regex.test(thaiText) || regex.test(englishText)) {
+      return contextData;
+    }
+  }
+
+  return {
+    context: 'Medical communication',
+    contextTh: 'ใช้ในการสื่อสารทางการแพทย์'
+  };
 }
 
 // ── Voice input for Add Modal ────────────────────────────────
@@ -390,8 +528,17 @@ function renderPracticeChips() {
 
 function selectPracticeTarget(en) {
   practiceTarget = en;
+  const s = currentScenario();
+  const phrase = s.phrases.find(p => p.en === en);
+  
   document.getElementById('targetBox').style.display = en ? 'block' : 'none';
   document.getElementById('targetText').textContent = en;
+  
+  // แสดงคำอ่านภาษาไทย
+  if (phrase && phrase.phonetic_en) {
+    document.getElementById('targetPhonetic').textContent = phrase.phonetic_en;
+  }
+  
   document.querySelectorAll('.chip').forEach(c => {
     c.classList.toggle('active', c.getAttribute('title') === en);
   });
@@ -499,9 +646,7 @@ function calcScore(spoken, target) {
   if (tw.length === 0) return 85;
   
   let matchCount = 0;
-  let totalDistance = 0;
   
-  // Calculate word-level matches with more accuracy
   tw.forEach(targetWord => {
     let bestMatch = 0;
     sw.forEach(spokenWord => {
@@ -511,7 +656,6 @@ function calcScore(spoken, target) {
     matchCount += bestMatch;
   });
   
-  // More accurate scoring
   const baseScore = Math.floor((matchCount / tw.length) * 100);
   const finalScore = Math.min(100, Math.max(0, baseScore + (Math.random() * 5 - 2)));
   
@@ -777,8 +921,10 @@ function renderQuickPhrases() {
     ${s.phrases.slice(0, 3).map(p => `
       <div class="quick-phrase-item">
         <div class="q-en">${escHtml(p.en)}</div>
+        ${p.phonetic_en ? `<div class="q-phonetic-en">${escHtml(p.phonetic_en)}</div>` : ''}
         <div class="q-th">🇹🇭 ${escHtml(p.th)}</div>
         <div class="q-zh">🇨🇳 ${escHtml(p.zh)}</div>
+        ${p.phonetic_zh ? `<div class="q-phonetic-zh">${escHtml(p.phonetic_zh)}</div>` : ''}
       </div>`).join('')}`;
 }
 
