@@ -1,5 +1,5 @@
 /* ============================================================
-   HEAL English — script.js
+   HEAL English — script.js (UPDATED WITH AI FEATURES)
    ============================================================ */
 
 const STORAGE_KEY = 'heal_english_v2';
@@ -54,6 +54,7 @@ let isChatMic = false;
 let recRef = null;
 let translateDebounce = null;
 let copiedTimeout = null;
+let isAddModalRecording = false;
 
 // ── Load/Save ─────────────────────────────────────────────────
 function loadScenarios() {
@@ -209,20 +210,21 @@ function confirmDelete(id) {
   }
 }
 
-// ── Add Modal ─────────────────────────────────────────────────
+// ── Add Modal with AI Translation ─────────────────────────────
 function openAddModal() {
   ['f-en','f-th','f-zh','f-ctx-th','f-ctx-en'].forEach(id => document.getElementById(id).value = '');
   ['err-en','err-th','err-zh'].forEach(id => document.getElementById(id).textContent = '');
   ['f-en','f-th','f-zh'].forEach(id => document.getElementById(id).classList.remove('error'));
   document.getElementById('addModal').classList.add('open');
-  setTimeout(() => document.getElementById('f-en').focus(), 120);
+  setTimeout(() => document.getElementById('f-th').focus(), 120);
 }
 
 function closeAddModal() {
   document.getElementById('addModal').classList.remove('open');
+  isAddModalRecording = false;
 }
 
-function submitAddPhrase() {
+async function submitAddPhrase() {
   const en = document.getElementById('f-en').value.trim();
   const th = document.getElementById('f-th').value.trim();
   const zh = document.getElementById('f-zh').value.trim();
@@ -230,16 +232,41 @@ function submitAddPhrase() {
   const ctx   = document.getElementById('f-ctx-en').value.trim();
 
   let valid = true;
-  if (!en) { setErr('err-en','f-en','กรุณากรอกประโยคภาษาอังกฤษ'); valid = false; }
   if (!th) { setErr('err-th','f-th','กรุณากรอกประโยคภาษาไทย'); valid = false; }
-  if (!zh) { setErr('err-zh','f-zh','กรุณากรอกประโยคภาษาจีน'); valid = false; }
+  if (!valid) return;
+
+  // If English or Chinese is empty, try to auto-translate
+  let finalEn = en;
+  let finalZh = zh;
+  let finalCtx = ctx;
+  let finalCtxTh = ctxTh;
+
+  if (!en || !zh || !ctx || !ctxTh) {
+    try {
+      const result = await aiTranslateAndAnalyze(th);
+      if (result) {
+        finalEn = en || result.en;
+        finalZh = zh || result.zh;
+        finalCtx = ctx || result.context;
+        finalCtxTh = ctxTh || result.contextTh;
+      }
+    } catch (e) {
+      console.error('AI translation failed:', e);
+    }
+  }
+
+  // Validate after auto-translation
+  if (!finalEn) { setErr('err-en','f-en','ไม่สามารถแปลเป็นภาษาอังกฤษได้ กรุณากรอกเอง'); valid = false; }
+  if (!finalZh) { setErr('err-zh','f-zh','ไม่สามารถแปลเป็นภาษาจีนได้ กรุณากรอกเอง'); valid = false; }
   if (!valid) return;
 
   const newPhrase = {
     id: 'custom_' + Date.now(),
-    en, th, zh,
-    context: ctx,
-    contextTh: ctxTh
+    en: finalEn,
+    th: th,
+    zh: finalZh,
+    context: finalCtx,
+    contextTh: finalCtxTh
   };
 
   currentScenario().phrases.push(newPhrase);
@@ -248,6 +275,99 @@ function submitAddPhrase() {
   renderPhrases();
   renderPracticeChips();
   renderQuickPhrases();
+}
+
+// ── AI Translation & Analysis ────────────────────────────────
+async function aiTranslateAndAnalyze(thaiText) {
+  try {
+    // Use OpenAI API to translate and analyze
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${window.OPENAI_API_KEY || ''}`
+      },
+      body: JSON.stringify({
+        model: 'gpt-4-1-mini',
+        messages: [{
+          role: 'user',
+          content: `You are a medical English translator. Translate this Thai medical phrase to English and Chinese, and analyze its usage context.
+
+Thai phrase: "${thaiText}"
+
+Respond in JSON format:
+{
+  "en": "English translation",
+  "zh": "Chinese translation",
+  "context": "When to use in English (brief, one sentence)",
+  "contextTh": "ใช้ในสถานการณ์ไหน (ภาษาไทย, ประโยคเดียว)"
+}
+
+Only respond with valid JSON, no other text.`
+        }],
+        temperature: 0.7,
+        max_tokens: 300
+      })
+    });
+
+    if (!response.ok) {
+      console.error('OpenAI API error:', response.status);
+      return null;
+    }
+
+    const data = await response.json();
+    const content = data.choices[0].message.content;
+    
+    // Parse JSON response
+    const jsonMatch = content.match(/\{[\s\S]*\}/);
+    if (jsonMatch) {
+      return JSON.parse(jsonMatch[0]);
+    }
+    return null;
+  } catch (e) {
+    console.error('AI translation error:', e);
+    return null;
+  }
+}
+
+// ── Voice input for Add Modal ────────────────────────────────
+function toggleAddModalMic() {
+  const btn = document.getElementById('addModalMicBtn');
+  if (!btn) return;
+  
+  if (isAddModalRecording) { 
+    recRef && recRef.stop(); 
+    return; 
+  }
+
+  const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRec) {
+    alert('Browser ไม่รองรับ กรุณาใช้ Chrome');
+    return;
+  }
+
+  const rec = new SpeechRec();
+  rec.lang = 'th-TH';
+  recRef = rec;
+
+  rec.onstart = () => { 
+    isAddModalRecording = true; 
+    btn.classList.add('recording');
+    btn.innerHTML = '<i class="fas fa-stop"></i>';
+  };
+  
+  rec.onresult = (e) => {
+    const text = e.results[0][0].transcript;
+    document.getElementById('f-th').value = text;
+  };
+  
+  rec.onend = () => { 
+    isAddModalRecording = false; 
+    btn.classList.remove('recording');
+    btn.innerHTML = '<i class="fas fa-microphone"></i>';
+  };
+  
+  rec.start();
 }
 
 function setErr(errId, inputId, msg) {
@@ -283,6 +403,13 @@ function goToPractice() {
   switchTab('practice', document.querySelector('[data-tab="practice"]'));
 }
 
+// ── Practice: Play audio before speaking ─────────────────────
+function playPracticeAudio() {
+  if (!practiceTarget) return;
+  speakText(practiceTarget, 'en');
+}
+
+// ── Recording & Scoring ───────────────────────────────────────
 function toggleRecording() {
   if (isRecording) { recRef && recRef.stop(); return; }
 
@@ -362,13 +489,65 @@ function showScore(spokenText) {
   setTimeout(() => fill.style.width = score + '%', 50);
 }
 
+// ── Improved Score Calculation ───────────────────────────────
 function calcScore(spoken, target) {
   if (!target) return Math.floor(Math.random() * 16) + 82;
+  
   const sw = spoken.toLowerCase().replace(/[^a-z ]/g,'').split(' ').filter(Boolean);
   const tw = target.toLowerCase().replace(/[^a-z ]/g,'').split(' ').filter(Boolean);
-  let m = 0;
-  tw.forEach(w => { if (sw.some(s => s.includes(w) || w.includes(s))) m++; });
-  return Math.min(100, Math.floor(m / Math.max(tw.length,1) * 100 * 1.08 + 8));
+  
+  if (tw.length === 0) return 85;
+  
+  let matchCount = 0;
+  let totalDistance = 0;
+  
+  // Calculate word-level matches with more accuracy
+  tw.forEach(targetWord => {
+    let bestMatch = 0;
+    sw.forEach(spokenWord => {
+      const similarity = calculateSimilarity(spokenWord, targetWord);
+      bestMatch = Math.max(bestMatch, similarity);
+    });
+    matchCount += bestMatch;
+  });
+  
+  // More accurate scoring
+  const baseScore = Math.floor((matchCount / tw.length) * 100);
+  const finalScore = Math.min(100, Math.max(0, baseScore + (Math.random() * 5 - 2)));
+  
+  return Math.round(finalScore);
+}
+
+// ── String Similarity Calculation ────────────────────────────
+function calculateSimilarity(str1, str2) {
+  const longer = str1.length > str2.length ? str1 : str2;
+  const shorter = str1.length > str2.length ? str2 : str1;
+  
+  if (longer.length === 0) return 1.0;
+  
+  const editDistance = getEditDistance(longer, shorter);
+  return (longer.length - editDistance) / longer.length;
+}
+
+function getEditDistance(s1, s2) {
+  const costs = [];
+  for (let i = 0; i <= s1.length; i++) {
+    let lastValue = i;
+    for (let j = 0; j <= s2.length; j++) {
+      if (i === 0) {
+        costs[j] = j;
+      } else if (j > 0) {
+        let newValue = costs[j - 1];
+        if (s1.charAt(i - 1) !== s2.charAt(j - 1)) {
+          newValue = Math.min(Math.min(newValue, lastValue), costs[j]) + 1;
+        }
+        costs[j - 1] = lastValue;
+        lastValue = newValue;
+      }
+    }
+    if (i > 0) costs[s2.length] = lastValue;
+  }
+  return costs[s2.length];
 }
 
 // ── Chat ──────────────────────────────────────────────────────
@@ -475,7 +654,29 @@ function toggleChatMic() {
   rec.start();
 }
 
-// ── Translate ─────────────────────────────────────────────────
+// ── Translate with Voice Input ─────────────────────────────────
+function toggleTranslateMic() {
+  const btn = document.getElementById('translateMicBtn');
+  if (!btn) return;
+  
+  const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRec) return;
+
+  const fromLang = document.getElementById('fromLang').value;
+  const rec = new SpeechRec();
+  rec.lang = fromLang === 'th' ? 'th-TH' : fromLang === 'en' ? 'en-US' : 'zh-CN';
+  recRef = rec;
+
+  rec.onstart = () => { btn.classList.add('recording'); };
+  rec.onresult = (e) => {
+    const text = e.results[0][0].transcript;
+    document.getElementById('translateInput').value = text;
+    onTranslateInput();
+  };
+  rec.onend = () => { btn.classList.remove('recording'); };
+  rec.start();
+}
+
 function onTranslateInput() {
   const text = document.getElementById('translateInput').value;
   document.getElementById('inputSpeakBtn').style.display = text ? 'flex' : 'none';
