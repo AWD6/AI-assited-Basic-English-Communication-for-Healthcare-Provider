@@ -1157,8 +1157,46 @@ body {
   margin-top: 4px;
 }
 /* ═══════════════════════════════════════════════════════════════
-   HEAL English — Additional CSS for New Features
+   HEAL English v3 — Additional CSS for Thai Phonetics & New Features
    ═══════════════════════════════════════════════════════════════ */
+
+/* ─── Thai Phonetics Display ─── */
+.phrase-phonetic {
+  font-size: 11px;
+  color: #7c3aed;
+  font-weight: 500;
+  font-style: italic;
+  margin-top: 3px;
+  padding: 4px 6px;
+  background: #f3e8ff;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+.target-phonetic {
+  font-size: 12px;
+  color: #7c3aed;
+  font-weight: 500;
+  margin-top: 6px;
+  padding: 6px 8px;
+  background: #f3e8ff;
+  border-radius: 6px;
+  display: block;
+  text-align: center;
+}
+
+/* ─── Quick Phonetics ─── */
+.q-phonetic-en,
+.q-phonetic-zh {
+  font-size: 10px;
+  color: #7c3aed;
+  font-weight: 500;
+  margin-top: 2px;
+  padding: 2px 4px;
+  background: #f3e8ff;
+  border-radius: 3px;
+  display: inline-block;
+}
 
 /* ─── Play Audio Button in Practice ─── */
 .btn-play-audio {
@@ -1180,6 +1218,7 @@ body {
 .btn-play-audio:hover {
   background: #2563eb;
   color: #fff;
+  transform: translateY(-1px);
 }
 .btn-play-audio i {
   font-size: 13px;
@@ -1201,6 +1240,7 @@ body {
   transition: all 0.2s;
   margin-left: 8px;
   flex-shrink: 0;
+  vertical-align: middle;
 }
 .btn-field-mic:hover {
   background: #ccfbf1;
@@ -1239,16 +1279,6 @@ body {
   animation: pulse-red 1.5s infinite;
 }
 
-/* ─── Adjust Translate Input for Mic Button ─── */
-.translate-input-wrap {
-  position: relative;
-  margin-bottom: 10px;
-}
-
-.translate-input {
-  padding-right: 90px; /* Space for both buttons */
-}
-
 /* ─── Field Label with Mic Button ─── */
 .field-label {
   display: flex;
@@ -1257,6 +1287,22 @@ body {
   font-size: 13px;
   font-weight: 500;
   color: var(--text-sub);
+  margin-bottom: 6px;
+}
+
+/* ─── Badge for Phonetics ─── */
+.badge-phonetic {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 4px;
+  background: #f3e8ff;
+  color: #7c3aed;
+  font-size: 11px;
+  font-weight: 600;
+  flex-shrink: 0;
 }
 
 /* ─── Target Box Enhancement ─── */
@@ -1285,10 +1331,81 @@ body {
   margin-bottom: 8px;
 }
 
-/* ─── Pulse Animation (if not already defined) ─── */
+/* ─── Pulse Animation ─── */
 @keyframes pulse-red {
   0%, 100% { box-shadow: 0 4px 14px rgba(220,38,38,0.32); }
   50% { box-shadow: 0 4px 24px rgba(220,38,38,0.52); }
+}
+
+/* ─── Quick Phrases Enhancement ─── */
+.quick-phrase-item {
+  background: #f8f9fa;
+  border-left: 3px solid var(--primary);
+  padding: 10px 12px;
+  border-radius: 6px;
+  margin-bottom: 8px;
+  font-size: 12px;
+}
+
+.q-en {
+  font-weight: 600;
+  color: #1e40af;
+  margin-bottom: 2px;
+}
+
+.q-th {
+  color: var(--text);
+  margin-top: 4px;
+  font-size: 11px;
+}
+
+.q-zh {
+  color: var(--text);
+  margin-top: 2px;
+  font-size: 11px;
+}
+
+/* ─── Modal Enhancements ─── */
+.modal-body {
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.field-group {
+  margin-bottom: 14px;
+}
+
+.field-input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: 'Prompt', sans-serif;
+  font-size: 13px;
+  color: var(--text);
+  transition: border-color 0.2s;
+}
+
+.field-input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(13,148,136,0.1);
+}
+
+.field-input.error {
+  border-color: #ef4444;
+  background: #fef2f2;
+}
+
+.field-error {
+  color: #ef4444;
+  font-size: 11px;
+  margin-top: 4px;
+  display: none;
+}
+
+.field-error:not(:empty) {
+  display: block;
 }
 
 /* ─── Responsive Adjustments ─── */
@@ -1305,4 +1422,88 @@ body {
   .translate-input {
     padding-right: 90px;
   }
+  
+  .target-phonetic {
+    font-size: 11px;
+  }
+  
+  .phrase-phonetic {
+    font-size: 10px;
+  }
+  
+  .modal-body {
+    max-height: 60vh;
+  }
+}
+
+/* ─── Translate Input Wrap ─── */
+.translate-input-wrap {
+  position: relative;
+  margin-bottom: 10px;
+}
+
+.translate-input {
+  padding-right: 90px;
+}
+
+/* ─── Badge Styles ─── */
+.badge-lang {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  background: #e6f8f5;
+  color: var(--primary);
+  font-size: 11px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.badge-lang.en {
+  background: #dbeafe;
+  color: #2563eb;
+}
+
+.badge-lang.zh {
+  background: #fce7f3;
+  color: #be185d;
+}
+
+.badge-lang.th {
+  background: #e6f8f5;
+  color: var(--primary);
+}
+
+.badge-ctx {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 4px;
+  background: #fef3c7;
+  color: #92400e;
+  font-size: 11px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+/* ─── Scrollbar Styling ─── */
+.modal-body::-webkit-scrollbar {
+  width: 6px;
+}
+
+.modal-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.modal-body::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
+.modal-body::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
 }
