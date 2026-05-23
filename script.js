@@ -1,832 +1,418 @@
-const STORAGE_KEY = 'nurse_app_v2';
-const defaultScenarios = [
-  {
-    id: 'greeting',
-    labelTh: 'การทักทาย (Greeting)',
-    phrases: [
-      { id: 'g1', en: 'Are you here for a check-up?', th: 'คุณมาตรวจร่างกายใช่ไหมคะ?', zh: '你是来检查身体的吗？', phonetic_en: 'อาร์ ยู เฮียร์ ฟอร์ อะ เช็ค-อัพ?', phonetic_zh: 'Nǐ shì lái jiǎnchá shēntǐ de ma?' },
-      { id: 'g2', en: 'Sorry for the delay.', th: 'ขอโทษที่ให้รอนานนะคะ', zh: '抱歉让你久等了。', phonetic_en: 'ซอ-รี ฟอร์ เดอะ ดี-เลย์', phonetic_zh: 'Bàoqiàn ràng nǐ jiǔděng le.' },
-      { id: 'g3', en: 'Please follow me.', th: 'กรุณาเดินตามฉันมาค่ะ', zh: '请跟我มา。', phonetic_en: 'พลีส ฟอล-โล มี', phonetic_zh: 'Qǐng gēn wǒ lái.' },
-      { id: 'g4', en: 'Have you checked your blood pressure, weight, and height?', th: 'คุณวัดความดันโลหิต ชั่งน้ำหนัก วัดส่วนสูงหรือยังคะ?', zh: '你量过血压、称过体重和身高了吗？', phonetic_en: 'แฮฟ ยู เช็คด ยัวร์ บลัด เพรสเชอร์, เวท แอนด์ ไฮท์?', phonetic_zh: 'Nǐ liángguò xuèyā, chēngguò tǐzhòng hé shēngāole ma?' }
-    ]
-  },
-  {
-    id: 'registration',
-    labelTh: 'การลงทะเบียน (Registration)',
-    phrases: [
-      { id: 'r1', en: 'Please take a seat.', th: 'กรุณานั่งรอสักครู่ค่ะ', zh: '请坐。', phonetic_en: 'พลีส เทค อะ ซีท', phonetic_zh: 'Qǐng zuò.' },
-      { id: 'r2', en: 'The nurse will call you soon.', th: 'พยาบาลจะเรียกชื่อคุณในไม่ช้าค่ะ', zh: '护士很快就会叫你。', phonetic_en: 'เดอะ เนิร์ส วิล คอล ยู ซูน', phonetic_zh: 'Hùshì hěn kuài jiù huì jiào nǐ.' },
-      { id: 'r3', en: 'The screen will show your queue.', th: 'หน้าจอจะแสดงลำดับคิวของคุณค่ะ', zh: '屏幕上会显示你的排队号码。', phonetic_en: 'เดอะ สกรีน วิล โชว์ ยัวร์ คิว', phonetic_zh: 'Píngmù shàng huì xiǎnshì nǐ de páiduì hàomǎ.' },
-      { id: 'r4', en: 'The doctor will see you shortly.', th: 'คุณจะได้พบคุณหมอในอีกสักครู่ค่ะ', zh: '医生很快就会为你诊治。', phonetic_en: 'เดอะ ดอค-เทอร์ วิล ซี ยู ชอร์ต-ลี', phonetic_zh: 'Yīshēng hěn kuài jiù huì wèi nǐ zhěnzhì.' },
-      { id: 'r5', en: 'Could you repeat that, please?', th: 'ช่วยพูดซ้ำอีกรอบได้ไหมคะ?', zh: '请再说一遍好吗？', phonetic_en: 'คูด ยู รี-พีท แดท, พลีส?', phonetic_zh: 'Qǐng zàishuō yībiàn hǎo ma?' },
-      { id: 'r6', en: 'What is your phone number?', th: 'เบอร์โทรศัพท์ของคุณคือเบอร์อะไรคะ?', zh: '你的电话号码是多少？', phonetic_en: 'วอท อิส ยัวร์ โฟน นัม-เบอร์?', phonetic_zh: 'Nǐ de diànhuà hàomǎ shì duōshǎo?' },
-      { id: 'r7', en: 'When did the symptoms start?', th: 'อาการเริ่มเป็นตั้งแต่เมื่อไหร่คะ?', zh: '症状是什么时候开始的？', phonetic_en: 'เวน ดิด เดอะ ซิม-ทอม สตาร์ท?', phonetic_zh: 'Zhèngzhuàng shì shénme shíhòu kāishǐ de?' },
-      { id: 'r8', en: 'Where does it hurt?', th: 'คุณปวดตรงไหนคะ?', zh: '你哪里痛？', phonetic_en: 'แวร์ ดาส อิท เฮิร์ท?', phonetic_zh: 'Nǐ nǎlǐ tòng?' },
-      { id: 'r9', en: 'How severe is the pain?', th: 'คุณปวดมากแค่ไหนคะ?', zh: '痛得有多厉害？', phonetic_en: 'ฮาว ซี-เวียร์ อิส เดอะ เพน?', phonetic_zh: 'Tòng dé yǒu duō lìhài?' },
-      { id: 'r10', en: 'Do you have a fever?', th: 'คุณมีไข้ไหมคะ?', zh: '你发烧吗？', phonetic_en: 'ดู ยู แฮฟ อะ ฟี-เวียร์?', phonetic_zh: 'Nǐ fāshāo ma?' },
-      { id: 'r11', en: 'Are you currently taking any medication?', th: 'ตอนนี้คุณกำลังทานยาอะไรอยู่ไหมคะ?', zh: '你目前在服用什么药物吗？', phonetic_en: 'อาร์ ยู เคอร์-เรนท์-ลี เทค-คิง เอน-นี เมด-ดิ-เค-ชัน?', phonetic_zh: 'Nǐ mùqián zài fúyòng shénme yàowù ma?' },
-      { id: 'r12', en: 'Do you have any chronic diseases?', th: 'คุณมีโรคประจำตัวไหมคะ?', zh: '你有慢性病吗？', phonetic_en: 'ดู ยู แฮฟ เอน-นี ครอน-นิค ดิ-ซี-เซส?', phonetic_zh: 'Nǐ yǒu mànxìngbìng ma?' },
-      { id: 'r13', en: 'Have you eaten today?', th: 'วันนี้คุณทานอะไรมาหรือยังคะ?', zh: '你今天吃饭了吗？', phonetic_en: 'แฮฟ ยู อีท-เทน ทู-เดย์?', phonetic_zh: 'Nǐ jīntiān chīfànle ma?' },
-      { id: 'r14', en: 'Do you smoke or drink alcohol?', th: 'คุณสูบบุหรี่หรือดื่มแอลกอฮอล์ไหมคะ?', zh: '你抽烟或喝酒吗？', phonetic_en: 'ดู ยู สโมค ออร์ ดริงค์ แอล-กอ-ฮอล?', phonetic_zh: 'Nǐ chōuyān huò hējiǔ ma?' },
-      { id: 'r15', en: 'Please sign here.', th: 'กรุณาเซ็นชื่อตรงนี้ค่ะ', zh: '请在这里签名。', phonetic_en: 'พลีส ไซน์ เฮียร์', phonetic_zh: 'Qǐng zài zhèlǐ qiānmíng.' },
-      { id: 'r16', en: 'We need to check your vital signs first.', th: 'เราต้องขอตรวจสัญญาณชีพเบื้องต้นก่อนค่ะ', zh: '我们需要先检查你的生命体征。', phonetic_en: 'วี นีด ทู เช็ค ยัวร์ ไว-ทัล ไซน์ เฟิร์สท์', phonetic_zh: 'Wǒmen xūyào xiān jiǎnchá nǐ de shēngmìng tǐzhēng.' }
-    ]
-  },
-  {
-    id: 'direction',
-    labelTh: 'การบอกทาง (Direction)',
-    phrases: [
-      { id: 'd1', en: 'Registration is at counter 19, 1st floor, Chalerm Phra Baramee Building.', th: 'ลงทะเบียนที่ห้องเวชระเบียน หมายเลข 19 ชั้น 1 อาคารเฉลิมพระบารมีค่ะ', zh: '登记处在 Chalerm Phra Baramee 大楼一楼 19 号柜台。', phonetic_en: 'เร-จิส-เทร-ชัน อิส แอท เคาน์-เทอร์ ไนน์-ทีน...', phonetic_zh: 'Dēngjì chù zài Chalerm Phra Baramee dàlóu yī lóu 19 hào guìtái.' },
-      { id: 'd2', en: 'Please contact customer service, 1st floor, Chalerm Phra Baramee Building.', th: 'กรุณาติดต่อ customer service centre ชั้น 1 อาคารเฉลิมพระบารมีค่ะ', zh: '请联系 Chalerm Phra Baramee 大楼一楼的客户服务中心。', phonetic_en: 'พลีส คอน-แทค คัส-ตอม-เมอร์ เซอร์-วิส...', phonetic_zh: 'Qǐng liánxì Chalerm Phra Baramee dàlóu yī lóu de kèhù fúwù zhōngxīn.' },
-      { id: 'd3', en: 'Please contact cashier number 1 on the first floor of Sujinno Building.', th: 'กรุณาติดต่อชำระเงินที่เคาน์เตอร์ 1 ชั้น 1 อาคารสุจิณโณค่ะ', zh: '请到 Sujinno 大楼一楼 1 号出纳处。', phonetic_en: 'พลีส คอน-แทค แคช-เชียร์ นัม-เบอร์ วัน...', phonetic_zh: 'Qǐng dào Sujinno dàlóu yī lóu 1 hào chūnà chù.' },
-      { id: 'd4', en: 'X-ray is at room 33, 1st floor, Boonsom Martin Building.', th: 'เอกซเรย์ที่ห้องหมายเลข 33 ชั้น 1 อาคารบุญสม มาร์ตินค่ะ', zh: 'X 光室在 Boonsom Martin 大楼一楼 33 号房。', phonetic_en: 'เอ็กซ์-เรย์ อิส แอท รูม เทอร์ตี้-ทรี...', phonetic_zh: 'X guāng shì zài Boonsom Martin dàlóu yī lóu 33 hào fáng.' },
-      { id: 'd5', en: 'Pharmacy number 30 is on the 1st floor of Chalerm Phra Baramee Building.', th: 'ห้องยาหมายเลข 30 อยู่ชั้น 1 อาคารเฉลิมพระบารมีค่ะ', zh: '30 号药房在 Chalerm Phra Baramee 大楼一楼。', phonetic_en: 'ฟาร์-มา-ซี นัม-เบอร์ เทอร์ตี้ อิส ออน เดอะ เฟิร์สท์ ฟลอร์...', phonetic_zh: '30 hào yàofáng zài Chalerm Phra Baramee dàlóu yī lóu.' },
-      { id: 'd6', en: 'Please follow the signs.', th: 'กรุณาเดินตามป้ายบอกทางไปนะคะ', zh: '请跟着指示牌走。', phonetic_en: 'พลีส ฟอล-โล เดอะ ไซน์ส', phonetic_zh: 'Qǐng gēnzhe zhǐshìpái zǒu.' }
-    ]
-  },
-  {
-    id: 'during_care',
-    labelTh: 'ระหว่างการตรวจ (During Care)',
-    phrases: [
-      { id: 'c1', en: 'Please lie down.', th: 'กรุณานอนลงค่ะ', zh: '请躺下。', phonetic_en: 'พลีส ไล ดาวน์', phonetic_zh: 'Qǐng tǎng xià.' },
-      { id: 'c2', en: 'Please sit still.', th: 'กรุณานั่งนิ่งๆ นะคะ', zh: '请坐好别动。', phonetic_en: 'พลีส ซิท สติล', phonetic_zh: 'Qǐng zuò hǎo bié dòng.' },
-      { id: 'c3', en: 'Please roll up your sleeve.', th: 'กรุณาถกแขนเสื้อขึ้นค่ะ', zh: '请卷起袖子。', phonetic_en: 'พลีส โรล อัพ ยัวร์ สลีฟ', phonetic_zh: 'Qǐng juǎn qǐ xiùzi.' },
-      { id: 'c4', en: 'Please take a deep breath.', th: 'กรุณาหายใจเข้าลึกๆ ค่ะ', zh: '请深呼吸。', phonetic_en: 'พลีส เทค อะ ดีพ บรีธ', phonetic_zh: 'Qǐng shēnhūxī.' },
-      { id: 'c5', en: 'Please do not move.', th: 'กรุณาอย่าขยับนะคะ', zh: '请不要动。', phonetic_en: 'พลีส ดู นอท มูฟ', phonetic_zh: 'Qǐng bùyào dòng.' },
-      { id: 'c6', en: 'I am going to check your blood pressure.', th: 'ฉันกำลังจะวัดความดันโลหิตให้คุณค่ะ', zh: '我要为你量血压。', phonetic_en: 'ไอ แอม โก-อิง ทู เช็ค ยัวร์ บลัด เพรสเชอร์', phonetic_zh: 'Wǒ yào wèi nǐ liáng xuèyā.' },
-      { id: 'c7', en: 'This may feel a little uncomfortable.', th: 'อาจจะรู้สึกไม่สบายตัวนิดหน่อยนะคะ', zh: '这可能会有点不舒服。', phonetic_en: 'ดิส เมย์ ฟีล อะ ลิต-เทิล อัน-คอม-ฟอร์-ทะ-เบิล', phonetic_zh: 'Zhè kěnéng huì yǒudiǎn bù shūfú.' },
-      { id: 'c8', en: 'Tell me if you feel dizzy.', th: 'บอกฉันนะคะถ้าคุณรู้สึกเวียนหัว', zh: '如果你觉得头晕请告诉我。', phonetic_en: 'เทล มี อิฟ ยู ฟีล ดิซ-ซี', phonetic_zh: 'Rúguǒ nǐ juédé tóuyūn qǐng gàosù wǒ.' },
-      { id: 'c9', en: 'Please wait for the test results.', th: 'กรุณารอผลตรวจสักครู่นะคะ', zh: '请等候检查结果。', phonetic_en: 'พลีส เวด ฟอร์ เดอะ เทสท์ รี-ซัลท์ส', phonetic_zh: 'Qǐng děnghòu jiǎnchá jiéguǒ.' },
-      { id: 'c10', en: 'If you feel worse, please return immediately.', th: 'ถ้าอาการแย่ลง ให้รีบกลับมาทันทีนะคะ', zh: '如果你觉得情况恶化，请立即回来。', phonetic_en: 'อิฟ ยู ฟีล เวิร์ส, พลีส รี-เทิร์น อิม-มี-เดียท-ลี', phonetic_zh: 'Rúguǒ nǐ juédé qíngkuàng èhuà, qǐng lìjí huílái.' },
-      { id: 'c11', en: 'Do you have any questions?', th: 'คุณมีคำถามอะไรเพิ่มเติมไหมคะ?', zh: '你有什么问题吗？', phonetic_en: 'ดู ยู แฮฟ เอน-นี เควส-ชันส์?', phonetic_zh: 'Nǐ yǒu shé me wèntí ma?' }
-    ]
-  }
-];
-
-let scenarios = [];
-let activeScenarioId = 'greeting';
-let isChatMic = false;
-let chatHistory = [];
-let translateDebounce = null;
-let editingId = null;
-let geminiApiKey = '';
-let activeRolePlayId = 'abdominal';
-
-const rolePlayScenarios = {
-  abdominal: {
-    title: 'ปวดท้องรุนแรง (Abdominal Pain)',
-    icon: 'fa-stomach',
-    patient: { name: 'Sarah', age: 28, illness: 'Severe Abdominal Pain' },
-    prompt: 'You are Sarah, 28. You have severe pain in your lower right abdomen. It started 4 hours ago. Pain scale is 8/10. It feels sharp and constant. You feel slightly nauseous but haven\'t vomited. You are scared it might be appendicitis.'
-  },
-  fever: {
-    title: 'ไข้สูงและไอ (High Fever & Cough)',
-    icon: 'fa-thermometer-half',
-    patient: { name: 'Mark', age: 35, illness: 'High Fever' },
-    prompt: 'You are Mark, 35. You have a high fever (39°C) and a dry cough for 2 days. You feel very weak and have body aches. You traveled recently. You want to know if it could be COVID or Flu.'
-  },
-  allergy: {
-    title: 'แพ้อาหาร/ผื่นคัน (Allergic Reaction)',
-    icon: 'fa-allergies',
-    patient: { name: 'Emma', age: 24, illness: 'Skin Rash' },
-    prompt: 'You are Emma, 24. You have an itchy red rash all over your arms and neck. It started after lunch (you ate seafood). Your throat feels a bit tight, and you are worried.'
-  },
-  accident: {
-    title: 'อุบัติเหตุ/ข้อเท้าแพลง (Ankle Sprain)',
-    icon: 'fa-crutches',
-    patient: { name: 'John', age: 42, illness: 'Ankle Injury' },
-    prompt: 'You are John, 42. You tripped while walking and twisted your left ankle. It is swollen and very painful to walk on (Pain 7/10). You think it might be broken.'
-  }
-};
-
-function init() {
-  const saved = localStorage.getItem(STORAGE_KEY);
-  if (saved) {
-    try {
-      const parsed = JSON.parse(saved);
-      scenarios = parsed.scenarios || defaultScenarios;
-      activeScenarioId = parsed.activeScenarioId || 'greeting';
-      geminiApiKey = parsed.geminiApiKey || '';
-    } catch (e) { scenarios = defaultScenarios; }
-  } else {
-    scenarios = JSON.parse(JSON.stringify(defaultScenarios));
-  }
-  
-  if (geminiApiKey) {
-    const keyInput = document.getElementById('geminiApiKey');
-    if (keyInput) keyInput.value = geminiApiKey;
-    updateGeminiStatus('active', 'Gemini AI พร้อมใช้งาน');
-  }
-
-  renderScenarios();
-  renderPhrases();
-  renderPracticeSelect();
-  initChat();
-  renderQuickPhrases();
+:root {
+  --primary: #0d9488;
+  --primary-dark: #0f766e;
+  --primary-light: #ccfbf1;
+  --primary-mid: #14b8a6;
+  --bg: #f0fdf9;
+  --card-bg: rgba(255,255,255,0.88);
+  --text: #1e293b;
+  --text-sub: #64748b;
+  --text-hint: #94a3b8;
+  --border: #e2e8f0;
+  --shadow-card: 0 4px 20px rgba(13,148,136,0.09);
+  --shadow-hover: 0 8px 24px rgba(13,148,136,0.18);
+  --shadow-btn: 0 4px 14px rgba(13,148,136,0.32);
+  --gradient: linear-gradient(135deg, #0d9488 0%, #14b8a6 60%, #2dd4bf 100%);
+  --gradient-dark: linear-gradient(135deg, #0f766e 0%, #0d9488 50%, #14b8a6 100%);
+  --radius-sm: 12px;
+  --radius: 18px;
+  --radius-lg: 24px;
+  --radius-xl: 28px;
+  --phonetic-color: #7c3aed;
+  --phonetic-bg: #f3e8ff;
 }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Prompt', sans-serif; background: var(--bg); color: var(--text); line-height: 1.5; min-height: 100vh; }
+.app-bg { min-height: 100vh; background: linear-gradient(160deg, #f0fdf9 0%, #e6f8f5 40%, #f0f9ff 100%); display: flex; justify-content: center; padding-bottom: 40px; }
+.app-container { width: 100%; max-width: 520px; padding: 0 16px; }
 
-function save() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify({ 
-    scenarios, 
-    activeScenarioId,
-    geminiApiKey
-  }));
+/* Header */
+.app-header { text-align: center; padding: 36px 0 24px; }
+.header-icon-wrap { position: relative; display: inline-block; margin-bottom: 16px; }
+.header-icon { width: 68px; height: 68px; border-radius: 22px; background: var(--gradient-dark); display: flex; align-items: center; justify-content: center; font-size: 28px; color: #fff; box-shadow: 0 8px 28px rgba(13,148,136,0.38); }
+.ai-badge { position: absolute; top: -4px; right: -4px; width: 22px; height: 22px; border-radius: 50%; background: var(--primary-mid); border: 2px solid #fff; color: #fff; font-size: 9px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+.app-header h1 { font-size: 26px; font-weight: 700; color: var(--primary-dark); letter-spacing: -0.5px; }
+.header-subtitle { font-size: 13px; color: var(--primary); font-weight: 500; margin-top: 4px; }
+.lang-badges { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 10px; }
+.lang-badge { padding: 3px 10px; border-radius: 50px; font-size: 12px; font-weight: 600; }
+.lang-badge.th { background: #fee2e2; color: #b91c1c; }
+.lang-badge.en { background: #dbeafe; color: #1d4ed8; }
+.lang-badge.zh { background: #fef3c7; color: #b45309; }
+.dot { color: #cbd5e1; font-size: 14px; }
+
+/* Cards */
+.card { background: var(--card-bg); backdrop-filter: blur(14px); border-radius: var(--radius-xl); border: 1px solid rgba(255,255,255,0.65); box-shadow: var(--shadow-card); margin-bottom: 16px; overflow: hidden; }
+.card-top { display: flex; align-items: center; justify-content: space-between; padding: 20px 20px 16px; }
+.card-title { font-size: 14px; font-weight: 600; color: var(--text); }
+.card-sub { font-size: 12px; color: var(--text-hint); margin-top: 2px; }
+
+/* Scenario Grid */
+.scenario-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 0 16px 20px; }
+.btn-scenario { background: #fff; border: 1.5px solid var(--border); border-radius: var(--radius); padding: 14px 10px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 6px; transition: all 0.2s ease; position: relative; text-align: center; }
+.btn-scenario .s-icon { font-size: 26px; }
+.btn-scenario .s-en { font-size: 14px; font-weight: 600; color: var(--text); }
+.btn-scenario .s-th { font-size: 11px; color: var(--text-hint); font-weight: 300; }
+.btn-scenario:hover { border-color: var(--primary-light); background: #f0fdf9; transform: translateY(-2px); box-shadow: var(--shadow-hover); }
+.btn-scenario.active { background: var(--gradient); border-color: transparent; box-shadow: 0 5px 18px rgba(13,148,136,0.32); }
+.btn-scenario.active .s-en, .btn-scenario.active .s-th { color: #fff; }
+.active-dot { position: absolute; top: 8px; right: 8px; width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.7); }
+
+/* Tabs */
+.tab-card { padding: 0; }
+.tabs { display: flex; border-bottom: 1.5px solid #f1f5f9; }
+.tab-btn { flex: 1; padding: 14px 4px 12px; background: none; border: none; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; font-family: 'Prompt', sans-serif; font-size: 11px; color: var(--text-hint); transition: color 0.2s; position: relative; }
+.tab-btn i { font-size: 17px; }
+.tab-label-th { display: block; }
+@media (min-width: 400px) { .tab-label-th { display: none; } .tab-label-en { display: block; } }
+.tab-label-en { display: none; }
+.tab-btn.active { color: var(--primary-dark); }
+.tab-btn.active::after { content: ''; position: absolute; bottom: -1px; left: 20%; right: 20%; height: 2.5px; border-radius: 3px; background: var(--gradient); }
+
+/* Tab Panels */
+.tab-panel { display: none; padding: 20px; }
+.tab-panel.active { display: block; }
+.panel-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 16px; gap: 10px; }
+.panel-title { font-size: 15px; font-weight: 600; color: var(--text); }
+.panel-sub { font-size: 12px; color: var(--text-hint); margin-top: 2px; }
+.panel-title-row { display: flex; align-items: center; gap: 10px; }
+.mini-avatar { width: 28px; height: 28px; border-radius: 50%; background: var(--gradient); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; }
+
+/* Add Button */
+.btn-add { display: flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 50px; background: var(--gradient); color: #fff; border: none; font-family: 'Prompt', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap; box-shadow: var(--shadow-btn); transition: opacity 0.2s; flex-shrink: 0; }
+.btn-add:hover { opacity: 0.88; }
+
+/* Phrase List */
+.phrase-list { display: flex; flex-direction: column; gap: 10px; }
+.phrase-card { background: #fff; border: 1px solid #f1f5f9; border-radius: var(--radius); overflow: hidden; box-shadow: 0 2px 8px rgba(13,148,136,0.06); transition: transform 0.22s ease, box-shadow 0.22s ease; }
+.phrase-card:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(13,148,136,0.12); }
+.phrase-main { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; padding: 14px 14px 12px; }
+.phrase-texts { flex: 1; min-width: 0; }
+.phrase-row { display: flex; align-items: flex-start; gap: 7px; margin-bottom: 7px; }
+.phrase-row:last-child { margin-bottom: 0; }
+.phrase-col { flex: 1; min-width: 0; }
+.badge-mini { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 18px; border-radius: 5px; font-size: 10px; font-weight: 700; flex-shrink: 0; margin-top: 2px; }
+.badge-mini.en { background: #dbeafe; color: #1d4ed8; }
+.badge-mini.th { background: #fee2e2; color: #b91c1c; }
+.badge-mini.zh { background: #fef3c7; color: #b45309; }
+.phrase-en-text { font-size: 14px; font-weight: 600; color: var(--text); }
+.phrase-th-text { font-size: 12px; color: var(--text-sub); }
+.phrase-zh-text { font-size: 12px; color: var(--text-sub); }
+.phrase-phonetic { font-size: 11px; color: var(--phonetic-color); font-weight: 500; font-style: italic; margin-top: 4px; padding: 3px 10px; background: var(--phonetic-bg); border-radius: 50px; display: inline-block; }
+.target-phonetic { font-size: 13px; color: var(--phonetic-color); font-weight: 600; margin-top: 8px; padding: 8px 14px; background: var(--phonetic-bg); border-radius: 50px; display: inline-block; }
+.q-phonetic-en, .q-phonetic-zh { font-size: 10px; color: var(--phonetic-color); font-weight: 500; margin-top: 2px; padding: 2px 8px; background: var(--phonetic-bg); border-radius: 50px; display: inline-block; }
+.phrase-actions { display: flex; flex-direction: column; gap: 5px; flex-shrink: 0; }
+.btn-icon { width: 32px; height: 32px; border-radius: 10px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 13px; transition: all 0.18s ease; font-family: 'Prompt', sans-serif; font-weight: 700; }
+.btn-icon.blue { background: #dbeafe; color: #2563eb; }
+.btn-icon.blue:hover { background: #2563eb; color: #fff; }
+.btn-icon.green { background: #d1fae5; color: #059669; }
+.btn-icon.green:hover { background: #059669; color: #fff; }
+.btn-icon.yellow { background: #fef3c7; color: #b45309; }
+.btn-icon.yellow:hover { background: #d97706; color: #fff; }
+.btn-icon.red { background: #fee2e2; color: #dc2626; }
+.btn-icon.red:hover { background: #dc2626; color: #fff; }
+.phrase-context-toggle { width: 100%; padding: 8px 14px; background: #f8fafc; border: none; border-top: 1px solid #f1f5f9; cursor: pointer; display: flex; align-items: center; justify-content: space-between; font-family: 'Prompt', sans-serif; font-size: 11px; color: var(--text-hint); transition: background 0.2s, color 0.2s; }
+.phrase-context-toggle:hover { background: #f0fdf9; color: var(--primary); }
+.phrase-context-body { display: none; padding: 12px 14px; background: #f0fdf9; border-top: 1px solid #ccfbf1; }
+.phrase-context-body.open { display: block; }
+.ctx-line { font-size: 12px; color: var(--primary-dark); line-height: 1.6; margin-bottom: 4px; }
+.ctx-line:last-child { margin-bottom: 0; }
+.ctx-line strong { font-weight: 600; }
+
+/* Tip box */
+.tip-box { margin-top: 16px; background: linear-gradient(135deg, #f0fdf9, #e6f8f5); border: 1px solid #99f6e4; border-radius: var(--radius-sm); padding: 12px 14px; }
+.tip-title { font-size: 12px; font-weight: 600; color: var(--primary-dark); }
+.tip-sub { font-size: 11px; color: var(--primary); margin-top: 2px; }
+.tip-link { margin-top: 8px; background: none; border: none; font-family: 'Prompt', sans-serif; font-size: 12px; font-weight: 600; color: var(--primary-dark); cursor: pointer; display: flex; align-items: center; gap: 4px; padding: 0; }
+.tip-link:hover { color: var(--primary); }
+
+/* Empty state */
+.empty-state { text-align: center; padding: 32px 16px; }
+.empty-icon { width: 60px; height: 60px; border-radius: 50%; background: #f0fdf9; display: flex; align-items: center; justify-content: center; font-size: 28px; margin: 0 auto 12px; }
+.empty-text { font-size: 13px; color: var(--text-hint); margin-bottom: 14px; }
+.btn-empty-add { display: inline-flex; align-items: center; gap: 6px; padding: 10px 20px; border-radius: 50px; background: var(--gradient); color: #fff; border: none; font-family: 'Prompt', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; box-shadow: var(--shadow-btn); }
+
+/* ── Practice Panel — Phrase Card Selector ──────────────── */
+.practice-card-label { font-size: 12px; font-weight: 700; color: var(--text-sub); margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+.practice-phrase-list { display: flex; flex-direction: column; gap: 0; margin-bottom: 16px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); overflow: hidden; max-height: 260px; overflow-y: auto; }
+.practice-phrase-list::-webkit-scrollbar { width: 4px; }
+.practice-phrase-list::-webkit-scrollbar-thumb { background: #ccfbf1; border-radius: 4px; }
+
+.practice-group-header { padding: 7px 14px; background: linear-gradient(90deg, var(--primary-light), #e6f8f5); border-bottom: 1px solid var(--border); font-size: 11px; font-weight: 700; color: var(--primary-dark); display: flex; align-items: center; gap: 6px; position: sticky; top: 0; z-index: 1; }
+
+.practice-phrase-item { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-bottom: 1px solid #f1f5f9; background: #fff; cursor: pointer; transition: background 0.15s; }
+.practice-phrase-item:last-child { border-bottom: none; }
+.practice-phrase-item:hover { background: #f0fdf9; }
+.practice-phrase-item.selected { background: linear-gradient(90deg, #f0fdf9, #e6f8f5); border-left: 3px solid var(--primary); }
+.practice-phrase-item.selected .ppi-en { color: var(--primary-dark); }
+
+.ppi-icon { width: 28px; height: 28px; border-radius: 8px; background: var(--primary-light); display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; }
+.practice-phrase-item.selected .ppi-icon { background: var(--gradient); color: #fff; }
+.ppi-texts { flex: 1; min-width: 0; }
+.ppi-en { font-size: 13px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ppi-th { font-size: 11px; color: var(--text-hint); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ppi-lang { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 16px; border-radius: 4px; font-size: 9px; font-weight: 700; flex-shrink: 0; }
+.ppi-lang.en { background: #dbeafe; color: #1d4ed8; }
+.ppi-lang.zh { background: #fef3c7; color: #b45309; }
+
+/* Practice target box */
+.target-box { background: linear-gradient(135deg, #f0fdf9, #e6f8f5); border: 1.5px solid var(--primary-light); border-radius: var(--radius); padding: 16px; margin-bottom: 12px; display: flex; flex-direction: column; align-items: flex-start; box-shadow: 0 2px 12px rgba(13,148,136,0.10); }
+.target-label { font-size: 11px; color: var(--primary); font-weight: 700; margin-bottom: 6px; letter-spacing: 0.5px; text-transform: uppercase; }
+.target-text { font-size: 17px; font-weight: 700; color: var(--primary-dark); line-height: 1.4; }
+.btn-play-audio { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 50px; background: var(--gradient); color: #fff; border: none; font-family: 'Prompt', sans-serif; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s; margin-top: 10px; box-shadow: var(--shadow-btn); }
+.btn-play-audio:hover { opacity: 0.88; transform: translateY(-1px); }
+
+.recognition-box { background: #f8fafc; border: 2px dashed #cbd5e1; border-radius: var(--radius); padding: 20px 16px; min-height: 80px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; margin-bottom: 14px; transition: border-color 0.3s, background 0.3s; }
+.recognition-box.listening { border-color: var(--primary); background: #f0fdf9; }
+.rec-placeholder { font-size: 13px; color: var(--text-hint); font-style: italic; }
+.rec-result { font-size: 14px; font-weight: 600; color: var(--text); width: 100%; text-align: left; }
+
+.listening-anim { display: flex; align-items: flex-end; gap: 4px; height: 32px; }
+.listening-anim .bar { width: 4px; border-radius: 3px; background: var(--primary); animation: bar-bounce 0.8s ease-in-out infinite; }
+.listening-anim .bar:nth-child(1) { animation-delay: 0s; height: 12px; }
+.listening-anim .bar:nth-child(2) { animation-delay: 0.12s; height: 22px; }
+.listening-anim .bar:nth-child(3) { animation-delay: 0.24s; height: 30px; }
+.listening-anim .bar:nth-child(4) { animation-delay: 0.12s; height: 22px; }
+.listening-anim .bar:nth-child(5) { animation-delay: 0s; height: 12px; }
+@keyframes bar-bounce { 0%, 100% { transform: scaleY(0.5); } 50% { transform: scaleY(1.1); } }
+.listening-text { font-size: 12px; color: var(--primary); font-weight: 500; margin-left: 8px; }
+
+/* Score */
+.score-box { background: #fff; border: 1.5px solid var(--border); border-radius: var(--radius-sm); padding: 12px 14px; margin-bottom: 14px; }
+.score-box.good { background: #f0fdf4; border-color: #bbf7d0; }
+.score-box.ok { background: #eff6ff; border-color: #bfdbfe; }
+.score-box.meh { background: #fffbeb; border-color: #fde68a; }
+.score-box.bad { background: #fef2f2; border-color: #fecaca; }
+.score-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.score-msg { font-size: 13px; font-weight: 600; }
+.score-num { font-size: 22px; font-weight: 800; }
+.score-box.good .score-msg, .score-box.good .score-num { color: #16a34a; }
+.score-box.ok .score-msg, .score-box.ok .score-num { color: #2563eb; }
+.score-box.meh .score-msg, .score-box.meh .score-num { color: #d97706; }
+.score-box.bad .score-msg, .score-box.bad .score-num { color: #dc2626; }
+.score-bar-bg { height: 6px; border-radius: 3px; background: rgba(0,0,0,0.08); overflow: hidden; margin-bottom: 10px; }
+.score-bar-fill { height: 100%; border-radius: 3px; background: var(--gradient); transition: width 0.7s cubic-bezier(.4,0,.2,1); }
+.score-box.ok .score-bar-fill { background: linear-gradient(90deg,#3b82f6,#60a5fa); }
+.score-box.meh .score-bar-fill { background: linear-gradient(90deg,#f59e0b,#fbbf24); }
+.score-box.bad .score-bar-fill { background: linear-gradient(90deg,#ef4444,#f87171); }
+
+/* Word analysis */
+.word-analysis { margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--border); }
+.word-analysis-title { font-size: 11px; font-weight: 700; color: var(--text-sub); margin-bottom: 8px; display: flex; align-items: center; gap: 5px; }
+.word-tokens { display: flex; flex-wrap: wrap; gap: 6px; }
+.word-token { padding: 4px 10px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 4px; transition: all 0.2s; border: 1px solid transparent; }
+.word-token.correct { background: #f0fdf4; color: #15803d; border-color: #bbf7d0; }
+.word-token.wrong { background: #fef2f2; color: #dc2626; border-color: #fecaca; }
+.word-token.wrong:hover { background: #dc2626; color: #fff; }
+.word-token .token-hint { font-size: 9px; font-weight: 400; margin-top: 2px; color: inherit; opacity: 0.75; }
+.wrong-tips { background: #fff7ed; border: 1px solid #fed7aa; border-radius: 10px; padding: 10px 12px; margin-top: 8px; }
+.wrong-tip-item { font-size: 12px; color: #92400e; margin-bottom: 6px; display: flex; align-items: center; flex-wrap: wrap; gap: 5px; }
+.wrong-tip-item:last-child { margin-bottom: 0; }
+.wrong-tip-item .tip-word { font-weight: 700; color: #dc2626; }
+.wrong-tip-item .tip-arrow { color: #10b981; font-weight: 700; }
+.wrong-tip-item .tip-correct { font-weight: 700; color: #059669; }
+.btn-tip-listen { background: #e6f8f5; border: none; cursor: pointer; color: var(--primary); font-size: 12px; padding: 3px 7px; border-radius: 6px; display: inline-flex; align-items: center; gap: 3px; }
+.btn-tip-listen:hover { background: var(--primary); color: #fff; }
+
+/* Typing animation */
+.typing-dots { display: flex; gap: 4px; align-items: center; padding: 10px 15px; background: #fff; border-radius: 18px; border-bottom-left-radius: 5px; border: 1px solid #f1f5f9; }
+.typing-dots span { width: 7px; height: 7px; background: var(--primary-mid); border-radius: 50%; animation: typing 1s infinite; }
+.typing-dots span:nth-child(2) { animation-delay: 0.18s; }
+.typing-dots span:nth-child(3) { animation-delay: 0.36s; }
+@keyframes typing { 0%, 80%, 100% { transform: scale(0.75); opacity: 0.5; } 40% { transform: scale(1); opacity: 1; } }
+
+.btn-record { width: 100%; padding: 15px; border-radius: var(--radius); border: none; background: var(--gradient); color: #fff; font-family: 'Prompt', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: var(--shadow-btn); transition: all 0.2s; animation: pulse-teal 2.5s infinite; }
+.btn-record:hover { opacity: 0.9; }
+.btn-record.recording { background: linear-gradient(135deg, #dc2626, #ef4444); box-shadow: 0 4px 14px rgba(220,38,38,0.32); animation: pulse-red 1.5s infinite; }
+@keyframes pulse-teal { 0%, 100% { box-shadow: 0 4px 14px rgba(13,148,136,0.32); } 50% { box-shadow: 0 4px 24px rgba(13,148,136,0.5); } }
+@keyframes pulse-red { 0%, 100% { box-shadow: 0 4px 14px rgba(220,38,38,0.32); } 50% { box-shadow: 0 4px 24px rgba(220,38,38,0.52); } }
+
+/* ── Chat / Role Play Panel ──────────────────────────────── */
+.chat-scope-wrap { background: linear-gradient(135deg,#f0fdf9,#e6f8f5); border: 1.5px solid var(--primary-light); border-radius: var(--radius-sm); padding: 12px 14px 14px; margin-bottom: 12px; }
+.chat-scope-label { font-size: 12px; font-weight: 700; color: var(--primary-dark); margin-bottom: 8px; display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
+.chat-scope-hint { font-size: 11px; font-weight: 400; color: var(--primary); margin-left: 2px; }
+
+.practice-select { width: 100%; padding: 12px 16px; border-radius: var(--radius-sm); border: 1.5px solid var(--border); background: #fff; font-family: 'Prompt', sans-serif; font-size: 13px; color: var(--text); outline: none; cursor: pointer; appearance: none; -webkit-appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%230d9488' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 40px; }
+.practice-select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(13,148,136,0.12); }
+
+/* Hint box */
+.chat-hint-box { background: #fffbeb; border: 1px solid #fde68a; border-radius: var(--radius-sm); padding: 10px 13px; margin-bottom: 12px; }
+.chat-hint-title { font-size: 11px; font-weight: 700; color: #b45309; margin-bottom: 5px; display: flex; align-items: center; gap: 6px; }
+.chat-hint-text { font-size: 12px; color: #78350f; line-height: 1.6; }
+
+/* Quiz progress */
+.quiz-progress-wrap { margin-bottom: 12px; }
+.quiz-progress-label { display: flex; justify-content: space-between; font-size: 12px; font-weight: 600; color: var(--text-sub); margin-bottom: 5px; }
+.quiz-progress-bar-bg { height: 5px; border-radius: 3px; background: #e2e8f0; overflow: hidden; }
+.quiz-progress-bar-fill { height: 100%; border-radius: 3px; background: var(--gradient); transition: width 0.5s ease; }
+
+/* Chat box */
+.chat-box { max-height: 340px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; padding-right: 4px; margin-bottom: 14px; scroll-behavior: smooth; }
+.chat-box::-webkit-scrollbar { width: 3px; }
+.chat-box::-webkit-scrollbar-thumb { background: #ccfbf1; border-radius: 4px; }
+
+/* Messages */
+.msg { display: flex; align-items: flex-start; gap: 8px; }
+.msg.user { flex-direction: row-reverse; }
+.msg-avatar { width: 30px; height: 30px; border-radius: 50%; background: var(--gradient); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; margin-top: 2px; }
+.msg-user-avatar { width: 30px; height: 30px; border-radius: 50%; background: #e2e8f0; color: #64748b; display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; margin-top: 2px; }
+.msg-content { display: flex; flex-direction: column; max-width: 78%; }
+.msg.user .msg-content { align-items: flex-end; }
+.msg-bubble { padding: 11px 15px; border-radius: 18px; font-size: 13.5px; line-height: 1.45; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+.msg.ai .msg-bubble { background: #fff; color: var(--text); border-bottom-left-radius: 5px; border: 1px solid #f1f5f9; }
+.msg.user .msg-bubble { background: var(--gradient); color: #fff; border-bottom-right-radius: 5px; }
+.msg-hint { font-size: 11px; color: var(--text-hint); margin-top: 4px; padding: 0 2px; }
+.msg-listen { margin-top: 4px; background: none; border: none; font-family: 'Prompt', sans-serif; font-size: 11px; color: var(--primary); cursor: pointer; padding: 0 2px; }
+.msg-listen:hover { color: var(--primary-dark); }
+
+/* ── Quiz Options ────────────────────────────────────────── */
+.quiz-options-label { font-size: 12px; font-weight: 700; color: var(--primary-dark); margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+.quiz-options-grid { display: flex; flex-direction: column; gap: 8px; }
+
+.quiz-option-btn {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: var(--radius-sm);
+  border: 2px solid var(--border);
+  background: #fff;
+  font-family: 'Prompt', sans-serif;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--text);
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.18s ease;
+  line-height: 1.4;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
 }
+.quiz-option-btn:hover:not(:disabled) { border-color: var(--primary); background: #f0fdf9; transform: translateY(-1px); box-shadow: 0 3px 10px rgba(13,148,136,0.12); }
+.quiz-option-btn .opt-num { width: 22px; height: 22px; border-radius: 6px; background: #f1f5f9; color: var(--text-hint); font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+.quiz-option-btn:hover:not(:disabled) .opt-num { background: var(--primary-light); color: var(--primary-dark); }
+.quiz-option-btn.correct-ans { border-color: #22c55e; background: #f0fdf4; color: #15803d; cursor: default; }
+.quiz-option-btn.correct-ans .opt-num { background: #22c55e; color: #fff; }
+.quiz-option-btn.wrong-ans { border-color: #f87171; background: #fef2f2; color: #b91c1c; }
+.quiz-option-btn.wrong-ans .opt-num { background: #f87171; color: #fff; }
+.quiz-option-btn:disabled { cursor: default; }
 
-function toggleGeminiConfig() {
-  const body = document.getElementById('geminiConfigBody');
-  const icon = document.getElementById('gemini-config-icon');
-  const isOpen = body.classList.toggle('open');
-  icon.style.transform = isOpen ? 'rotate(180deg)' : 'rotate(0deg)';
-}
+.quiz-hint-row { padding: 10px 14px; background: #fff7ed; border: 1px solid #fed7aa; border-radius: 10px; font-size: 12px; color: #92400e; display: flex; align-items: flex-start; gap: 7px; line-height: 1.5; margin-top: 4px; }
+.quiz-hint-row i { color: #f59e0b; flex-shrink: 0; margin-top: 2px; }
 
-function saveGeminiKey() {
-  geminiApiKey = document.getElementById('geminiApiKey').value.trim();
-  save();
-  if (geminiApiKey) {
-    updateGeminiStatus('active', 'บันทึก Key เรียบร้อยแล้ว');
-  } else {
-    updateGeminiStatus('', '');
-  }
-}
+.quiz-correct-row { padding: 10px 14px; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 10px; font-size: 12px; color: #15803d; display: flex; align-items: flex-start; gap: 7px; line-height: 1.5; margin-top: 4px; }
+.quiz-correct-row i { color: #22c55e; flex-shrink: 0; margin-top: 2px; }
 
-function updateGeminiStatus(type, msg) {
-  const status = document.getElementById('geminiStatus');
-  if (!status) return;
-  status.className = 'gemini-status ' + type;
-  status.textContent = msg;
-}
+.quiz-next-btn { width: 100%; margin-top: 12px; padding: 13px; border-radius: var(--radius); border: none; background: var(--gradient); color: #fff; font-family: 'Prompt', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: var(--shadow-btn); transition: opacity 0.2s; }
+.quiz-next-btn:hover { opacity: 0.9; }
 
-function currentScenario() {
-  return scenarios.find(s => s.id === activeScenarioId) || scenarios[0];
-}
+.quiz-complete-box { background: linear-gradient(135deg, #f0fdf9, #e6f8f5); border: 2px solid var(--primary-light); border-radius: var(--radius); padding: 24px 20px; text-align: center; }
+.quiz-complete-icon { font-size: 40px; margin-bottom: 10px; }
+.quiz-complete-title { font-size: 18px; font-weight: 700; color: var(--primary-dark); }
+.quiz-complete-sub { font-size: 13px; color: var(--primary); margin-top: 6px; }
+.quiz-score-display { font-size: 32px; font-weight: 800; color: var(--primary-dark); margin: 14px 0 4px; }
+.quiz-score-label { font-size: 12px; color: var(--text-hint); }
+.btn-restart-quiz { margin-top: 16px; display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px; border-radius: 50px; background: var(--gradient); color: #fff; border: none; font-family: 'Prompt', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; box-shadow: var(--shadow-btn); }
 
-/* ── Rendering ───────────────────────────────────────────── */
-function renderScenarios() {
-  const wrap = document.getElementById('scenarioTabs');
-  wrap.innerHTML = scenarios.map(s => `
-    <div class="scenario-tab ${s.id === activeScenarioId ? 'active' : ''}" onclick="selectScenario('${s.id}')">
-      ${esc(s.labelTh)}
-    </div>
-  `).join('');
-}
+/* Controls */
+.chat-scenario-badge { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 50px; background: var(--primary-light); color: var(--primary-dark); font-size: 11px; font-weight: 600; }
+.chat-reset-btn { background: none; border: 1px solid var(--border); border-radius: 50px; padding: 4px 10px; font-family: 'Prompt', sans-serif; font-size: 11px; color: var(--text-hint); cursor: pointer; transition: all 0.2s; margin-left: auto; }
+.chat-reset-btn:hover { border-color: var(--primary); color: var(--primary); }
+.chat-controls { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
 
-function selectScenario(id) {
-  activeScenarioId = id;
-  renderScenarios();
-  renderPhrases();
-  renderQuickPhrases();
-}
+/* Translate Panel */
+.translate-lang-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.lang-select { flex: 1; padding: 10px 12px; border-radius: var(--radius-sm); border: 1.5px solid var(--border); background: #fff; font-family: 'Prompt', sans-serif; font-size: 13px; color: var(--text); outline: none; cursor: pointer; }
+.lang-select:focus { border-color: var(--primary); }
+.btn-swap { width: 40px; height: 40px; border-radius: var(--radius-sm); border: none; background: var(--gradient); color: #fff; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: var(--shadow-btn); transition: opacity 0.2s; }
+.btn-swap:hover { opacity: 0.88; }
+.translate-input-wrap { position: relative; margin-bottom: 10px; }
+.translate-input { width: 100%; padding: 12px 100px 12px 14px; border-radius: var(--radius-sm); border: 1.5px solid var(--border); background: #f8fafc; font-family: 'Prompt', sans-serif; font-size: 13px; color: var(--text); outline: none; resize: none; transition: border-color 0.2s; }
+.translate-input:focus { border-color: var(--primary); }
+.translate-input::placeholder { color: #cbd5e1; }
+.translate-btn-group { position: absolute; right: 8px; bottom: 8px; display: flex; gap: 6px; }
+.translate-speak-btn { width: 36px; height: 36px; border-radius: 50%; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; font-size: 14px; background: #dbeafe; color: #2563eb; box-shadow: 0 2px 8px rgba(0,0,0,0.10); }
+.translate-speak-btn:hover { background: #2563eb; color: #fff; transform: scale(1.08); }
+.translate-mic-btn { width: 44px; height: 44px; border-radius: 50%; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; font-size: 17px; background: var(--gradient); color: #fff; box-shadow: var(--shadow-btn); }
+.translate-mic-btn:hover { opacity: 0.85; transform: scale(1.08); }
+.translate-mic-btn.recording { background: linear-gradient(135deg,#dc2626,#ef4444); animation: pulse-red 1.5s infinite; }
+.translate-output-wrap { background: linear-gradient(135deg,#f0fdf9,#e6f8f5); border: 1.5px solid var(--primary-light); border-radius: var(--radius-sm); padding: 14px; margin-bottom: 10px; min-height: 60px; display: flex; flex-direction: column; gap: 10px; }
+.translate-placeholder { font-size: 13px; color: var(--text-hint); font-style: italic; }
+.translate-result { font-size: 15px; font-weight: 600; color: var(--primary-dark); line-height: 1.5; }
+.translate-out-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.btn-out-action { display: flex; align-items: center; gap: 5px; padding: 6px 12px; border-radius: 8px; border: none; background: #fff; color: var(--primary); font-size: 12px; font-family: 'Prompt', sans-serif; cursor: pointer; box-shadow: 0 1px 4px rgba(0,0,0,0.08); transition: all 0.18s; }
+.btn-out-action:hover { background: var(--primary); color: #fff; }
+.translate-loading { display: flex; align-items: center; gap: 8px; color: var(--primary); font-size: 13px; }
+.translate-spinner { width: 16px; height: 16px; border: 2px solid var(--primary-light); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.7s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.translate-credit { font-size: 11px; color: var(--text-hint); text-align: center; margin-bottom: 12px; }
 
-function renderPhrases() {
-  const s = currentScenario();
-  const wrap = document.getElementById('phraseList');
-  if (!s.phrases.length) {
-    wrap.innerHTML = '<div class="empty-state">ยังไม่มีประโยคในหมวดนี้ กดปุ่ม + เพื่อเพิ่ม</div>';
-    return;
-  }
-  wrap.innerHTML = s.phrases.map(p => `
-    <div class="phrase-card" id="phrase-${p.id}">
-      <div class="phrase-main">
-        <div class="phrase-texts">
-          <div class="phrase-row">
-            <span class="badge-mini en">EN</span>
-            <div class="phrase-col">
-              <div class="phrase-en-text">${esc(p.en)}</div>
-              ${p.phonetic_en ? `<span class="phrase-phonetic">${esc(p.phonetic_en)}</span>` : ''}
-            </div>
-          </div>
-          <div class="phrase-row">
-            <span class="badge-mini th">TH</span>
-            <div class="phrase-col"><div class="phrase-th-text">${esc(p.th)}</div></div>
-          </div>
-          <div class="phrase-row">
-            <span class="badge-mini zh">中</span>
-            <div class="phrase-col">
-              <div class="phrase-zh-text">${esc(p.zh)}</div>
-              ${p.phonetic_zh ? `<span class="phrase-phonetic">${esc(p.phonetic_zh)}</span>` : ''}
-            </div>
-          </div>
-        </div>
-        <div class="phrase-actions">
-          <button class="btn-icon blue" onclick="speakText('${ea(p.en)}','en')" title="ฟัง EN"><i class="fas fa-volume-up"></i></button>
-          <button class="btn-icon yellow" onclick="speakText('${ea(p.zh)}','zh')" title="ฟัง ZH">中</button>
-          <button class="btn-icon green" onclick="openEditModal('${ea(p.id)}')" title="แก้ไข"><i class="fas fa-pen"></i></button>
-          <button class="btn-icon red" onclick="openDeleteModal('${ea(p.id)}')" title="ลบ"><i class="fas fa-trash"></i></button>
-        </div>
-      </div>
-      ${(p.context || p.contextTh) ? `
-      <button class="phrase-context-toggle" onclick="toggleCtx('${p.id}')">
-        <span><i class="fas fa-info-circle"></i> เมื่อไรใช้ประโยคนี้</span>
-        <i class="fas fa-chevron-down"></i>
-      </button>
-      <div class="phrase-context-body" id="ctx-${p.id}">
-        ${p.contextTh ? `<div class="ctx-th">${esc(p.contextTh)}</div>` : ''}
-        ${p.context ? `<div class="ctx-en">${esc(p.context)}</div>` : ''}
-      </div>` : ''}
-    </div>
-  `).join('');
-}
+/* Quick Phrases */
+.quick-label { font-size: 12px; font-weight: 600; color: var(--text-sub); margin-bottom: 8px; padding: 8px 0 4px; border-top: 1px solid var(--border); }
+.quick-phrase-item { background: #fff; border: 1px solid #f1f5f9; border-left: 3px solid var(--primary); padding: 10px 12px; border-radius: 8px; margin-bottom: 8px; font-size: 12px; }
+.q-en { font-weight: 600; color: #1e40af; margin-bottom: 2px; }
+.q-th { color: var(--text); margin-top: 4px; font-size: 11px; }
+.q-zh { color: var(--text); margin-top: 2px; font-size: 11px; }
 
-function toggleCtx(id) {
-  const el = document.getElementById('ctx-' + id);
-  const btn = el.previousElementSibling;
-  const isOpen = el.classList.toggle('open');
-  btn.classList.toggle('active');
-  btn.querySelector('.fa-chevron-down').style.transform = isOpen ? 'rotate(180deg)' : 'rotate(0deg)';
-}
+/* Footer */
+.app-footer { text-align: center; font-size: 12px; color: var(--text-hint); margin-top: 4px; }
 
-/* ── Modal Logic ─────────────────────────────────────────── */
-function openAddModal() {
-  editingId = null;
-  document.getElementById('modalTitle').textContent = 'เพิ่มประโยคใหม่';
-  document.getElementById('phraseForm').reset();
-  document.getElementById('autoPreview').classList.remove('visible');
-  document.getElementById('modalOverlay').classList.add('open');
-}
+/* Modal */
+.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); z-index: 1000; }
+.modal-overlay.open { display: flex; align-items: flex-end; }
+@media (min-width: 480px) { .modal-overlay.open { align-items: center; } }
+.modal { width: 100%; max-width: 480px; margin: 0 auto; background: #fff; border-radius: 28px 28px 20px 20px; overflow: hidden; box-shadow: 0 24px 64px rgba(13,148,136,0.22); animation: slide-up 0.28s cubic-bezier(0.4,0,0.2,1); }
+@media (min-width: 480px) { .modal { border-radius: 28px; animation: none; } }
+@keyframes slide-up { from { transform: translateY(60px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+.modal-header { padding: 20px 20px 18px; background: var(--gradient); display: flex; align-items: flex-start; justify-content: space-between; }
+.modal-title { font-size: 17px; font-weight: 700; color: #fff; }
+.modal-sub { font-size: 12px; color: rgba(255,255,255,0.8); margin-top: 3px; }
+.modal-close { width: 34px; height: 34px; border-radius: 50%; border: none; background: rgba(255,255,255,0.22); color: #fff; font-size: 15px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.2s; }
+.modal-close:hover { background: rgba(255,255,255,0.35); }
+.modal-body { padding: 16px 20px 4px; max-height: 65vh; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
+.modal-body::-webkit-scrollbar { width: 6px; }
+.modal-body::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+.field-group { display: flex; flex-direction: column; gap: 5px; }
+.field-label { display: flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 500; color: var(--text-sub); margin-bottom: 2px; }
+.required { color: #ef4444; }
+.badge-lang { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 20px; border-radius: 6px; font-size: 11px; font-weight: 700; }
+.badge-lang.en { background: #dbeafe; color: #1d4ed8; }
+.badge-lang.th { background: #fee2e2; color: #b91c1c; }
+.badge-lang.zh { background: #fef3c7; color: #b45309; }
+.badge-ctx { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 20px; border-radius: 6px; background: #e6f8f5; color: var(--primary-dark); font-size: 11px; font-weight: 700; }
+.badge-phonetic { display: none; }
+.field-input { width: 100%; padding: 11px 14px; border-radius: var(--radius-sm); border: 1.5px solid #e2e8f0; background: #f8fafc; font-family: 'Prompt', sans-serif; font-size: 13.5px; color: var(--text); outline: none; transition: border-color 0.2s, background 0.2s; }
+.field-input:focus { border-color: var(--primary); background: #fff; box-shadow: 0 0 0 2px rgba(13,148,136,0.1); }
+.field-input.error { border-color: #f87171; background: #fff5f5; }
+.field-input::placeholder { color: #cbd5e1; }
+.field-error { font-size: 11px; color: #ef4444; min-height: 14px; }
+.auto-preview { background: linear-gradient(135deg,#f0fdf9,#e6f8f5); border: 1px solid var(--primary-light); border-radius: var(--radius-sm); padding: 12px 14px; display: none; }
+.auto-preview.visible { display: block; }
+.auto-preview-title { font-size: 11px; font-weight: 700; color: var(--primary); margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+.auto-preview-row { margin-bottom: 8px; }
+.auto-preview-row:last-child { margin-bottom: 0; }
+.auto-preview-label { font-size: 10px; font-weight: 600; color: var(--text-hint); margin-bottom: 2px; }
+.auto-preview-text { font-size: 13px; color: var(--text); font-weight: 500; }
+.auto-preview-phonetic { font-size: 11px; color: var(--phonetic-color); font-style: italic; padding: 2px 6px; background: var(--phonetic-bg); border-radius: 4px; display: inline-block; margin-top: 3px; }
+.auto-preview-loading { display: flex; align-items: center; gap: 6px; color: var(--primary); font-size: 12px; }
+.modal-footer { padding: 14px 20px 18px; display: flex; gap: 10px; }
+.btn-cancel { flex: 1; padding: 12px; border-radius: 50px; border: 1.5px solid var(--border); background: #fff; font-family: 'Prompt', sans-serif; font-size: 14px; font-weight: 500; color: var(--text-sub); cursor: pointer; transition: background 0.2s; }
+.btn-cancel:hover { background: #f8fafc; }
+.btn-confirm { flex: 2; padding: 12px; border-radius: 50px; border: none; background: var(--gradient); font-family: 'Prompt', sans-serif; font-size: 14px; font-weight: 700; color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 7px; box-shadow: var(--shadow-btn); transition: opacity 0.2s; }
+.btn-confirm:hover { opacity: 0.9; }
+.btn-confirm:disabled { opacity: 0.6; cursor: not-allowed; }
+.btn-field-mic { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 6px; background: #e6f8f5; color: var(--primary); border: none; font-size: 12px; cursor: pointer; transition: all 0.2s; margin-left: auto; flex-shrink: 0; }
+.btn-field-mic:hover { background: #ccfbf1; }
+.btn-field-mic.recording { background: #ef4444; color: #fff; animation: pulse-red 1.5s infinite; }
 
-function openEditModal(id) {
-  editingId = id;
-  const p = currentScenario().phrases.find(x => x.id === id);
-  if (!p) return;
-  document.getElementById('modalTitle').textContent = 'แก้ไขประโยค';
-  document.getElementById('f-en').value = p.en || '';
-  document.getElementById('f-th').value = p.th || '';
-  document.getElementById('f-zh').value = p.zh || '';
-  document.getElementById('f-phonetic-en').value = p.phonetic_en || '';
-  document.getElementById('f-phonetic-zh').value = p.phonetic_zh || '';
-  document.getElementById('f-ctx-th').value = p.contextTh || '';
-  document.getElementById('f-ctx-en').value = p.context || '';
-  document.getElementById('autoPreview').classList.remove('visible');
-  document.getElementById('modalOverlay').classList.add('open');
-}
-
-function closeModal() {
-  document.getElementById('modalOverlay').classList.remove('open');
-}
-
-async function onModalThaiInput() {
-  const th = document.getElementById('f-th').value.trim();
-  if (th.length < 2) return;
-  
-  const autoWrap = document.getElementById('autoPreview');
-  const content = document.getElementById('autoPreviewContent');
-  autoWrap.classList.add('visible');
-  content.innerHTML = '<div class="auto-preview-loading"><div class="translate-spinner"></div> AI กำลังแปลและสร้างคำอ่าน...</div>';
-
-  try {
-    const [en, zh] = await Promise.all([
-      gTranslate(th, 'th', 'en'),
-      gTranslate(th, 'th', 'zh-CN')
-    ]);
-    const phonEn = genPhonetics(en);
-    
-    const fEn = document.getElementById('f-en');
-    const fZh = document.getElementById('f-zh');
-    const fPhonEn = document.getElementById('f-phonetic-en');
-    const fCtxTh = document.getElementById('f-ctx-th');
-    const fCtxEn = document.getElementById('f-ctx-en');
-
-    if (fEn && !fEn.value) fEn.value = en;
-    if (fZh && !fZh.value) fZh.value = zh;
-    if (fPhonEn && !fPhonEn.value) fPhonEn.value = phonEn;
-
-    const ctx = getSmartContext(th);
-    if (fCtxTh && !fCtxTh.value) fCtxTh.value = ctx.th;
-    if (fCtxEn && !fCtxEn.value) fCtxEn.value = ctx.en;
-
-    document.getElementById('autoPreviewContent').innerHTML = `
-      <div class="auto-preview-row">
-        <div class="auto-preview-label">🇬🇧 English</div>
-        <div class="auto-preview-text" onclick="speakText('${ea(en)}','en')" style="cursor:pointer">
-          <i class="fas fa-volume-up" style="color:var(--primary);margin-right:4px"></i> ${esc(en)}
-        </div>
-        ${phonEn ? `<span class="auto-preview-phonetic">${esc(phonEn)}</span>` : ''}
-      </div>
-      <div class="auto-preview-row">
-        <div class="auto-preview-label">🇨🇳 中文</div>
-        <div class="auto-preview-text" onclick="speakText('${ea(zh)}','zh')" style="cursor:pointer">
-          <i class="fas fa-volume-up" style="color:var(--primary);margin-right:4px"></i> ${esc(zh)}
-        </div>
-      </div>
-    `;
-  } catch (e) {
-    content.innerHTML = '<div style="color:#ef4444;font-size:12px">ขออภัย ระบบแปลอัตโนมัติขัดข้อง</div>';
-  }
-}
-
-function savePhrase() {
-  const en = document.getElementById('f-en').value.trim();
-  const th = document.getElementById('f-th').value.trim();
-  const zh = document.getElementById('f-zh').value.trim();
-  
-  if (!en || !th) {
-    if (!en) document.getElementById('err-en').textContent = 'กรุณาระบุภาษาอังกฤษ';
-    if (!th) document.getElementById('err-th').textContent = 'กรุณาระบุภาษาไทย';
-    return;
-  }
-
-  const s = currentScenario();
-  const newP = {
-    id: editingId || 'p' + Date.now(),
-    en, th, zh,
-    phonetic_en: document.getElementById('f-phonetic-en').value.trim(),
-    phonetic_zh: document.getElementById('f-phonetic-zh').value.trim(),
-    contextTh: document.getElementById('f-ctx-th').value.trim(),
-    context: document.getElementById('f-ctx-en').value.trim()
-  };
-
-  if (editingId) {
-    const idx = s.phrases.findIndex(x => x.id === editingId);
-    if (idx !== -1) s.phrases[idx] = newP;
-  } else {
-    s.phrases.push(newP);
-  }
-
-  save();
-  renderPhrases();
-  renderPracticeSelect();
-  renderQuickPhrases();
-  closeModal();
-}
-
-/* ── Delete Modal ────────────────────────────────────────── */
-let deletingId = null;
-function openDeleteModal(id) {
-  deletingId = id;
-  const p = currentScenario().phrases.find(x => x.id === id);
-  if (!p) return;
-  document.getElementById('deletePhraseText').textContent = p.en;
-  document.getElementById('deleteModal').classList.add('open');
-}
-function closeDeleteModal() { document.getElementById('deleteModal').classList.remove('open'); }
-function confirmDelete() {
-  const s = currentScenario();
-  s.phrases = s.phrases.filter(x => x.id !== deletingId);
-  save();
-  renderPhrases();
-  renderPracticeSelect();
-  renderQuickPhrases();
-  closeDeleteModal();
-}
-
-/* ── Practice Mode ───────────────────────────────────────── */
-function renderPracticeSelect() {
-  const sel = document.getElementById('practiceSelect');
-  const s = currentScenario();
-  let html = `<option value="">-- เลือกประโยคที่จะฝึก --</option>`;
-  s.phrases.forEach(p => {
-    html += `<option value="${p.id}|en">🇬🇧 ${p.en}</option>`;
-    if (p.zh) html += `<option value="${p.id}|zh">🇨🇳 ${p.zh}</option>`;
-  });
-  sel.innerHTML = html;
-}
-
-function onPracticeChange() {
-  const val = document.getElementById('practiceSelect').value;
-  if (!val) {
-    document.getElementById('targetBox').style.display = 'none';
-    return;
-  }
-  const [id, lang] = val.split('|');
-  const foundPhrase = currentScenario().phrases.find(x => x.id === id);
-  const text = lang === 'en' ? foundPhrase.en : foundPhrase.zh;
-  
-  document.getElementById('targetBox').style.display = 'flex';
-  document.getElementById('targetText').textContent = text;
-  
-  const pe = document.getElementById('targetPhonetic');
-  const phoneticKey = lang === 'en' ? 'phonetic_en' : 'phonetic_zh';
-  if (foundPhrase && foundPhrase[phoneticKey]) {
-    pe.textContent = foundPhrase[phoneticKey];
-    pe.style.display = 'block';
-  } else { pe.style.display = 'none'; }
-  
-  document.getElementById('scoreBox').style.display = 'none';
-  document.getElementById('recResult').style.display = 'none';
-  document.getElementById('recPlaceholder').style.display = '';
-}
-
-function startPracticeRec() {
-  const val = document.getElementById('practiceSelect').value;
-  if (!val) return;
-  const [id, lang] = val.split('|');
-  const foundPhrase = currentScenario().phrases.find(x => x.id === id);
-  const target = lang === 'en' ? foundPhrase.en : foundPhrase.zh;
-  
-  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!SR) { alert('เบราว์เซอร์นี้ไม่รองรับการจำเสียง'); return; }
-  
-  const rec = new SR();
-  rec.lang = lang === 'en' ? 'en-US' : 'zh-CN';
-  const btn = document.getElementById('practiceMicBtn');
-  
-  rec.onstart = () => {
-    btn.classList.add('recording');
-    document.getElementById('recPlaceholder').textContent = 'กำลังฟัง...';
-  };
-  
-  rec.onresult = (e) => {
-    const result = e.results[0][0].transcript;
-    showPracticeResult(target, result, lang);
-  };
-  
-  rec.onend = () => {
-    btn.classList.remove('recording');
-  };
-  
-  rec.start();
-}
-
-function showPracticeResult(target, result, lang) {
-  document.getElementById('recPlaceholder').style.display = 'none';
-  const resEl = document.getElementById('recResult');
-  resEl.style.display = 'block';
-  resEl.textContent = `คุณพูดว่า: "${result}"`;
-
-  const score = calcScore(target, result);
-  const scoreBox = document.getElementById('scoreBox');
-  scoreBox.style.display = 'block';
-  document.getElementById('scoreNum').textContent = score;
-  document.getElementById('scoreBar').style.width = score + '%';
-  
-  scoreBox.className = 'score-box ' + (score > 80 ? 'good' : score > 50 ? 'meh' : 'bad');
-  
-  renderWordAnalysis(target, result, lang);
-}
-
-function calcScore(t, r) {
-  const clean = s => s.toLowerCase().replace(/[.,?!]/g, '').trim();
-  const t1 = clean(t).split(' '), t2 = clean(r).split(' ');
-  let matches = 0;
-  t1.forEach(w => { if (t2.includes(w)) matches++; });
-  return Math.round((matches / t1.length) * 100);
-}
-
-function renderWordAnalysis(target, result, lang) {
-  const wrap = document.getElementById('wordAnalysis');
-  const clean = s => s.toLowerCase().replace(/[.,?!]/g, '').trim();
-  const tWords = lang === 'en' ? target.split(' ') : target.split('');
-  const rWords = clean(result).split(lang === 'en' ? ' ' : '');
-  
-  let html = `<div class="word-analysis-title">วิเคราะห์ราย${lang === 'en' ? 'คำ' : 'ตัวอักษร'}:</div><div class="word-tokens">`;
-  tWords.forEach(w => {
-    const isCorrect = rWords.includes(clean(w));
-    html += `<div class="word-token ${isCorrect ? 'correct' : 'wrong'}" onclick="speakText('${ea(w)}','${lang}')">
-      ${esc(w)}
-    </div>`;
-  });
-  html += `</div>`;
-  wrap.innerHTML = html;
-}
-
-/* ── Role Play ───────────────────────────────────────────── */
-function initChat() {
-  chatHistory = [];
-  const box = document.getElementById('chatBox');
-  if (box) {
-    box.innerHTML = '';
-    const scenario = rolePlayScenarios[activeRolePlayId];
-    const patient = scenario.patient;
-    const welcomeEn = `Hello! I'm ${patient.name}. I'm here because I have ${patient.illness.toLowerCase()}. Can you help me?`;
-    const welcomeTh = `สวัสดีค่ะ/ครับ ผม/ฉันชื่อ ${patient.name} ที่มาวันนี้เพราะมีอาการ ${scenario.title.split('(')[0].trim()} ช่วยหน่อยได้ไหมคะ/ครับ?`;
-    appendMsg('ai', welcomeEn, welcomeTh);
-  }
-  renderRolePlaySelector();
-}
-
-function selectRolePlay(id) {
-  activeRolePlayId = id;
-  initChat();
-}
-
-function renderRolePlaySelector() {
-  const wrap = document.getElementById('rolePlaySelector');
-  if (!wrap) return;
-  wrap.innerHTML = Object.keys(rolePlayScenarios).map(id => {
-    const s = rolePlayScenarios[id];
-    const active = id === activeRolePlayId ? 'active' : '';
-    return `<div class="rp-option ${active}" onclick="selectRolePlay('${id}')">
-      <i class="fas ${s.icon}"></i>
-      <span>${s.title}</span>
-    </div>`;
-  }).join('');
-}
-
-function resetChat() { initChat(); }
-
-async function sendChat() {
-  const input = document.getElementById('chatInput');
-  const text = input.value.trim();
-  if (!text) return;
-  input.value = '';
-  
-  chatHistory.push({ role: 'user', content: text });
-  appendMsg('user', text);
-  
-  const typId = appendTyping();
-  
-  try {
-    let reply;
-    if (geminiApiKey) {
-      reply = await getGeminiReply(text);
-    } else {
-      const localReply = getAIReply(text);
-      reply = { en: localReply.en, th: localReply.th };
-    }
-    
-    removeTyping(typId);
-    chatHistory.push({ role: 'assistant', content: reply.en });
-    appendMsg('ai', reply.en, reply.th);
-    speakText(reply.en, 'en');
-  } catch (error) {
-    console.error('Chat Error:', error);
-    removeTyping(typId);
-    const fallback = getAIReply(text);
-    appendMsg('ai', fallback.en, fallback.th);
-    speakText(fallback.en, 'en');
-  }
-}
-
-async function getGeminiReply(userInput) {
-  const scenario = rolePlayScenarios[activeRolePlayId];
-  const systemPrompt = `${scenario.prompt} 
-You are currently at a hospital in Thailand talking to a nurse or medical staff.
-Rules:
-1. Respond naturally like a patient in pain or distress.
-2. Stay strictly within your assigned symptoms and history.
-3. If asked about pain scale (1-10), be consistent with your role.
-4. Keep responses short (1-3 sentences).
-5. IMPORTANT: You must provide your response in a JSON format with two fields: "en" (English response) and "th" (Thai translation).
-Example: {"en": "Yes, it hurts a lot right here.", "th": "ใช่ค่ะ เจ็บตรงนี้มากเลย"}
-6. Stay in character.`;
-
-  const history = chatHistory.slice(-6).map(msg => ({
-    role: msg.role === 'user' ? 'user' : 'model',
-    parts: [{ text: msg.content }]
-  }));
-
-  const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiApiKey}`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      contents: [
-        { role: 'user', parts: [{ text: systemPrompt }] },
-        ...history
-      ],
-      generationConfig: {
-        response_mime_type: "application/json",
-      }
-    })
-  });
-
-  if (!response.ok) throw new Error('Gemini API Error');
-  const data = await response.json();
-  const content = data.candidates[0].content.parts[0].text;
-  return JSON.parse(content);
-}
-
-const aiScenarios = {
-  stomach: { active: false, replies: [
-    { en: "It's right here in my lower stomach. It hurts so much.", th: "มันปวดตรงท้องน้อยตรงนี้ค่ะ ปวดมากเลย" },
-    { en: "It's a sharp pain, like something is stabbing me.", th: "มันปวดแปลบๆ เหมือนมีอะไรมาแทงเลยค่ะ" }
-  ]},
-  headache: { active: false, replies: [
-    { en: "My head is spinning and I feel very dizzy.", th: "รู้สึกเวียนหัวเหมือนโลกหมุนเลยค่ะ" },
-    { en: "I've had this headache since this morning.", th: "ปวดหัวแบบนี้มาตั้งแต่เช้าแล้วค่ะ" }
-  ]}
-};
-
-function getAIReply(t) {
-  t = t.toLowerCase();
-  if (t.includes('hello') || t.includes('hi') || t.includes('สวัสดี')) {
-    return { en: "Hello nurse, I'm not feeling well. My stomach hurts.", th: "สวัสดีค่ะคุณพยาบาล ฉันรู้สึกไม่ค่อยสบาย ปวดท้องมากเลยค่ะ" };
-  }
-  if (t.includes('where') || t.includes('hurt') || t.includes('ปวดตรงไหน')) {
-    if (t.includes('ท้อง') || t.includes('stomach')) {
-      aiScenarios.stomach.active = true;
-      return aiScenarios.stomach.replies[0];
-    }
-    if (t.includes('หัว') || t.includes('head')) {
-      aiScenarios.headache.active = true;
-      return aiScenarios.headache.replies[0];
-    }
-    return { en: "It hurts in my chest and I find it hard to breathe sometimes.", th: "เจ็บหน้าอกและบางครั้งหายใจลำบากค่ะ" };
-  }
-  if (/scale|score|1 to 10|ปวดมากไหม|คะแนน/i.test(t)) {
-    return { en: "I would say it's an 8 out of 10. It's very severe.", th: "ประมาณ 8 เต็ม 10 ค่ะ ปวดรุนแรงมาก" };
-  }
-  if (/medication|medicine|drug|ยา|กิน|taking/i.test(t)) {
-    return { en: "I took some aspirin two hours ago, but it didn't help at all.", th: "ทานแอสไพรินไปเมื่อ 2 ชั่วโมงก่อน แต่ไม่ช่วยเลยค่ะ" };
-  }
-  return { 
-    en: "I'm sorry, I'm in a lot of pain and can't understand well. Could you explain that again simply?", 
-    th: "ขอโทษนะคะ ฉันปวดมากจนไม่ค่อยเข้าใจ ช่วยอธิบายง่ายๆ อีกรอบได้ไหมคะ?" 
-  };
-}
-
-function appendMsg(role, en, th = '') {
-  const box = document.getElementById('chatBox');
-  const d = document.createElement('div');
-  d.className = 'msg ' + role;
-  if (role === 'ai') {
-    d.innerHTML = `<div class="msg-avatar"><i class="fas fa-robot"></i></div>
-      <div class="msg-content">
-        <div class="msg-bubble">${esc(en)}</div>
-        ${th ? `<div class="msg-hint">${esc(th)}</div>` : ''}
-        <button class="msg-listen" onclick="speakText('${ea(en)}','en')">▶ ฟัง</button>
-      </div>`;
-  } else {
-    d.innerHTML = `<div class="msg-content"><div class="msg-bubble">${esc(en)}</div></div>
-      <div class="msg-user-avatar"><i class="fas fa-user-nurse"></i></div>`;
-  }
-  box.appendChild(d);
-  box.scrollTop = box.scrollHeight;
-}
-
-let _tc = 0;
-function appendTyping() {
-  const id = 't-' + (++_tc), box = document.getElementById('chatBox');
-  const d = document.createElement('div'); d.className = 'msg ai'; d.id = id;
-  d.innerHTML = `<div class="msg-avatar"><i class="fas fa-robot"></i></div>
-    <div class="msg-content"><div class="typing-dots"><span></span><span></span><span></span></div></div>`;
-  box.appendChild(d); box.scrollTop = box.scrollHeight; return id;
-}
-function removeTyping(id) { const el = document.getElementById(id); if (el) el.remove(); }
-
-function toggleChatMic() {
-  const btn = document.getElementById('chatMicBtn');
-  if (isChatMic) { recRef && recRef.stop(); return; }
-  const SR = window.SpeechRecognition || window.webkitSpeechRecognition; if (!SR) return;
-  const rec = new SR(); rec.lang = 'th-TH'; recRef = rec;
-  rec.onstart = () => { isChatMic = true; btn.classList.add('recording'); };
-  rec.onresult = (e) => { document.getElementById('chatInput').value = e.results[0][0].transcript; setTimeout(sendChat, 80); };
-  rec.onend = () => { isChatMic = false; btn.classList.remove('recording'); };
-  rec.start();
-}
-
-/* ── Translate ────────────────────────────────────────────── */
-function toggleTranslateMic() {
-  const btn = document.getElementById('translateMicBtn');
-  const SR = window.SpeechRecognition || window.webkitSpeechRecognition; if (!SR) return;
-  const lang = document.getElementById('fromLang').value;
-  const rec = new SR(); rec.lang = lang === 'th' ? 'th-TH' : lang === 'en' ? 'en-US' : 'zh-CN'; recRef = rec;
-  rec.onstart = () => btn.classList.add('recording');
-  rec.onresult = (e) => { document.getElementById('translateInput').value = e.results[0][0].transcript; onTranslateInput(); };
-  rec.onend = () => btn.classList.remove('recording');
-  rec.start();
-}
-function onTranslateInput() {
-  const text = document.getElementById('translateInput').value;
-  document.getElementById('inputSpeakBtn').style.display = text ? 'flex' : 'none';
-  clearTimeout(translateDebounce);
-  if (!text.trim()) { setTransOutput(''); return; }
-  setTransOutputLoading();
-  translateDebounce = setTimeout(() => doTranslate(text), 600);
-}
-async function doTranslate(text, from, to) {
-  try {
-    const r = await gTranslate(text, from || document.getElementById('fromLang').value, to || document.getElementById('toLang').value);
-    if (!from) setTransOutput(r);
-    return r;
-  } catch { if (!from) setTransOutput('', '[ไม่สามารถเชื่อมต่อได้]'); }
-}
-async function gTranslate(t, f, to) {
-  const u = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${f}&tl=${to}&dt=t&q=${encodeURIComponent(t)}`;
-  const res = await fetch(u); const data = await res.json();
-  return data[0].map(x => x[0]).join('');
-}
-function genPhonetics(en) {
-  return en.toLowerCase().replace(/[.,?!]/g, '').split(' ').map(w => {
-    const m = { 'are':'อาร์', 'you':'ยู', 'here':'เฮียร์', 'for':'ฟอร์', 'a':'อะ', 'check-up':'เช็ค-อัพ', 'sorry':'ซอ-รี', 'the':'เดอะ', 'delay':'ดี-เลย์', 'please':'พลีส', 'follow':'ฟอล-โล', 'me':'มี' };
-    return m[w] || w;
-  }).join(' ');
-}
-function getSmartContext(th) {
-  return { th: "ใช้เมื่อต้องการสอบถามอาการเบื้องต้น", en: "Use when asking for initial symptoms" };
-}
-function setTransOutputLoading() {
-  document.getElementById('translateOutput').innerHTML = `<div class="translate-loading"><div class="translate-spinner"></div> กำลังแปล...</div>`;
-}
-function setTransOutput(text, err = '') {
-  const el = document.getElementById('translateOutput');
-  const toLang = document.getElementById('toLang').value;
-  if (!text && !err) { el.innerHTML = '<p class="translate-placeholder">คำแปลจะปรากฏที่นี่...</p>'; return; }
-  if (err) { el.innerHTML = `<p class="translate-placeholder">${esc(err)}</p>`; return; }
-  el.innerHTML = `<p class="translate-result">${esc(text)}</p>
-    <div class="translate-out-actions">
-      <button class="btn-out-action" onclick="speakText('${ea(text)}','${toLang}')" title="ฟัง"><i class="fas fa-volume-up"></i> ฟัง</button>
-      <button class="btn-out-action" onclick="copyTrans('${ea(text)}')" title="คัดลอก" id="copyBtn"><i class="fas fa-copy"></i> คัดลอก</button>
-      <button class="btn-out-action" onclick="addTranslatedToPhrase('${ea(text)}')" title="เพิ่มในระบบ"><i class="fas fa-plus"></i> เพิ่มประโยค</button>
-    </div>`;
-}
-function addTranslatedToPhrase(translatedText) {
-  const input = document.getElementById('translateInput').value.trim();
-  const fromLang = document.getElementById('fromLang').value;
-  const toLang = document.getElementById('toLang').value;
-  openAddModal();
-  setTimeout(() => {
-    if (fromLang === 'th') {
-      document.getElementById('f-th').value = input;
-      if (toLang === 'en') document.getElementById('f-en').value = translatedText;
-      else if (toLang === 'zh-CN') document.getElementById('f-zh').value = translatedText;
-      onModalThaiInput();
-    } else if (fromLang === 'en') {
-      document.getElementById('f-en').value = input;
-      if (toLang === 'th') document.getElementById('f-th').value = translatedText;
-      if (document.getElementById('f-en').value) {
-        document.getElementById('f-phonetic-en').value = genPhonetics(input);
-      }
-    }
-  }, 100);
-}
-function speakTranslateInput() { speakText(document.getElementById('translateInput').value, document.getElementById('fromLang').value); }
-function copyTrans(text) {
-  navigator.clipboard.writeText(text).then(() => {
-    const btn = document.getElementById('copyBtn'); if (!btn) return;
-    btn.innerHTML = '<i class="fas fa-check"></i> คัดลอกแล้ว';
-    setTimeout(() => { if (btn) btn.innerHTML = '<i class="fas fa-copy"></i> คัดลอก'; }, 1800);
-  });
-}
-function swapLangs() {
-  const f = document.getElementById('fromLang'), t = document.getElementById('toLang');
-  const cur = document.querySelector('.translate-result'), inp = document.getElementById('translateInput');
-  const swapText = cur ? cur.textContent : '';
-  const tmp = f.value; f.value = t.value; t.value = tmp;
-  if (swapText) { inp.value = swapText; document.getElementById('inputSpeakBtn').style.display = 'flex'; onTranslateInput(); }
-}
-
-function renderQuickPhrases() {
-  const s = currentScenario();
-  const wrap = document.getElementById('quickPhrases');
-  if (!s.phrases.length) { wrap.innerHTML = ''; return; }
-    wrap.innerHTML = `<div class="quick-label">ประโยคด่วน · ${esc(s.labelTh)}</div>
-    ${s.phrases.slice(0, 3).map(p => `
-      <div class="quick-phrase-item">
-        <div class="q-en" onclick="speakText('${ea(p.en)}','en')" style="cursor:pointer">
-          <i class="fas fa-volume-up" style="color:var(--primary);margin-right:4px"></i> ${esc(p.en)}
-        </div>
-        ${p.phonetic_en ? `<div class="q-phonetic-en">${esc(p.phonetic_en)}</div>` : ''}
-        <div class="q-th">🇹🇭 ${esc(p.th)}</div>
-        <div class="q-zh" onclick="speakText('${ea(p.zh)}','zh')" style="cursor:pointer;margin-top:2px">
-          <i class="fas fa-volume-up" style="color:var(--primary);margin-right:4px"></i> ${esc(p.zh)}
-        </div>
-        ${p.phonetic_zh ? `<div class="q-phonetic-zh">${esc(p.phonetic_zh)}</div>` : ''}
-      </div>`).join('')}`;
-}
-
-/* ── Tabs ─────────────────────────────────────────────────── */
-function switchTab(tabId, btnEl) {
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-  if (btnEl) btnEl.classList.add('active');
-  else { const b = document.querySelector('[data-tab="' + tabId + '"]'); if (b) b.classList.add('active'); }
-  const panel = document.getElementById('panel-' + tabId); if (panel) panel.classList.add('active');
-}
-
-/* ── Speech (Android-fixed) ──────────────────────────────── */
-function speakText(text, lang) {
-  if (!text) return;
-  const synth = window.speechSynthesis;
-  if (!synth) return;
-  
-  synth.cancel();
-
-  const doSpeak = () => {
-    const utt = new SpeechSynthesisUtterance(text);
-    const langMap = { 'th': 'th-TH', 'en': 'en-US', 'zh': 'zh-CN', 'zh-CN': 'zh-CN' };
-    const targetLang = langMap[lang] || lang || 'en-US';
-    
-    const voices = synth.getVoices();
-    let voice = voices.find(v => v.lang.replace('_', '-') === targetLang);
-    if (!voice) voice = voices.find(v => v.lang.startsWith(targetLang.split('-')[0]));
-    
-    if (voice) utt.voice = voice;
-    utt.lang = targetLang;
-    utt.rate = 0.9;
-    utt.pitch = 1.0;
-    utt.volume = 1.0;
-
-    if (synth.paused) synth.resume();
-    synth.speak(utt);
-  };
-
-  if (synth.getVoices().length > 0) {
-    doSpeak();
-  } else {
-    synth.onvoiceschanged = doSpeak;
-    setTimeout(doSpeak, 300);
-  }
-}
-
-/* ── Helpers ─────────────────────────────────────────────── */
-function esc(s) {
-  if (!s) return '';
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
-}
-function ea(s) {
-  if (!s) return '';
-  return String(s).replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/"/g,'\\"');
-}
-
-window.addEventListener('DOMContentLoaded', init);
+/* Delete Modal */
+.delete-modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.55); backdrop-filter: blur(4px); z-index: 1100; align-items: center; justify-content: center; padding: 16px; }
+.delete-modal-overlay.open { display: flex; }
+.delete-modal { background: #fff; border-radius: 20px; padding: 24px 20px 20px; max-width: 360px; width: 100%; box-shadow: 0 24px 64px rgba(0,0,0,0.18); animation: slide-up 0.22s cubic-bezier(0.4,0,0.2,1); }
+.delete-modal-icon { width: 56px; height: 56px; border-radius: 50%; background: #fee2e2; display: flex; align-items: center; justify-content: center; font-size: 22px; color: #dc2626; margin: 0 auto 14px; }
+.delete-modal-title { font-size: 16px; font-weight: 700; color: var(--text); text-align: center; margin-bottom: 8px; }
+.delete-modal-phrase { font-size: 13px; color: var(--primary-dark); background: #f0fdf9; border: 1px solid var(--primary-light); border-radius: 8px; padding: 10px 12px; margin: 10px 0 14px; text-align: center; font-weight: 500; line-height: 1.5; }
+.delete-modal-sub { font-size: 12px; color: var(--text-hint); text-align: center; margin-bottom: 18px; }
+.delete-modal-actions { display: flex; gap: 10px; }
+.btn-delete-cancel { flex: 1; padding: 11px; border-radius: 50px; border: 1.5px solid var(--border); background: #fff; font-family: 'Prompt', sans-serif; font-size: 14px; color: var(--text-sub); cursor: pointer; transition: background 0.2s; }
+.btn-delete-cancel:hover { background: #f8fafc; }
+.btn-delete-confirm { flex: 1; padding: 11px; border-radius: 50px; border: none; background: linear-gradient(135deg,#dc2626,#ef4444); font-family: 'Prompt', sans-serif; font-size: 14px; font-weight: 700; color: #fff; cursor: pointer; box-shadow: 0 4px 14px rgba(220,38,38,0.28); transition: opacity 0.2s; }
+.btn-delete-confirm:hover { opacity: 0.9; }
