@@ -99,9 +99,9 @@ body { font-family: 'Prompt', sans-serif; background: var(--bg); color: var(--te
 .phrase-zh-text { font-size: 12px; color: var(--text-sub); }
 
 /* Purple Phonetics */
-.phrase-phonetic { font-size: 11px; color: var(--phonetic-color); font-weight: 500; font-style: italic; margin-top: 4px; padding: 3px 8px; background: var(--phonetic-bg); border-radius: 5px; display: inline-block; border-left: 2px solid var(--phonetic-color); }
-.target-phonetic { font-size: 13px; color: var(--phonetic-color); font-weight: 600; margin-top: 8px; padding: 8px 12px; background: var(--phonetic-bg); border-radius: 8px; border-left: 3px solid var(--phonetic-color); display: block; }
-.q-phonetic-en, .q-phonetic-zh { font-size: 10px; color: var(--phonetic-color); font-weight: 500; margin-top: 2px; padding: 2px 6px; background: var(--phonetic-bg); border-radius: 3px; display: inline-block; }
+.phrase-phonetic { font-size: 11px; color: var(--phonetic-color); font-weight: 500; font-style: italic; margin-top: 4px; padding: 3px 10px; background: var(--phonetic-bg); border-radius: 50px; display: inline-block; }
+.target-phonetic { font-size: 13px; color: var(--phonetic-color); font-weight: 600; margin-top: 8px; padding: 8px 14px; background: var(--phonetic-bg); border-radius: 50px; display: inline-block; }
+.q-phonetic-en, .q-phonetic-zh { font-size: 10px; color: var(--phonetic-color); font-weight: 500; margin-top: 2px; padding: 2px 8px; background: var(--phonetic-bg); border-radius: 50px; display: inline-block; }
 
 .phrase-actions { display: flex; flex-direction: column; gap: 5px; flex-shrink: 0; }
 .btn-icon { width: 32px; height: 32px; border-radius: 10px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 13px; transition: all 0.18s ease; font-family: 'Prompt', sans-serif; font-weight: 700; }
@@ -304,6 +304,20 @@ body { font-family: 'Prompt', sans-serif; background: var(--bg); color: var(--te
 .q-th { color: var(--text); margin-top: 4px; font-size: 11px; }
 .q-zh { color: var(--text); margin-top: 2px; font-size: 11px; }
 
+/* Gemini Config */
+.gemini-config { background: #f8fafc; border: 1px solid var(--border); border-radius: var(--radius-sm); margin-bottom: 12px; overflow: hidden; }
+.gemini-config-header { padding: 10px 14px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; font-size: 12px; font-weight: 600; color: var(--text-sub); background: #f1f5f9; }
+.gemini-config-header:hover { background: #e2e8f0; }
+.gemini-config-body { display: none; padding: 12px; border-top: 1px solid var(--border); }
+.gemini-config-body.open { display: block; }
+.gemini-hint { font-size: 11px; color: var(--text-hint); margin-bottom: 8px; }
+.gemini-input-group { display: flex; gap: 8px; }
+.gemini-input-group input { flex: 1; padding: 8px 12px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 12px; outline: none; }
+.gemini-input-group input:focus { border-color: var(--primary); }
+.btn-get-key { padding: 8px 12px; background: var(--primary-light); color: var(--primary-dark); border-radius: 8px; font-size: 11px; font-weight: 600; text-decoration: none; display: flex; align-items: center; white-space: nowrap; }
+.gemini-status { font-size: 11px; margin-top: 8px; }
+.gemini-status.active { color: #16a34a; font-weight: 600; }
+
 /* Footer */
 .app-footer { text-align: center; font-size: 12px; color: var(--text-hint); margin-top: 4px; }
 
@@ -330,7 +344,7 @@ body { font-family: 'Prompt', sans-serif; background: var(--bg); color: var(--te
 .badge-lang.th { background: #fee2e2; color: #b91c1c; }
 .badge-lang.zh { background: #fef3c7; color: #b45309; }
 .badge-ctx { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 20px; border-radius: 6px; background: #e6f8f5; color: var(--primary-dark); font-size: 11px; font-weight: 700; }
-.badge-phonetic { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 20px; border-radius: 4px; background: var(--phonetic-bg); color: var(--phonetic-color); font-size: 11px; font-weight: 600; }
+.badge-phonetic { display: none; }
 .field-input { width: 100%; padding: 11px 14px; border-radius: var(--radius-sm); border: 1.5px solid #e2e8f0; background: #f8fafc; font-family: 'Prompt', sans-serif; font-size: 13.5px; color: var(--text); outline: none; transition: border-color 0.2s, background 0.2s; }
 .field-input:focus { border-color: var(--primary); background: #fff; box-shadow: 0 0 0 2px rgba(13,148,136,0.1); }
 .field-input.error { border-color: #f87171; background: #fff5f5; }
