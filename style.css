@@ -185,10 +185,33 @@ body { font-family: 'Prompt', sans-serif; background: var(--bg); color: var(--te
 .score-box.bad .score-bar-fill { background: linear-gradient(90deg,#ef4444,#f87171); }
 
 /* Word analysis */
-.word-analysis { margin-top: 6px; }
-.word-analysis-title { font-size: 11px; font-weight: 600; color: var(--text-sub); margin-bottom: 6px; }
-.word-tokens { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 8px; }
-.word-token { display: inline-flex; flex-direction: column; align-items: center; padding: 4px 8px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.15s; border: 1.5px solid transparent; }
+.word-analysis { margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--border); }
+.word-analysis-title { font-size: 11px; font-weight: 700; color: var(--text-sub); margin-bottom: 8px; display: flex; align-items: center; gap: 5px; }
+.word-tokens { display: flex; flex-wrap: wrap; gap: 6px; }
+.word-token { padding: 4px 10px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 4px; transition: all 0.2s; border: 1px solid transparent; }
+.word-token.correct { background: #f0fdf4; color: #16a34a; border-color: #bbf7d0; }
+.word-token.wrong { background: #fef2f2; color: #dc2626; border-color: #fecaca; }
+.word-token:active { transform: scale(0.95); }
+.token-hint { font-size: 10px; opacity: 0.7; }
+
+.wrong-tips { margin-top: 12px; display: flex; flex-direction: column; gap: 6px; }
+.wrong-tip-item { background: #f8fafc; padding: 8px 12px; border-radius: 10px; display: flex; align-items: center; gap: 8px; font-size: 12px; border-left: 3px solid #ef4444; }
+.tip-word { font-weight: 700; color: var(--text); }
+.tip-arrow { color: var(--text-hint); }
+.tip-correct { color: var(--phonetic-color); font-weight: 500; font-style: italic; flex: 1; }
+.btn-tip-listen { background: var(--phonetic-bg); color: var(--phonetic-color); border: none; padding: 4px 8px; border-radius: 6px; font-size: 10px; font-weight: 700; cursor: pointer; }
+
+/* Typing animation */
+.typing-dots { display: flex; gap: 4px; padding: 8px 12px; }
+.typing-dots span { width: 6px; height: 6px; background: var(--primary-mid); border-radius: 50%; animation: typing 1s infinite ease-in-out; }
+.typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+.typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes typing { 0%, 100% { transform: translateY(0); opacity: 0.4; } 50% { transform: translateY(-4px); opacity: 1; } }
+
+.msg-listen { background: none; border: none; color: var(--primary); font-size: 11px; font-weight: 600; cursor: pointer; padding: 4px 0; display: flex; align-items: center; gap: 4px; margin-top: 4px; }
+.msg-listen:hover { text-decoration: underline; }
+
+
 .word-token.correct { background: #f0fdf4; color: #15803d; border-color: #bbf7d0; }
 .word-token.wrong { background: #fef2f2; color: #dc2626; border-color: #fecaca; }
 .word-token.wrong:hover { background: #dc2626; color: #fff; }
