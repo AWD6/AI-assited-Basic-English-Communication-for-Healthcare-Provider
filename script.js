@@ -35,57 +35,50 @@ const defaultScenarios = [
       { id:'r12', en:'Where does it hurt?', th:'เจ็บที่ไหนคะ?', zh:'哪里疼？', phonetic_en:'แวร์ ดัซ อิท เฮิร์ท', phonetic_zh:'หน่า หลี่ เทิ่ง', context:'Locating the area of pain on patient body', contextTh:'ใช้ระบุตำแหน่งที่เจ็บปวดของผู้ป่วย' },
       { id:'r13', en:'How severe is the pain? On a scale of 1 to 10.', th:'ปวดมากแค่ไหนคะ? จากคะแนน 1 ถึง 10', zh:'疼痛有多严重？从1到10分。', phonetic_en:'เฮา ซีเวียร์ อิซ เดอะ เปน ออน อะ สเกล ออฟ วัน ทู เทน', phonetic_zh:'เทิ่งถ่ง หยว มัว หยัน จ้ง จง อี้ ต้าว ซือ่ เฝิน', context:'Assessing pain intensity using a numerical scale', contextTh:'ใช้วัดระดับความเจ็บปวดด้วยคะแนน' },
       { id:'r14', en:'Do you have a fever?', th:'คุณมีไข้ไหมคะ?', zh:'您发烧了吗？', phonetic_en:'ดู ยู แฮฟ อะ ฟีเวอร์', phonetic_zh:'หนิน ฝาเซา ลิ่ว ม่า', context:'Checking for elevated body temperature', contextTh:'ใช้ตรวจสอบอาการมีไข้' },
-      { id:'r15', en:'Are you currently taking any medication?', th:'ตอนนี้คุณกำลังทานยาอะไรอยู่ไหมคะ?', zh:'您目前在服用任何药物吗？', phonetic_en:'อาร์ ยู เคอร์เรินท์ลี เทคคิ่ง เอนี เมดิเคชัน', phonetic_zh:'หนิน มู้เฉียน ไจ่ ฝู้หยง เหรินเฮา เอี่ยวอู้ ม่า', context:'Checking current medications before treatment', contextTh:'ใช้ตรวจสอบยาที่ผู้ป่วยกำลังทานอยู่ก่อนรักษา' },
+      { id:'r15', en:'Are you currently taking any medication?', th:'ตอนนี้คุณกำลังรับประทานยาอะไรอยู่ไหมคะ?', zh:'您目前在服用任何药物吗？', phonetic_en:'อาร์ ยู เคอร์เรินท์ลี เทคคิ่ง เอนี เมดิเคชัน', phonetic_zh:'หนิน มู้เฉียน ไจ่ ฝู้หยง เหรินเฮา เอี่ยวอู้ ม่า', context:'Checking current medications before treatment', contextTh:'ใช้ตรวจสอบยาที่ผู้ป่วยกำลังทานอยู่ก่อนรักษา' },
       { id:'r16', en:'Do you have any chronic diseases?', th:'คุณมีโรคประจำตัวไหมคะ?', zh:'您有任何慢性病吗？', phonetic_en:'ดู ยู แฮฟ เอนี โครนิก ดิซีซิส', phonetic_zh:'หนิน หยวว เหรินเฮา หม่าน ซิ่ง ปิ้ง ม่า', context:'Screening for underlying chronic conditions', contextTh:'ใช้คัดกรองโรคประจำตัวของผู้ป่วย' },
-      { id:'r17', en:'Have you eaten today?', th:'วันนี้ทานอาหารแล้วยังคะ?', zh:'您今天吃饭了吗？', phonetic_en:'แฮฟ ยู อีทเทิน ทูเดย์', phonetic_zh:'หนิน จิ่นเทียน ชีฝาน ลิ่ว ม่า', context:'Asking if patient has eaten before procedures', contextTh:'ใช้ถามว่ารับประทานอาหารแล้วหรือยัง' },
+      { id:'r17', en:'Have you eaten today?', th:'วันนี้รับประทานอาหารแล้วยังคะ?', zh:'您今天吃饭了吗？', phonetic_en:'แฮฟ ยู อีทเทิน ทูเดย์', phonetic_zh:'หนิน จิ่นเทียน ชีฝาน ลิ่ว ม่า', context:'Asking if patient has eaten before procedures', contextTh:'ใช้ถามว่ารับประทานอาหารแล้วหรือยัง' },
       { id:'r18', en:'Do you smoke or drink alcohol?', th:'คุณสูบบุหรี่หรือดื่มแอลกอฮอล์ไหมคะ?', zh:'您抽烟或喝酒吗？', phonetic_en:'ดู ยู สโมค ออร์ ดริ้งค์ แอลกอฮอล', phonetic_zh:'หนิน โจวเอีย หวือ เหอ จิ่ว ม่า', context:'Lifestyle screening for health assessment', contextTh:'ใช้สอบถามพฤติกรรมสุขภาพ' },
       { id:'r19', en:'Please sign here.', th:'กรุณาเซ็นชื่อตรงนี้ด้วยค่ะ', zh:'请在这里签名。', phonetic_en:'พลีส ไซน์ เฮียร์', phonetic_zh:'ชิ่ง ไจ่ จ่างหลี่ เชียนหมิง', context:'Requesting patient signature on consent or registration forms', contextTh:'ใช้ขอลายเซ็นผู้ป่วยในแบบฟอร์มต่างๆ' },
-      { id:'r20', en:'We need to check your vital signs first.', th:'เราต้องตรวจสัญญาณชีพก่อนนะคะ', zh:'我们需要先检查您的生命体征。', phonetic_en:'วี นีด ทู เช็ก ยอร์ ไวทัล ไซนส์ เฟิร์สท์', phonetic_zh:'โว่เหมิน ซวีเอี้ยว เซียน เจียนฉา หนิน ตี่ เซิ่งหมิงตี้เจิง', context:'Explaining vital sign check before consultation', contextTh:'ใช้อธิบายขั้นตอนตรวจสัญญาณชีพก่อนพบแพทย์' }
+      { id:'r20', en:'We need to check your vital signs first.', th:'เราต้องตรวจสัญญาณชีพก่อนนะคะ', zh:'我们需要先检查您的生命体征。', phonetic_en:'วี นีด ทู เช็ก ยอร์ ไวทัล ไซน์ส เฟิร์สท์', phonetic_zh:'โว่ เหมิน ซือ่ เยี่ยว เซียน เจียนฉา หนิน ตี่ เซิงมิ่ง ตี่เจิง', context:'Informing patient about vital sign check before seeing doctor', contextTh:'ใช้แจ้งผู้ป่วยว่าต้องตรวจสัญญาณชีพก่อนพบแพทย์' }
     ]
   },
   {
     id: 'direction', labelEn: 'Direction', labelTh: 'การบอกทาง', icon: '🗺️',
     phrases: [
-      { id:'d1', en:'The pharmacy is on the first floor.', th:'ห้องยาอยู่ที่ชั้น 1 ค่ะ', zh:'药房在一楼。', phonetic_en:'เดอะ ฟาร์มาซี อิซ ออน เดอะ เฟิร์สท์ ฟลอร์', phonetic_zh:'เอี่ยวฝาง ไจ่ อี้หลาว', context:'Directing patient to the pharmacy after consultation', contextTh:'ใช้บอกทางไปห้องยาหลังพบแพทย์' },
-      { id:'d2', en:'Go straight ahead and turn left.', th:'เดินตรงไปแล้วเลี้ยวซ้ายค่ะ', zh:'一直走，然后左转。', phonetic_en:'โก สเตรท อะเฮด แอนด์ เทิร์น เลฟท์', phonetic_zh:'อี้จือ่ โจ่ว เหรินเฮา จ้วว ต์วน', context:'Giving basic directions within the hospital building', contextTh:'ใช้บอกทิศทางพื้นฐานภายในอาคารโรงพยาบาล' },
-      { id:'d3', en:'The elevator is at the end of the corridor.', th:'ลิฟต์อยู่ที่ปลายทางเดินค่ะ', zh:'电梯在走廊尽头。', phonetic_en:'เดอะ เอลิเวเตอร์ อิซ แอท เดอะ เอนด์ ออฟ เดอะ คอริดอร์', phonetic_zh:'เตียนตี้ ไจ่ โจ่วหลาง จิ่น โถว', context:'Helping patient find the elevator to another floor', contextTh:'ใช้ช่วยผู้ป่วยหาลิฟต์เพื่อขึ้น-ลงชั้น' },
-      { id:'d4', en:'The restroom is around the corner.', th:'ห้องน้ำอยู่แถวหัวมุมค่ะ', zh:'洗手间就在转角处。', phonetic_en:'เดอะ เรสรูม อิซ อะราวนด์ เดอะ คอร์เนอร์', phonetic_zh:'ซี่โซ่วเจียน จิ่วไจ่ จ้วนเจี่ยวชู่', context:'Pointing patient to the nearest restroom', contextTh:'ใช้บอกทางไปห้องน้ำที่ใกล้ที่สุด' },
-      { id:'d5', en:'Please register at the Medical Records Room, first floor.', th:'กรุณาลงทะเบียนที่ห้องเวชระเบียน ชั้น 1 ค่ะ', zh:'请在一楼病历室登记。', phonetic_en:'พลีส เรจิสเตอร์ แอท เดอะ เมดิเคิล เรคคอร์ดส รูม เฟิร์สท์ ฟลอร์', phonetic_zh:'ชิ่ง ไจ่ อี้หลาว ปิ้งลี่ซือ่ เติงจี้', context:'Directing patient to the medical records registration room', contextTh:'ใช้บอกทางไปลงทะเบียนที่ห้องเวชระเบียน' },
-      { id:'d6', en:'The cashier is on the second floor.', th:'แคชเชียร์อยู่ที่ชั้น 2 ค่ะ', zh:'收费处在二楼。', phonetic_en:'เดอะ แคชเชียร์ อิซ ออน เดอะ เซคเคินด์ ฟลอร์', phonetic_zh:'โซ่วเฟ่ยชู่ ไจ่ เอ้อร์หลาว', context:'Directing patient to pay at the cashier counter', contextTh:'ใช้บอกทางไปชำระเงินที่แคชเชียร์' },
-      { id:'d7', en:'The laboratory is on the third floor.', th:'ห้องปฏิบัติการอยู่ที่ชั้น 3 ค่ะ', zh:'化验室在三楼。', phonetic_en:'เดอะ แล็บโบระทอรี อิซ ออน เดอะ เทิร์ด ฟลอร์', phonetic_zh:'ฮวาเยี่ยนซือ่ ไจ่ ซานหลาว', context:'Directing patient to get blood or urine tests', contextTh:'ใช้บอกทางไปห้องปฏิบัติการตรวจเลือดหรือปัสสาวะ' },
-      { id:'d8', en:'The X-ray room is next to the radiology department.', th:'ห้องเอกซ์เรย์อยู่ติดกับภาควิชารังสีวิทยาค่ะ', zh:'X光室就在放射科旁边。', phonetic_en:'เดอะ เอกซ์เรย์ รูม อิซ เน็กซ์ท ทู เดอะ เรดิโอโลจี ดีพาร์ทเมินท์', phonetic_zh:'เอกซ์กวางซือ่ จิ่วไจ่ ฝางเซ่อเคอ ผั่งเบียน', context:'Directing patient for X-ray imaging', contextTh:'ใช้บอกทางไปถ่ายเอกซ์เรย์' },
-      { id:'d9', en:'Please take the stairs to the fourth floor.', th:'กรุณาขึ้นบันไดไปยังชั้น 4 ค่ะ', zh:'请走楼梯到四楼。', phonetic_en:'พลีส เทค เดอะ สแตร์ส ทู เดอะ โฟร์ท ฟลอร์', phonetic_zh:'ชิ่ง โจ่ว โหลวตี ต้าว ซือ่หลาว', context:'Directing patient to use stairs instead of elevator', contextTh:'ใช้บอกให้ผู้ป่วยใช้บันไดแทนลิฟต์' },
-      { id:'d10', en:'The outpatient department is in the main building.', th:'แผนกผู้ป่วยนอกอยู่ในอาคารหลักค่ะ', zh:'门诊部在主楼。', phonetic_en:'เดอะ เอาพาเชินท์ ดีพาร์ทเมินท์ อิซ อิน เดอะ เมน บิลดิ้ง', phonetic_zh:'เหมินเจิ้นปู้ ไจ่ จูโหลว', context:'Directing patient to outpatient clinic', contextTh:'ใช้บอกทางไปแผนกผู้ป่วยนอก' },
-      { id:'d11', en:'Turn right at the end of the hallway.', th:'เลี้ยวขวาที่ปลายทางเดินค่ะ', zh:'在走廊尽头向右转。', phonetic_en:'เทิร์น ไรท์ แอท เดอะ เอนด์ ออฟ เดอะ ฮอลเวย์', phonetic_zh:'ไจ่ โจ่วหลาง จิ่นโถว เซียงโย่วจ้วน', context:'Giving turn-right directions inside hospital', contextTh:'ใช้บอกทิศทางเลี้ยวขวาภายในโรงพยาบาล' },
-      { id:'d12', en:'The emergency room is on the ground floor near the main entrance.', th:'ห้องฉุกเฉินอยู่ที่ชั้นล่างใกล้ทางเข้าหลักค่ะ', zh:'急诊室在一楼靠近主入口处。', phonetic_en:'เดอะ อิเมอร์เจนซี รูม อิซ ออน เดอะ กราวนด์ ฟลอร์ เนียร์ เดอะ เมน เอ็นทรานซ์', phonetic_zh:'จี๋เจิ้นซือ่ ไจ่ อี้หลาว เคาจิ้น จูรู้โข่วชู่', context:'Directing a patient or visitor to the emergency room', contextTh:'ใช้บอกทางไปห้องฉุกเฉิน' },
-      { id:'d13', en:'The pediatrics department is in the children\'s building.', th:'แผนกกุมารเวชศาสตร์อยู่ในอาคารเด็กค่ะ', zh:'儿科在儿童楼。', phonetic_en:'เดอะ พีเดียทริกส์ ดีพาร์ทเมินท์ อิซ อิน เดอะ ชิลเดรนส์ บิลดิ้ง', phonetic_zh:'เอ๋อเคอ ไจ่ เอ๋อร์ถงโหลว', context:'Directing parents with children to the pediatrics ward', contextTh:'ใช้บอกทางไปแผนกกุมารเวชศาสตร์' },
-      { id:'d14', en:'The parking lot is behind the hospital.', th:'ที่จอดรถอยู่ด้านหลังโรงพยาบาลค่ะ', zh:'停车场在医院后面。', phonetic_en:'เดอะ พาร์กิ้ง ลอท อิซ บีไฮนด์ เดอะ ฮอสพิเทิล', phonetic_zh:'ถิงเชอชาง ไจ่ อี้ยวนเฮ่าเมียน', context:'Directing visitors or patients to car parking area', contextTh:'ใช้บอกทางไปที่จอดรถ' },
-      { id:'d15', en:'You can take the shuttle bus from the main entrance.', th:'คุณสามารถนั่งรถรับส่งได้จากทางเข้าหลักค่ะ', zh:'您可以从主入口乘坐班车。', phonetic_en:'ยู แคน เทค เดอะ ชัทเทิล บัส ฟรอม เดอะ เมน เอ็นทรานซ์', phonetic_zh:'หนิน เกอะ อี่ จง จูรู้โข่ว เฉิงจ้วว บานเชอ', context:'Informing patient about shuttle service between buildings', contextTh:'ใช้แจ้งผู้ป่วยเกี่ยวกับรถรับส่งระหว่างอาคาร' }
+      { id:'d1', en:'Please register at the Medical Records Room, Number 19, 1st floor, Chalerm Phra Baramee Building.', th:'ลงทะเบียนที่ห้องเวชระเบียน หมายเลข 19 ชั้น 1 อาคารเฉลิมพระบารมีค่ะ', zh:'请在 Chalerm Phra Baramee 大楼一楼19号病历室登记。', phonetic_en:'พลีส เรจิสเตอร์ แอท เดอะ เมดิเคิล เรคคอร์ดส รูม นัมเบอร์ ไนน์ทีน เฟิร์สท์ ฟลอร์ เฉลิมพระบารมี บิลดิ้ง', phonetic_zh:'ชิ่ง ไจ่ Chalerm Phra Baramee ต้าโหลว อี้หลาว ซือ่จิ่ว เฮ่า ปิ้งลี่ซือ่ เติงจี้', context:'Directing to registration', contextTh:'บอกทางไปลงทะเบียน' },
+      { id:'d2', en:'Please contact customer service centre, 1st floor, Chalerm Phra Baramee Building.', th:'กรุณาติดต่อ customer service centre ชั้น 1 อาคารเฉลิมพระบารมีค่ะ', zh:'请联系 Chalerm Phra Baramee 大楼一楼的客户服务中心。', phonetic_en:'พลีส คอนแทค คัสตอมเมอร์ เซอร์วิส เซนเทอร์ เฟิร์สท์ ฟลอร์ เฉลิมพระบารมี บิลดิ้ง', phonetic_zh:'ชิ่ง เหลียนซี่ Chalerm Phra Baramee ต้าโหลว อี้หลาว ตี่ เค้าฮู้ ฝูอู้ จงซิน', context:'Directing to customer service', contextTh:'บอกทางไปศูนย์บริการลูกค้า' },
+      { id:'d3', en:'Please contact cashier number 1 on the first floor of Sujinno Building.', th:'กรุณาติดต่อแคชเชียร์หมายเลข 1 ชั้น 1 อาคารสุจิณโณค่ะ', zh:'请联系 Sujinno 大楼一楼的1号收费处。', phonetic_en:'พลีส คอนแทค แคชเชียร์ นัมเบอร์ วัน ออน เดอะ เฟิร์สท์ ฟลอร์ ออฟ สุจิณโณ บิลดิ้ง', phonetic_zh:'ชิ่ง เหลียนซี่ Sujinno ต้าโหลว อี้หลาว ตี่ อีเฮ่า โซ่วเฟ่ยชู่', context:'Directing to cashier at Sujinno', contextTh:'บอกทางไปศูนย์รับเงินอาคารสุจิณโณ' },
+      { id:'d4', en:'Please contact cashier number 2 on the first floor of Chalerm Phra Baramee Building.', th:'กรุณาติดต่อแคชเชียร์หมายเลข 2 ชั้น 1 อาคารเฉลิมพระบารมีค่ะ', zh:'请联系 Chalerm Phra Baramee 大楼一楼的2号收费处。', phonetic_en:'พลีส คอนแทค แคชเชียร์ นัมเบอร์ ทู ออน เดอะ เฟิร์สท์ ฟลอร์ ออฟ เฉลิมพระบารมี บิลดิ้ง', phonetic_zh:'ชิ่ง เหลียนซี่ Chalerm Phra Baramee ต้าโหลว อี้หลาว ตี่ เอ้อร์เฮ่า โซ่วเฟ่ยชู่', context:'Directing to cashier at Chalerm Phra Baramee', contextTh:'บอกทางไปศูนย์รับเงินอาคารเฉลิมพระบารมี' },
+      { id:'d5', en:'Please contact cashier number 3 on the first floor of Sriphat Building.', th:'กรุณาติดต่อแคชเชียร์หมายเลข 3 ชั้น 1 อาคารศรีพัฒน์ค่ะ', zh:'请联系 Sriphat 大楼一楼的3号收费处。', phonetic_en:'พลีส คอนแทค แคชเชียร์ นัมเบอร์ ทรี ออน เดอะ เฟิร์สท์ ฟลอร์ ออฟ ศรีพัฒน์ บิลดิ้ง', phonetic_zh:'ชิ่ง เหลียนซี่ Sriphat ต้าโหลว อี้หลาว ตี่ ซานเฮ่า โซ่วเฟ่ยชู่', context:'Directing to cashier at Sriphat', contextTh:'บอกทางไปศูนย์รับเงินอาคารศรีพัฒน์' },
+      { id:'d6', en:'The laboratory room number 11 is on the first floor of Chalerm Phra Baramee Building.', th:'ห้องปฏิบัติการหมายเลข 11 อยู่ที่ชั้น 1 อาคารเฉลิมพระบารมีค่ะ', zh:'11号化验室在 Chalerm Phra Baramee 大楼一楼。', phonetic_en:'เดอะ แล็บโบระทอรี รูม นัมเบอร์ อิเลฟเวิน อิซ ออน เดอะ เฟิร์สท์ ฟลอร์ ออฟ เฉลิมพระบารมี บิลดิ้ง', phonetic_zh:'ซือ่อีเฮ่า ฮวาเยี่ยนซือ่ ไจ่ Chalerm Phra Baramee ต้าโหลว อี้หลาว', context:'Directing to lab', contextTh:'บอกทางไปห้องแล็บ' },
+      { id:'d7', en:'X-ray is at room number 33 on the first floor of Boonsom Martin Building.', th:'เอกซ์เรย์ที่ห้องหมายเลข 33 ชั้น 1 อาคารบุญสม มาร์ตินค่ะ', zh:'X光室在 Boonsom Martin 大楼一楼33号房。', phonetic_en:'เอกซ์เรย์ อิซ แอท รูม นัมเบอร์ เทอร์ตี้ ทรี ออน เดอะ เฟิร์สท์ ฟลอร์ ออฟ บุญสม มาร์ติน บิลดิ้ง', phonetic_zh:'เอกซ์กวาง ไจ่ Boonsom Martin ต้าโหลว อี้หลาว ซานซือ่ซาน เฮ่าฝาง', context:'Directing to X-ray', contextTh:'บอกทางไปห้องเอกซ์เรย์' },
+      { id:'d8', en:'Please contact for EKG at room number 110 on the first floor of Boonsom Martin Building.', th:'ติดต่อตรวจคลื่นไฟฟ้าหัวใจที่ห้องหมายเลข 110 ชั้น 1 อาคารบุญสม มาร์ตินค่ะ', zh:'请到 Boonsom Martin 大楼一楼110号房做心电图检查。', phonetic_en:'พลีส คอนแทค ฟอร์ อีเคจี แอท รูม นัมเบอร์ วัน ฮันเดรด แอนด์ เท็น ออน เดอะ เฟิร์สท์ ฟลอร์ ออฟ บุญสม มาร์ติน บิลดิ้ง', phonetic_zh:'ชิ่ง ต้าว Boonsom Martin ต้าโหลว อี้หลาว อี้ไป๋อี่ซือ่ เฮ่าฝาง จ้วว ซินเตียนถู เจียนฉา', context:'Directing to EKG', contextTh:'บอกทางไปตรวจคลื่นไฟฟ้าหัวใจ' },
+      { id:'d9', en:'Collect appointment slips for special tests on the second floor of Sriphat Building.', th:'รับใบนัดตรวจพิเศษต่างๆ ที่ชั้น 2 อาคารศรีพัฒน์ค่ะ', zh:'请在 Sriphat 大楼二楼领取的特殊检查預約單。', phonetic_en:'คอลเลคท์ อะพอยต์เมินท์ สลิปส์ ฟอร์ สเปเชิล เทสท์ส ออน เดอะ เซคเคินด์ ฟลอร์ ออฟ ศรีพัฒน์ บิลดิ้ง', phonetic_zh:'ชิ่ง ไจ่ Sriphat ต้าโหลว เอ้อร์หลาว หลิ่งจวี่ เตอ เท่อซู เจียนฉา ยววเยว่ ตัน', context:'Directing to special test appointments', contextTh:'บอกทางไปรับใบนัดตรวจพิเศษ' },
+      { id:'d10', en:'The pharmacy number 30 is on the first floor of Chalerm Phra Baramee Building.', th:'ห้องยาหมายเลข 30 อยู่ที่ชั้น 1 อาคารเฉลิมพระบารมีค่ะ', zh:'30号药房在 Chalerm Phra Baramee 大楼一楼。', phonetic_en:'เดอะ ฟาร์มาซี นัมเบอร์ เทอร์ตี้ อิซ ออน เดอะ เฟิร์สท์ ฟลอร์ ออฟ เฉลิมพระบารมี บิลดิ้ง', phonetic_zh:'ซานซือ่เฮ่า เอี่ยวฝาง ไจ่ Chalerm Phra Baramee ต้าโหลว อี้หลาว', context:'Directing to pharmacy 30', contextTh:'บอกทางไปห้องยา 30' },
+      { id:'d11', en:'The pharmacy number 16 is on the first floor of Sriphat Building.', th:'ห้องยาหมายเลข 16 อยู่ที่ชั้น 1 อาคารศรีพัฒน์ค่ะ', zh:'16号药房在 Sriphat 大楼一楼。', phonetic_en:'เดอะ ฟาร์มาซี นัมเบอร์ ซิกซ์ทีน อิซ ออน เดอะ เฟิร์สท์ ฟลอร์ ออฟ ศรีพัฒน์ บิลดิ้ง', phonetic_zh:'ซือ่ลิ่วเฮ่า เอี่ยวฝาง ไจ่ Sriphat ต้าโหลว อี้หลาว', context:'Directing to pharmacy 16', contextTh:'บอกทางไปห้องยา 16' },
+      { id:'d12', en:'The pediatrics pharmacy is on the sixth floor of Sriphat Building.', th:'ห้องยากุมารเวชกรรมอยู่ที่ชั้น 6 อาคารศรีพัฒน์ค่ะ', zh:'儿科药房在 Sriphat 大楼六楼。', phonetic_en:'เดอะ พีเดียทริกส์ ฟาร์มาซี อิซ ออน เดอะ ซิกซ์ธ ฟลอร์ ออฟ ศรีพัฒน์ บิลดิ้ง', phonetic_zh:'เอ๋อเคอ เอี่ยวฝาง ไจ่ Sriphat ต้าโหลว ลิ่วหลาว', context:'Directing to pediatrics pharmacy', contextTh:'บอกทางไปห้องยาเด็ก' },
+      { id:'d13', en:'Please follow the signs.', th:'กรุณาเดินตามป้ายบอกทางค่ะ', zh:'请随指示牌走。', phonetic_en:'พลีส ฟอลโล เดอะ ไซน์ส', phonetic_zh:'ชิ่ง สุย จื่อซือ่ไผ่ โจ่ว', context:'General direction', contextTh:'บอกให้เดินตามป้าย' }
     ]
   },
   {
     id: 'care', labelEn: 'During Care', labelTh: 'ระหว่างดูแล', icon: '🩺',
     phrases: [
-      { id:'c1', en:'Please lie down on the bed.', th:'กรุณานอนลงบนเตียงด้วยค่ะ', zh:'请躺在床上。', phonetic_en:'พลีส ไลย์ ดาวน์ ออน เดอะ เบด', phonetic_zh:'ชิ่ง ถ่างไจ่ ฉวงชาง', context:'Asking patient to lie down for examination', contextTh:'ใช้ขอให้ผู้ป่วยนอนลงเพื่อตรวจ' },
-      { id:'c2', en:'Please roll up your sleeve.', th:'กรุณาพับแขนเสื้อขึ้นด้วยค่ะ', zh:'请卷起袖子。', phonetic_en:'พลีส โรล อัพ ยอร์ สลีฟ', phonetic_zh:'ชิ่ง จวน ชี่ ซิ่วจือ', context:'Asking patient to roll up sleeve before injection or blood draw', contextTh:'ใช้ขอให้ผู้ป่วยพับแขนเสื้อก่อนฉีดยาหรือเจาะเลือด' },
-      { id:'c3', en:'Take a deep breath and relax.', th:'หายใจลึกๆ และผ่อนคลายนะคะ', zh:'请深呼吸，放松。', phonetic_en:'เทค อะ ดีพ เบรธ แอนด์ รีแล็กซ์', phonetic_zh:'ชิ่ง เซิน ฮูซี ฝางซง', context:'Calming patient before or during procedure', contextTh:'ใช้ช่วยผู้ป่วยผ่อนคลายก่อนหรือระหว่างทำหัตถการ' },
-      { id:'c4', en:'Please sit still.', th:'กรุณานั่งนิ่งๆ ด้วยค่ะ', zh:'请保持不动。', phonetic_en:'พลีส ซิท สทิล', phonetic_zh:'ชิ่ง เป่าฉือ่ ปู้ต้ง', context:'Asking patient not to move during examination', contextTh:'ใช้ขอให้ผู้ป่วยนั่งนิ่งระหว่างตรวจ' },
-      { id:'c5', en:'This might feel a little uncomfortable.', th:'อาจจะรู้สึกไม่สบายนิดหน่อยนะคะ', zh:'这可能会有点不舒服。', phonetic_en:'ดิส ไมท์ ฟีล อะ ลิทเทิล อันคัมฟอร์ทาเบิล', phonetic_zh:'จ่า เกอะ เหนิง ฮวี่ หยว เตี่ยน ปู้ ซูฝู', context:'Warning patient about a procedure that may be uncomfortable', contextTh:'ใช้แจ้งผู้ป่วยว่าอาจรู้สึกไม่สบายนิดหน่อย' },
-      { id:'c6', en:'Tell me if you feel any pain.', th:'ถ้ารู้สึกเจ็บบอกได้เลยนะคะ', zh:'如果感到疼痛，请告诉我。', phonetic_en:'เทล มี อิฟ ยู ฟีล เอนี เปน', phonetic_zh:'รู๋กว่อ เกินต้าว เทิ่งถ่ง ชิ่ง เกาซู่ โว่', context:'Asking patient to report pain during examination or procedure', contextTh:'ใช้ขอให้ผู้ป่วยบอกหากรู้สึกเจ็บ' },
-      { id:'c7', en:'Do you feel dizzy?', th:'รู้สึกเวียนหัวไหมคะ?', zh:'您感到头晕吗？', phonetic_en:'ดู ยู ฟีล ดิซซี่', phonetic_zh:'หนิน เกินต้าว โถวหยุน ม่า', context:'Checking if patient is experiencing dizziness', contextTh:'ใช้ตรวจสอบอาการเวียนหัวของผู้ป่วย' },
-      { id:'c8', en:'Take this medicine twice a day after meals.', th:'ทานยานี้วันละสองครั้งหลังอาหารนะคะ', zh:'这药每天饭后服用两次。', phonetic_en:'เทค ดิส เมดิซิน ทไวส์ อะ เดย์ อาฟเตอร์ มีลส์', phonetic_zh:'จ่า เอี่ยว เหม่ยเทียน ฝานเฮ่า ฝู้หยง เลี่ยงซื้', context:'Giving medication instruction after consultation', contextTh:'ใช้อธิบายวิธีทานยาหลังพบแพทย์' },
-      { id:'c9', en:'Do you have any allergies to medication?', th:'คุณแพ้ยาอะไรบ้างไหมคะ?', zh:'您对任何药物过敏吗？', phonetic_en:'ดู ยู แฮฟ เอนี อะเลอร์จีส ทู เมดิเคชัน', phonetic_zh:'หนิน ตุ้ย เหรินเฮา เอี่ยวอู้ กว่อหมิน ม่า', context:'Screening for drug allergies before prescribing', contextTh:'ใช้คัดกรองการแพ้ยาก่อนสั่งจ่ายยา' },
-      { id:'c10', en:'Your test results will be ready in 30 minutes.', th:'ผลการตรวจจะพร้อมใน 30 นาทีค่ะ', zh:'您的检查结果将在30分钟内出来。', phonetic_en:'ยอร์ เทสท์ รีซัลทส์ วิล บี เรดี อิน เทิร์ที มินิทส์', phonetic_zh:'หนิน ตี่ เจียนฉา เจี๋ยกว่อ เจียง ไจ่ ซานซือ่ เฝินจง เน่ย ชูไหล', context:'Informing patient how long to wait for test results', contextTh:'ใช้แจ้งผู้ป่วยว่าต้องรอผลการตรวจนานเท่าไร' },
-      { id:'c11', en:'If the symptoms get worse, please come back immediately.', th:'ถ้าอาการแย่ลง กรุณากลับมาทันทีนะคะ', zh:'如果症状加重，请立即回来。', phonetic_en:'อิฟ เดอะ ซิมทัมส์ เกท เวิร์ส พลีส คัม แบค อิมมีเดียทลี', phonetic_zh:'รู๋กว่อ เจิ้งจวั้ง เจียจ้ง ชิ่ง ลี่จี๋ หวยไหล', context:'Giving patient instructions for when to return to hospital', contextTh:'ใช้บอกผู้ป่วยว่าควรกลับมาพบแพทย์เมื่อไร' },
-      { id:'c12', en:'Please do not eat or drink anything 4 hours before the procedure.', th:'กรุณาอย่ากินอาหารหรือน้ำ 4 ชั่วโมงก่อนทำหัตถการนะคะ', zh:'手术前4小时请勿进食或饮水。', phonetic_en:'พลีส ดู นอท อีท ออร์ ดริ้งค์ เอนีธิ่ง โฟร์ เอาเออร์ส บีโฟร์ เดอะ โพรซีเจอร์', phonetic_zh:'โซ่วซู่เฉียน ซื่อ เซี่ยวซือ่ ชิ่งอู้ จิ้นซือ่ หวือ อิ่นซุ่ย', context:'Fasting instructions before surgery or medical procedure', contextTh:'ใช้แจ้งผู้ป่วยให้งดอาหารและน้ำก่อนหัตถการ' },
-      { id:'c13', en:'I am going to give you an injection.', th:'ฉันจะฉีดยาให้คุณนะคะ', zh:'我要给您打针了。', phonetic_en:'ไอ แอม โกอิ่ง ทู กิฟ ยู แอน อินเจคชัน', phonetic_zh:'โว่ เอี้ยว เกย หนิน ต่าเจิน ลิ่ว', context:'Warning patient before giving an injection', contextTh:'ใช้แจ้งผู้ป่วยก่อนฉีดยา' },
-      { id:'c14', en:'Do you have any questions for me?', th:'คุณมีคำถามอะไรจะถามฉันไหมคะ?', zh:'您还有什么问题要问我吗？', phonetic_en:'ดู ยู แฮฟ เอนี เควสชันส์ ฟอร์ มี', phonetic_zh:'หนิน ไห่ หยวว เสิน เมอ เวินตี้ เอี้ยว เวิ่น โว่ ม่า', context:'Checking if patient has any remaining questions', contextTh:'ใช้ถามผู้ป่วยว่ามีคำถามเพิ่มเติมไหม' },
-      { id:'c15', en:'Please press here gently with this cotton.', th:'กรุณากดตรงนี้เบาๆ ด้วยสำลีนะคะ', zh:'请用棉球轻轻按压这里。', phonetic_en:'พลีส เพรส เฮียร์ เจนทลี วิธ ดิส คอททัน', phonetic_zh:'ชิ่ง หยง เหมียนชิ่ว ชิงชิง อันยา จ่างหลี่', context:'Instructing patient after injection or blood draw', contextTh:'ใช้บอกให้ผู้ป่วยกดสำลีหลังฉีดยาหรือเจาะเลือด' }
+      { id:'c1', en:'Please lie down.', th:'กรุณานอนลงด้วยค่ะ', zh:'请躺下。', phonetic_en:'พลีส ไลย์ ดาวน์', phonetic_zh:'ชิ่ง ถ่าง เซีย', context:'Asking patient to lie down', contextTh:'ขอให้ผู้ป่วยนอนลง' },
+      { id:'c2', en:'Please sit still.', th:'กรุณานั่งนิ่งๆ ด้วยค่ะ', zh:'请坐好，不要动。', phonetic_en:'พลีส ซิท สทิล', phonetic_zh:'ชิ่ง จ้วว เฮ่า ปู้เยี่ยว ต้ง', context:'Asking patient to sit still', contextTh:'ขอให้ผู้ป่วยนั่งนิ่งๆ' },
+      { id:'c3', en:'Please roll up your sleeve.', th:'กรุณาพับแขนเสื้อขึ้นด้วยค่ะ', zh:'请卷起袖子。', phonetic_en:'พลีส โรล อัพ ยอร์ สลีฟ', phonetic_zh:'ชิ่ง จวน ชี่ ซิ่วจือ', context:'Before blood pressure or injection', contextTh:'ขอให้พับแขนเสื้อ' },
+      { id:'c4', en:'Please take a deep breath.', th:'กรุณาหายใจลึกๆ ค่ะ', zh:'请深呼吸。', phonetic_en:'พลีส เทค อะ ดีพ เบรธ', phonetic_zh:'ชิ่ง เซิน ฮูซี', context:'During lung exam', contextTh:'ขอให้หายใจลึกๆ' },
+      { id:'c5', en:'Please do not move.', th:'กรุณาอย่าขยับนะคะ', zh:'请不要动。', phonetic_en:'พลีส ดู นอท มูฟ', phonetic_zh:'ชิ่ง ปู้เยี่ยว ต้ง', context:'During procedure', contextTh:'ขอให้ไม่ขยับ' },
+      { id:'c6', en:'I am going to check your blood pressure.', th:'ฉันกำลังจะวัดความดันโลหิตของคุณค่ะ', zh:'我要为您量血压。', phonetic_en:'ไอ แอม โกอิ้ง ทู เช็ก ยอร์ บลัด เพรชเชอร์', phonetic_zh:'โว่ เยี่ยว เวย หนิน เลียง เซี่ยวเอีย', context:'Before BP check', contextTh:'บอกว่าจะวัดความดัน' },
+      { id:'c7', en:'This may feel a little uncomfortable.', th:'อาจจะรู้สึกไม่สบายนิดหน่อยนะคะ', zh:'这可能会有点不舒服。', phonetic_en:'ดิส เมย์ ฟีล อะ ลิทเทิล อันคัมฟอร์ทาเบิล', phonetic_zh:'จ่า เกอะ เหนิง ฮวี่ หยว เตี่ยน ปู้ ซูฝู', context:'Warning before procedure', contextTh:'บอกว่าอาจไม่สบายตัวนิดหน่อย' },
+      { id:'c8', en:'Tell me if you feel dizzy.', th:'ถ้าคุณรู้สึกเวียนหัว บอกฉันได้เลยนะคะ', zh:'如果您感到头晕，请告诉我。', phonetic_en:'เทล มี อิฟ ยู ฟีล ดิซซี่', phonetic_zh:'รู๋กว่อ หนิน เกินต้าว โถวหยุน ชิ่ง เกาซู่ โว่', context:'Checking for dizziness', contextTh:'บอกให้แจ้งถ้าเวียนหัว' },
+      { id:'c9', en:'Please wait for the test results.', th:'กรุณารอผลการตรวจสักครู่นะคะ', zh:'请等待检查结果。', phonetic_en:'พลีส เวท ฟอร์ เดอะ เทสท์ รีซัลทส์', phonetic_zh:'ชิ่ง เต่งไต่ เจียนฉา เจี๋ยกว่อ', context:'Waiting for results', contextTh:'ขอให้รอผลตรวจ' },
+      { id:'c10', en:'If you feel worse, please return immediately.', th:'หากคุณรู้สึกแย่ลง กรุณากลับมาพบแพทย์ทันทีนะคะ', zh:'如果您感觉情况恶化，请立即回来。', phonetic_en:'อิฟ ยู ฟีล เวิร์ส พลีส รีเทิร์น อิมมีเดียทลี', phonetic_zh:'รู๋กว่อ หนิน เกินจวี่ ชิ่งกวั้ง เอ้อฮวา ชิ่ง ลี่จี๋ หวยไหล', context:'Follow-up instruction', contextTh:'บอกให้กลับมาถ้าอาการแย่ลง' },
+      { id:'c11', en:'Do you have any questions?', th:'คุณมีคำถามอะไรไหมคะ?', zh:'您有什么问题吗？', phonetic_en:'ดู ยู แฮฟ เอนี เควสชันส์', phonetic_zh:'หนิน หยวว เสินเมอ เวิ่นถี ม่า', context:'Closing encounter', contextTh:'ถามว่ามีคำถามไหม' }
     ]
   }
 ];
 
-/* ── State ────────────────────────────────────────────────── */
 let scenarios = [];
 let activeScenarioId = 'greeting';
 let practiceTarget = '';
@@ -93,40 +86,38 @@ let isRecording = false;
 let isChatMic = false;
 let isAddModalRecording = false;
 let recRef = null;
-let translateDebounce = null;
-let editingId = null;
-let modalAutoTimer = null;
 let chatHistory = [];
+let translateDebounce = null;
+let modalAutoTimer = null;
+let editingId = null;
 
-/* ── Init ────────────────────────────────────────────────── */
 function init() {
   const saved = localStorage.getItem(STORAGE_KEY);
   if (saved) {
     try {
       const parsed = JSON.parse(saved);
-      scenarios = parsed;
-    } catch (e) {
-      scenarios = JSON.parse(JSON.stringify(defaultScenarios));
-    }
+      scenarios = parsed.scenarios || defaultScenarios;
+      activeScenarioId = parsed.activeScenarioId || 'greeting';
+    } catch (e) { scenarios = defaultScenarios; }
   } else {
     scenarios = JSON.parse(JSON.stringify(defaultScenarios));
   }
   renderScenarios();
   renderPhrases();
   renderPracticeSelect();
-  renderQuickPhrases();
   initChat();
+  renderQuickPhrases();
 }
 
 function save() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(scenarios));
+  localStorage.setItem(STORAGE_KEY, JSON.stringify({ scenarios, activeScenarioId }));
 }
 
 function currentScenario() {
   return scenarios.find(s => s.id === activeScenarioId) || scenarios[0];
 }
 
-/* ── Scenarios ────────────────────────────────────────────── */
+/* ── UI Rendering ─────────────────────────────────────────── */
 function renderScenarios() {
   document.getElementById('scenarioGrid').innerHTML = scenarios.map(s => `
     <button class="btn-scenario ${s.id === activeScenarioId ? 'active' : ''}" onclick="selectScenario('${s.id}')">
@@ -185,6 +176,7 @@ function renderPhrases() {
         </div>
         <div class="phrase-actions">
           <button class="btn-icon blue" onclick="speakText('${ea(p.en)}','en')" title="ฟัง EN"><i class="fas fa-volume-up"></i></button>
+          <button class="btn-icon yellow" onclick="speakText('${ea(p.zh)}','zh')" title="ฟัง ZH"><i class="fas fa-volume-up"></i></button>
           <button class="btn-icon green" onclick="openEditModal('${ea(p.id)}')" title="แก้ไข"><i class="fas fa-pen"></i></button>
           <button class="btn-icon red" onclick="openDeleteModal('${ea(p.id)}')" title="ลบ"><i class="fas fa-trash"></i></button>
         </div>
@@ -299,12 +291,16 @@ async function doAutoTranslate(th) {
     document.getElementById('autoPreviewContent').innerHTML = `
       <div class="auto-preview-row">
         <div class="auto-preview-label">🇬🇧 English</div>
-        <div class="auto-preview-text">${esc(en)}</div>
+        <div class="auto-preview-text" onclick="speakText('${ea(en)}','en')" style="cursor:pointer">
+          <i class="fas fa-volume-up" style="color:var(--primary);margin-right:4px"></i> ${esc(en)}
+        </div>
         ${phonEn ? `<span class="auto-preview-phonetic">🔤 ${esc(phonEn)}</span>` : ''}
       </div>
       <div class="auto-preview-row">
         <div class="auto-preview-label">🇨🇳 中文</div>
-        <div class="auto-preview-text">${esc(zh)}</div>
+        <div class="auto-preview-text" onclick="speakText('${ea(zh)}','zh')" style="cursor:pointer">
+          <i class="fas fa-volume-up" style="color:var(--primary);margin-right:4px"></i> ${esc(zh)}
+        </div>
       </div>
       <div class="auto-preview-row">
         <div class="auto-preview-label" style="color:var(--primary)">📌 บริบท</div>
@@ -436,69 +432,22 @@ function genPhonetics(en) {
     'take':'เทค','this':'ดิส','medicine':'เมดิซิน','twice':'ทไวส์','day':'เดย์',
     'see':'ซี','your':'ยอร์','passport':'พาสปอร์ท','or':'ออร์','id':'ไอดี','card':'การ์ด',
     'relax':'รีแล็กส์','hurt':'เฮิร์ท','much':'มัช','go':'โก','straight':'สเตรท',
-    'ahead':'อะเฮด','and':'แอนด์','turn':'เทิร์น','left':'เลฟท์','right':'ไรท์',
-    'the':'เดอะ','pharmacy':'ฟาร์มาซี','is':'อิซ','on':'ออน','first':'เฟิร์สท์','floor':'ฟลอร์',
-    'elevator':'เอลิเวเตอร์','at':'แอท','end':'เอนด์','of':'ออฟ','corridor':'คอริดอร์',
-    'restroom':'เรสรูม','around':'อะราวนด์','corner':'คอร์เนอร์','may':'เมย์',
-    'full':'ฟูล','name':'เนม','appointment':'อะพอยต์เมินท์','fill':'ฟิล','in':'อิน',
-    'form':'ฟอร์ม','an':'แอน','follow':'ฟอลโล','me':'มี','sorry':'ซอร์รี่','delay':'ดีเลย์',
-    'check':'เช็ก','up':'อัพ','blood':'บลัด','pressure':'เพรชเชอร์','weight':'เวท',
-    'height':'เฮท','nurse':'เนิร์ส','will':'วิล','call':'คอล','soon':'ซูน',
-    'screen':'สกรีน','show':'โชว์','queue':'คิว','number':'นัมเบอร์','doctor':'ด็อกเตอร์',
-    'shortly':'ชอร์ทลี','could':'คุด','repeat':'รีพีท','that':'แดท','what':'วอท',
-    'phone':'โฟน','when':'เวน','did':'ดิด','symptoms':'ซิมทัมส์','start':'สตาร์ท',
-    'where':'แวร์','does':'ดัซ','it':'อิท','severe':'ซีเวียร์','pain':'เปน',
-    'scale':'สเกล','ten':'เทน','fever':'ฟีเวอร์','currently':'เคอร์เรินท์ลี',
-    'taking':'เทคคิ่ง','medication':'เมดิเคชัน','chronic':'โครนิก','diseases':'ดิซีซิส',
-    'eaten':'อีทเทิน','smoke':'สโมค','drink':'ดริ้งค์','alcohol':'แอลกอฮอล',
-    'sign':'ไซน์','we':'วี','need':'นีด','vital':'ไวทัล','signs':'ไซนส์',
-    'lie':'ไลย์','down':'ดาวน์','sit':'ซิท','still':'สทิล','roll':'โรล',
-    'sleeve':'สลีฟ','deep':'ดีพ','breath':'เบรธ','move':'มูฟ','not':'นอท',
-    'going':'โกอิ่ง','uncomfortable':'อันคัมฟอร์ทาเบิล','little':'ลิทเทิล',
-    'tell':'เทล','if':'อิฟ','dizzy':'ดิซซี่','test':'เทสท์','results':'รีซัลทส์',
-    'worse':'เวิร์ส','return':'รีเทิร์น','immediately':'อิมมีเดียทลี','questions':'เควสชันส์',
-    'contact':'คอนแทคท์','cashier':'แคชเชียร์','register':'เรจิสเตอร์','medical':'เมดิเคิล',
-    'records':'เรคคอร์ดส','room':'รูม','laboratory':'แล็บโบระทอรี','x-ray':'เอกซ์เรย์',
-    'pediatrics':'พีเดียทริกส์','building':'บิลดิ้ง','give':'กิฟ','injection':'อินเจคชัน',
-    'cotton':'คอททัน','press':'เพรส','gently':'เจนทลี','with':'วิธ','after':'อาฟเตอร์',
-    'meals':'มีลส์','might':'ไมท์','feel':'ฟีล','am':'แอม','service':'เซอร์วิส',
-    'bed':'เบด','up':'อัพ','outpatient':'เอาพาเชินท์','department':'ดีพาร์ทเมินท์',
-    'main':'เมน','entrance':'เอ็นทรานซ์','emergency':'อิเมอร์เจนซี','stairs':'สแตร์ส',
-    'second':'เซคเคินด์','third':'เทิร์ด','fourth':'โฟร์ท','parking':'พาร์กิ้ง','lot':'ลอท',
-    'behind':'บีไฮนด์','shuttle':'ชัทเทิล','bus':'บัส','from':'ฟรอม','can':'แคน',
-    'ready':'เรดี','minutes':'มินิทส์','thirty':'เทิร์ที','eat':'อีท','anything':'เอนีธิ่ง',
-    'hours':'เอาเออร์ส','before':'บีโฟร์','procedure':'โพรซีเจอร์','get':'เกท',
-    'back':'แบค','come':'คัม','been':'บีน'
+    'ahead':'อะเฮด','and':'แอนด์','turn':'เทิร์น','left':'เลฟท์','right':'ไรท์','the':'เดอะ','pharmacy':'ฟาร์มาซี'
   };
-  return en.toLowerCase().split(/\s+/).map(w => {
-    const c = w.replace(/[.,!?;:'"]/g, '');
-    return map[c] || c;
-  }).join(' ');
+  const w = en.toLowerCase().replace(/[^a-z ]/g,'').split(' ');
+  return w.map(x => map[x] || '').filter(Boolean).join(' ');
 }
 
-/* ── Context Analyzer ────────────────────────────────────── */
 function analyzeCtx(th, en) {
-  const rules = [
-    { rx:/สวัสดี|ยินดี|ต้อนรับ|welcome|greet|morning|good morning/i, en:'Greeting and welcoming patients', th:'ใช้เมื่อต้อนรับและทักทายผู้ป่วย' },
-    { rx:/ชื่อ|นาม|name|identity|passport|id card/i, en:'Collecting patient information and identity', th:'ใช้เก็บข้อมูลส่วนตัวหรือยืนยันตัวตนผู้ป่วย' },
-    { rx:/นัด|appointment/i, en:'Checking appointment status', th:'ใช้ตรวจสอบการนัดหมาย' },
-    { rx:/ปวด|เจ็บ|pain|hurt|symptom|ache|อาการ/i, en:'Assessing patient symptoms and pain', th:'ใช้สอบถามอาการและระดับความเจ็บปวด' },
-    { rx:/ยา|medicine|medication|injection|ฉีด/i, en:'Providing medication or injection instructions', th:'ใช้อธิบายการให้ยาหรือการฉีดยา' },
-    { rx:/ทาง|direction|floor|ชั้น|ห้อง|ลิฟต์|elevator|stair/i, en:'Giving directions within the hospital', th:'ใช้บอกทิศทางหรือสถานที่ภายในโรงพยาบาล' },
-    { rx:/แพ้|allergy|allergic/i, en:'Screening for drug or food allergies', th:'ใช้คัดกรองการแพ้ยาหรืออาหาร' },
-    { rx:/นอน|นิ่ง|lie|sit|still|move|ลง|ผ่อน/i, en:'Positioning or calming patient for examination', th:'ใช้จัดท่าหรือช่วยให้ผู้ป่วยผ่อนคลายก่อนตรวจ' },
-    { rx:/รอ|wait|result|ผล/i, en:'Asking patient to wait for results or service', th:'ใช้ขอให้ผู้ป่วยรอผลการตรวจหรือบริการ' },
-    { rx:/ไข้|fever|temperature/i, en:'Checking body temperature or fever', th:'ใช้ตรวจสอบอาการมีไข้' },
-    { rx:/เลือด|blood|เจาะ|draw|กด|press|สำลี|cotton/i, en:'Instructions after blood draw or injection', th:'ใช้หลังการเจาะเลือดหรือฉีดยา' },
-    { rx:/กิน|อาหาร|eat|food|drink|งด|fast/i, en:'Dietary or fasting instructions', th:'ใช้แนะนำเรื่องอาหารหรือการงดอาหาร' },
-  ];
-  for (const r of rules) {
-    if (r.rx.test(th) || r.rx.test(en)) return { en: r.en, th: r.th };
-  }
-  return { en: 'General medical communication', th: 'ใช้ในการสื่อสารทั่วไปทางการแพทย์' };
+  const t = th.toLowerCase(), e = en.toLowerCase();
+  if (t.includes('ทักทาย') || t.includes('สวัสดี') || e.includes('hello') || e.includes('welcome')) return { th:'ใช้ทักทายผู้ป่วย', en:'Greeting the patient' };
+  if (t.includes('ทาง') || t.includes('ชั้น') || e.includes('floor') || e.includes('direction')) return { th:'ใช้บอกทางภายในโรงพยาบาล', en:'Giving directions' };
+  if (t.includes('ยา') || e.includes('medicine') || e.includes('pharmacy')) return { th:'ใช้แนะนำเรื่องยา', en:'Medication instructions' };
+  if (t.includes('เจ็บ') || t.includes('ปวด') || e.includes('pain') || e.includes('hurt')) return { th:'ใช้สอบถามอาการปวด', en:'Assessing pain' };
+  return { th:'ใช้ในการสนทนาทั่วไปกับผู้ป่วย', en:'General patient interaction' };
 }
 
-/* ── Practice ─────────────────────────────────────────────── */
+/* ── Practice ────────────────────────────────────────────── */
 function renderPracticeSelect() {
   const sel = document.getElementById('practiceSelect');
   if (!sel) return;
@@ -748,56 +697,12 @@ const aiPatterns = [
   {
     keys: /allergy|allergic|แพ้/i,
     replies: [
-      { en: "Yes! I'm very allergic to penicillin. I had a severe anaphylactic reaction to it 10 years ago. Please put that in my record.", th: "ค่ะ ฉันแพ้เพนิซิลินมากค่ะ เคยเกิดปฏิกิริยารุนแรงมากเมื่อ 10 ปีที่แล้วค่ะ กรุณาบันทึกไว้ด้วยนะคะ" },
-      { en: "As far as I know, I'm not allergic to any medication. But I'm allergic to shellfish, if that matters.", th: "เท่าที่ทราบไม่แพ้ยาอะไรค่ะ แต่แพ้อาหารทะเลประเภทกุ้งหอยค่ะ ถ้าสำคัญนะคะ" }
+      { en: "Yes! I'm very allergic to penicillin. I had a severe anaphylactic reaction to it 10 years ago. Please make sure the doctor knows.", th: "ใช่ค่ะ! ฉันแพ้เพนิซิลลินรุนแรงมากค่ะ เคยมีอาการแพ้รุนแรงเมื่อ 10 ปีก่อน ช่วยบอกคุณหมอด้วยนะคะ" },
+      { en: "I don't have any known drug allergies, but I am allergic to peanuts and shellfish.", th: "ไม่มีประวัติแพ้ยาค่ะ แต่แพ้ถั่วลิสงและอาหารทะเลประเภทเปลือกค่ะ" }
     ]
   },
   {
-    keys: /appointment|นัด|walk.?in|come today/i,
-    replies: [
-      { en: "No, I don't have an appointment. I'm a walk-in patient. I wasn't planning to visit a hospital today but the pain became too much.", th: "ไม่มีนัดค่ะ มาแบบ walk-in ค่ะ ไม่ได้วางแผนจะมาโรงพยาบาลแต่ปวดมากจนทนไม่ไหวค่ะ" }
-    ]
-  },
-  {
-    keys: /fever|temperature|ไข้|ร้อน|hot|cold/i,
-    replies: [
-      { en: "Yes, I think I have a fever. I feel alternately hot and cold and I've been sweating a lot since this morning.", th: "ค่ะ คิดว่ามีไข้ค่ะ รู้สึกร้อนๆ หนาวๆ สลับกันและเหงื่อออกมากตั้งแต่เช้าค่ะ" },
-      { en: "I'm not sure. I feel very hot but I don't have a thermometer to check. Can you check my temperature please?", th: "ไม่แน่ใจค่ะ รู้สึกร้อนมากแต่ไม่มีเทอร์โมมิเตอร์วัด คุณช่วยวัดอุณหภูมิให้หน่อยได้ไหมคะ?" }
-    ]
-  },
-  {
-    keys: /lie down|sit|roll|sleeve|breath|relax|นอน|นั่ง|พับแขน|หายใจ|ผ่อน|still|move/i,
-    replies: [
-      { en: "Of course, I'll do whatever you need. Should I remove my jacket first? Is this okay like this?", th: "ได้ค่ะ จะทำตามที่บอกทุกอย่างค่ะ ต้องถอดแจ็กเก็ตก่อนไหมคะ? แบบนี้โอเคไหมคะ?" },
-      { en: "Okay. Oh — I'm a little nervous. Please tell me what you're going to do step by step.", th: "โอเคค่ะ โอ้ — หนูตื่นเต้นนิดหน่อยค่ะ ช่วยบอกด้วยว่าจะทำอะไรทีละขั้นตอนนะคะ" }
-    ]
-  },
-  {
-    keys: /inject|ฉีด|needle|prick|blood draw|เจาะ/i,
-    replies: [
-      { en: "Oh, I'm a bit scared of needles actually. Will it hurt a lot? I'll try to stay still.", th: "โอ้ จริงๆ แล้วฉันกลัวเข็มนิดหน่อยค่ะ จะเจ็บมากไหมคะ? จะพยายามนิ่งนะคะ" }
-    ]
-  },
-  {
-    keys: /restroom|toilet|bathroom|ห้องน้ำ/i,
-    replies: [
-      { en: "Oh yes, could you show me the way to the restroom? I feel quite nauseous and I might need to go urgently.", th: "โอ้ได้เลยค่ะ ช่วยบอกทางไปห้องน้ำด้วยได้ไหมคะ? รู้สึกคลื่นไส้มากและอาจต้องรีบไปค่ะ" }
-    ]
-  },
-  {
-    keys: /insurance|ประกัน/i,
-    replies: [
-      { en: "Yes, I have travel insurance through my bank. The policy number is TI-789456. I also have the emergency contact number for the insurer.", th: "ค่ะ มีประกันการเดินทางผ่านธนาคารค่ะ หมายเลขกรมธรรม์ TI-789456 ค่ะ มีเบอร์ติดต่อฉุกเฉินของบริษัทประกันด้วยค่ะ" }
-    ]
-  },
-  {
-    keys: /dizzy|เวียน|light.?headed|faint|หน้ามืด/i,
-    replies: [
-      { en: "Yes, I feel dizzy when I stand up quickly. I've been sitting down mostly. Should I lie down?", th: "ค่ะ เวียนหัวตอนลุกเร็วค่ะ นั่งอยู่ส่วนมากค่ะ ควรนอนลงไหมคะ?" }
-    ]
-  },
-  {
-    keys: /result|ผล|how long|wait|รอ|นาน/i,
+    keys: /wait|long|queue|คอย|รอ|นาน/i,
     replies: [
       { en: "Okay, I'll wait. Is there somewhere comfortable I can sit? I still feel quite unwell and a little weak.", th: "โอเคค่ะ จะรอค่ะ มีที่นั่งสบายๆ ไหมคะ? ยังรู้สึกไม่ดีและอ่อนเพลียอยู่นิดหน่อยค่ะ" }
     ]
@@ -979,10 +884,14 @@ function renderQuickPhrases() {
   wrap.innerHTML = `<div class="quick-label">ประโยคด่วน · ${esc(s.labelTh)}</div>
     ${s.phrases.slice(0, 3).map(p => `
       <div class="quick-phrase-item">
-        <div class="q-en">${esc(p.en)}</div>
+        <div class="q-en" onclick="speakText('${ea(p.en)}','en')" style="cursor:pointer">
+          <i class="fas fa-volume-up" style="color:var(--primary);margin-right:4px"></i> ${esc(p.en)}
+        </div>
         ${p.phonetic_en ? `<div class="q-phonetic-en">🔤 ${esc(p.phonetic_en)}</div>` : ''}
         <div class="q-th">🇹🇭 ${esc(p.th)}</div>
-        <div class="q-zh">🇨🇳 ${esc(p.zh)}</div>
+        <div class="q-zh" onclick="speakText('${ea(p.zh)}','zh')" style="cursor:pointer;margin-top:2px">
+          <i class="fas fa-volume-up" style="color:var(--primary);margin-right:4px"></i> ${esc(p.zh)}
+        </div>
         ${p.phonetic_zh ? `<div class="q-phonetic-zh">🔤 ${esc(p.phonetic_zh)}</div>` : ''}
       </div>`).join('')}`;
 }
@@ -1001,25 +910,45 @@ function speakText(text, lang) {
   if (!text) return;
   const synth = window.speechSynthesis;
   if (!synth) return;
+  
+  // iOS/Safari fix: Must be triggered by user gesture and cancel previous
   synth.cancel();
-  function doSpeak() {
+
+  const doSpeak = () => {
     const utt = new SpeechSynthesisUtterance(text);
+    
+    // Map internal lang codes to BCP 47
+    const langMap = {
+      'th': 'th-TH',
+      'en': 'en-US',
+      'zh': 'zh-CN',
+      'zh-CN': 'zh-CN'
+    };
+    const targetLang = langMap[lang] || lang || 'en-US';
+    
+    // Voice selection with fallback for iOS/Android
     const voices = synth.getVoices();
-    const targets = {
-      'th': ['th-TH', 'th'], 'en': ['en-US', 'en-GB', 'en-AU', 'en'],
-      'zh': ['zh-CN', 'zh-TW', 'zh'], 'zh-CN': ['zh-CN', 'zh-TW', 'zh'], 'zh-TW': ['zh-TW', 'zh-CN', 'zh']
-    }[lang] || ['en-US'];
-    const voice = voices.find(v => targets.some(t => v.lang.startsWith(t)));
+    let voice = voices.find(v => v.lang.replace('_', '-') === targetLang);
+    if (!voice) voice = voices.find(v => v.lang.startsWith(targetLang.split('-')[0]));
+    
     if (voice) utt.voice = voice;
-    utt.lang = targets[0]; utt.rate = 0.85; utt.pitch = 1.0; utt.volume = 1.0;
+    utt.lang = targetLang;
+    utt.rate = 0.9;
+    utt.pitch = 1.0;
+    utt.volume = 1.0;
+
+    // Android fix: Resume if paused
+    if (synth.paused) synth.resume();
     synth.speak(utt);
-  }
-  const voices = synth.getVoices();
-  if (voices.length > 0) { setTimeout(doSpeak, 60); }
-  else {
-    const prev = synth.onvoiceschanged;
-    synth.onvoiceschanged = function () { synth.onvoiceschanged = prev; setTimeout(doSpeak, 60); };
-    setTimeout(doSpeak, 600);
+  };
+
+  if (synth.getVoices().length > 0) {
+    doSpeak();
+  } else {
+    // Wait for voices to load (Chrome/Android)
+    synth.onvoiceschanged = doSpeak;
+    // Fallback if event doesn't fire
+    setTimeout(doSpeak, 300);
   }
 }
 
