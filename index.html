@@ -145,6 +145,20 @@
         <span class="chat-scenario-badge"><i class="fas fa-user-injured"></i> ผู้ป่วยต่างชาติ (Foreign Patient)</span>
         <button class="chat-reset-btn" onclick="resetChat()"><i class="fas fa-redo"></i> เริ่มใหม่</button>
       </div>
+      <div class="gemini-config">
+        <div class="gemini-config-header" onclick="toggleGeminiConfig()">
+          <span><i class="fas fa-robot"></i> ตั้งค่า AI (Gemini API)</span>
+          <i class="fas fa-chevron-down" id="gemini-config-icon"></i>
+        </div>
+        <div class="gemini-config-body" id="geminiConfigBody">
+          <p class="gemini-hint">ใส่ API Key เพื่อให้ AI ฉลาดขึ้น (เหมือน ChatGPT)</p>
+          <div class="gemini-input-group">
+            <input type="password" id="geminiApiKey" placeholder="ใส่ Gemini API Key ที่นี่..." onchange="saveGeminiKey()">
+            <a href="https://aistudio.google.com/app/apikey" target="_blank" class="btn-get-key">รับ Key ฟรี</a>
+          </div>
+          <div id="geminiStatus" class="gemini-status"></div>
+        </div>
+      </div>
       <div class="chat-box" id="chatBox"></div>
       <div class="chat-input-area">
         <button class="btn-mic-chat" id="chatMicBtn" onclick="toggleChatMic()">
@@ -241,7 +255,7 @@
         <div class="field-error" id="err-en"></div>
       </div>
       <div class="field-group">
-        <label class="field-label"><span class="badge-phonetic">🔤</span> คำอ่าน EN (สีม่วง)</label>
+        <label class="field-label"><span class="badge-phonetic"></span> คำอ่าน EN (สีม่วง)</label>
         <input type="text" id="f-phonetic-en" class="field-input" placeholder="AI จะสร้างให้อัตโนมัติ">
       </div>
       <div class="field-group">
@@ -250,7 +264,7 @@
         <div class="field-error" id="err-zh"></div>
       </div>
       <div class="field-group">
-        <label class="field-label"><span class="badge-phonetic">🔤</span> คำอ่าน 中文 (สีม่วง)</label>
+        <label class="field-label"><span class="badge-phonetic"></span> คำอ่าน 中文 (สีม่วง)</label>
         <input type="text" id="f-phonetic-zh" class="field-input" placeholder="ไม่บังคับ">
       </div>
       <div class="field-group">
