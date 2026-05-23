@@ -11,7 +11,7 @@ const defaultScenarios = [
       { id:'g1', en:'Hello, welcome to our hospital.', th:'สวัสดีค่ะ ยินดีต้อนรับสู่โรงพยาบาลค่ะ', zh:'您好，欢迎来到我们医院。', phonetic_en:'เฮลโล เวลคัม ทู เอาเออร์ ฮอสพิเทิล', phonetic_zh:'หนี่ว เฮา ฮวน อิ๋ง ไหลต้าว อู่เหมิน อี้ยวน', context:'First contact with patient at entrance or reception', contextTh:'ใช้เมื่อต้อนรับผู้ป่วยที่ทางเข้าหรือเคาน์เตอร์' },
       { id:'g2', en:'How can I help you today?', th:'วันนี้มีอะไรให้ช่วยไหมคะ?', zh:'我今天能帮您什么？', phonetic_en:'เฮา แคน ไอ เฮลป์ ยู ทูเดย์', phonetic_zh:'โว่ จิ่นเทียน เหนิง บ้านหวู่ หนิน เสิน เมอ', context:'Opening a patient encounter to ask about needs', contextTh:'ใช้เปิดการสนทนาเพื่อสอบถามความต้องการผู้ป่วย' },
       { id:'g3', en:'Please wait here for a moment.', th:'กรุณารอสักครู่ตรงนี้ค่ะ', zh:'请在这里稍等片刻。', phonetic_en:'พลีส เวท เฮียร์ ฟอร์ อะ โมเมินท์', phonetic_zh:'ชิ่ง ไจ่ จ่างหลี่ เซาเต่ง เพี่ยนเกอะ', context:'Asking patient to wait while preparing or checking information', contextTh:'ใช้ขอให้ผู้ป่วยรอขณะเตรียมข้อมูลหรือดำเนินการ' },
-      { id:'g4', en:'Good morning! How are you feeling today?', th:'สวัสดีตอนเช้าค่ะ วันนี้รู้สึกเป็นอย่างไรบ้างคะ?', zh:'早上好！今天感觉怎么样？', phonetic_en:'กุด มอร์นิ่ง เฮา อาร์ ยู ฟีลิ่ง ทูเดย์', phonetic_zh:'จ้าวเซิ่งฮ่าว จิ่นเทียน เกินจวี่ เจ่นมะยาง', context:'Morning greeting when visiting a patient in the ward', contextTh:'ใช้ทักทายตอนเช้าเมื่อเยี่ยมผู้ป่วยในหอผู้ป่วย' },
+      { id:'g4', en:'Good morning! How are you feeling today?', th:'สวัสดีตอนเช้าค่ะ วันนี้รู้สึกเป็นอย่างไรบ้างคะ?', zh:'早上好！今天感觉怎么样？', phonetic_en:'กุด มอร์นิ่ง เฮา อาร์ ยู ฟีลิ่ง ทูเดย์', phonetic_zh:'จ้าวเซิ่งฮ่าว จิ่นเทียน เกินจวี่ เจ่นมะยาง', context:'Morning greeting when visiting a patient in the word', contextTh:'ใช้ทักทายตอนเช้าเมื่อเยี่ยมผู้ป่วยในหอผู้ป่วย' },
       { id:'g5', en:'Are you here for a check-up?', th:'คุณมาตรวจสุขภาพไหมคะ?', zh:'您是来体检的吗？', phonetic_en:'อาร์ ยู เฮียร์ ฟอร์ อะ เช็คอัพ', phonetic_zh:'หนิน ซือ่ ไหลตี่เจียน ตี ม่า', context:'Confirming the purpose of the patient visit', contextTh:'ใช้ยืนยันวัตถุประสงค์การมาโรงพยาบาลของผู้ป่วย' },
       { id:'g6', en:'Sorry for the delay.', th:'ขอโทษที่ต้องรอนานนะคะ', zh:'抱歉让您久等了。', phonetic_en:'ซอร์รี่ ฟอร์ เดอะ ดีเลย์', phonetic_zh:'เปา เฉียน ร้าง หนิน จิ่วเต่ง ลิ่ว', context:'Apologizing to a patient for waiting time', contextTh:'ใช้ขอโทษผู้ป่วยที่ต้องรอนาน' },
       { id:'g7', en:'Please follow me.', th:'กรุณาตามมาด้วยค่ะ', zh:'请跟我来。', phonetic_en:'พลีส ฟอลโล มี', phonetic_zh:'ชิ่ง เกิน โว่ ไหล', context:'Leading patient to an examination room or ward', contextTh:'ใช้นำผู้ป่วยไปยังห้องตรวจหรือหอผู้ป่วย' },
@@ -35,9 +35,9 @@ const defaultScenarios = [
       { id:'r12', en:'Where does it hurt?', th:'เจ็บที่ไหนคะ?', zh:'哪里疼？', phonetic_en:'แวร์ ดัซ อิท เฮิร์ท', phonetic_zh:'หน่า หลี่ เทิ่ง', context:'Locating the area of pain on patient body', contextTh:'ใช้ระบุตำแหน่งที่เจ็บปวดของผู้ป่วย' },
       { id:'r13', en:'How severe is the pain? On a scale of 1 to 10.', th:'ปวดมากแค่ไหนคะ? จากคะแนน 1 ถึง 10', zh:'疼痛有多严重？从1到10分。', phonetic_en:'เฮา ซีเวียร์ อิซ เดอะ เปน ออน อะ สเกล ออฟ วัน ทู เทน', phonetic_zh:'เทิ่งถ่ง หยว มัว หยัน จ้ง จง อี้ ต้าว ซือ่ เฝิน', context:'Assessing pain intensity using a numerical scale', contextTh:'ใช้วัดระดับความเจ็บปวดด้วยคะแนน' },
       { id:'r14', en:'Do you have a fever?', th:'คุณมีไข้ไหมคะ?', zh:'您发烧了吗？', phonetic_en:'ดู ยู แฮฟ อะ ฟีเวอร์', phonetic_zh:'หนิน ฝาเซา ลิ่ว ม่า', context:'Checking for elevated body temperature', contextTh:'ใช้ตรวจสอบอาการมีไข้' },
-      { id:'r15', en:'Are you currently taking any medication?', th:'ตอนนี้คุณกำลังรับประทานยาอะไรอยู่ไหมคะ?', zh:'您目前在服用任何药物吗？', phonetic_en:'อาร์ ยู เคอร์เรินท์ลี เทคคิ่ง เอนี เมดิเคชัน', phonetic_zh:'หนิน มู้เฉียน ไจ่ ฝู้หยง เหรินเฮา เอี่ยวอู้ ม่า', context:'Checking current medications before treatment', contextTh:'ใช้ตรวจสอบยาที่ผู้ป่วยกำลังทานอยู่ก่อนรักษา' },
+      { id:'r15', en:'Are you currently taking any medication?', th:'ตอนนี้คุณกำลังทานยาอะไรอยู่ไหมคะ?', zh:'您目前在服用任何药物吗？', phonetic_en:'อาร์ ยู เคอร์เรินท์ลี เทคคิ่ง เอนี เมดิเคชัน', phonetic_zh:'หนิน มู้เฉียน ไจ่ ฝู้หยง เหรินเฮา เอี่ยวอู้ ม่า', context:'Checking current medications before treatment', contextTh:'ใช้ตรวจสอบยาที่ผู้ป่วยกำลังทานอยู่ก่อนรักษา' },
       { id:'r16', en:'Do you have any chronic diseases?', th:'คุณมีโรคประจำตัวไหมคะ?', zh:'您有任何慢性病吗？', phonetic_en:'ดู ยู แฮฟ เอนี โครนิก ดิซีซิส', phonetic_zh:'หนิน หยวว เหรินเฮา หม่าน ซิ่ง ปิ้ง ม่า', context:'Screening for underlying chronic conditions', contextTh:'ใช้คัดกรองโรคประจำตัวของผู้ป่วย' },
-      { id:'r17', en:'Have you eaten today?', th:'วันนี้รับประทานอาหารแล้วยังคะ?', zh:'您今天吃饭了吗？', phonetic_en:'แฮฟ ยู อีทเทิน ทูเดย์', phonetic_zh:'หนิน จิ่นเทียน ชีฝาน ลิ่ว ม่า', context:'Asking if patient has eaten before procedures', contextTh:'ใช้ถามว่ารับประทานอาหารแล้วหรือยัง' },
+      { id:'r17', en:'Have you eaten today?', th:'วันนี้ทานอาหารแล้วยังคะ?', zh:'您今天吃饭了吗？', phonetic_en:'แฮฟ ยู อีทเทิน ทูเดย์', phonetic_zh:'หนิน จิ่นเทียน ชีฝาน ลิ่ว ม่า', context:'Asking if patient has eaten before procedures', contextTh:'ใช้ถามว่ารับประทานอาหารแล้วหรือยัง' },
       { id:'r18', en:'Do you smoke or drink alcohol?', th:'คุณสูบบุหรี่หรือดื่มแอลกอฮอล์ไหมคะ?', zh:'您抽烟或喝酒吗？', phonetic_en:'ดู ยู สโมค ออร์ ดริ้งค์ แอลกอฮอล', phonetic_zh:'หนิน โจวเอีย หวือ เหอ จิ่ว ม่า', context:'Lifestyle screening for health assessment', contextTh:'ใช้สอบถามพฤติกรรมสุขภาพ' },
       { id:'r19', en:'Please sign here.', th:'กรุณาเซ็นชื่อตรงนี้ด้วยค่ะ', zh:'请在这里签名。', phonetic_en:'พลีส ไซน์ เฮียร์', phonetic_zh:'ชิ่ง ไจ่ จ่างหลี่ เชียนหมิง', context:'Requesting patient signature on consent or registration forms', contextTh:'ใช้ขอลายเซ็นผู้ป่วยในแบบฟอร์มต่างๆ' },
       { id:'r20', en:'We need to check your vital signs first.', th:'เราต้องตรวจสัญญาณชีพก่อนนะคะ', zh:'我们需要先检查您的生命体征。', phonetic_en:'วี นีด ทู เช็ก ยอร์ ไวทัล ไซน์ส เฟิร์สท์', phonetic_zh:'โว่ เหมิน ซือ่ เยี่ยว เซียน เจียนฉา หนิน ตี่ เซิงมิ่ง ตี่เจิง', context:'Informing patient about vital sign check before seeing doctor', contextTh:'ใช้แจ้งผู้ป่วยว่าต้องตรวจสัญญาณชีพก่อนพบแพทย์' }
@@ -48,9 +48,9 @@ const defaultScenarios = [
     phrases: [
       { id:'d1', en:'Please register at the Medical Records Room, Number 19, 1st floor, Chalerm Phra Baramee Building.', th:'ลงทะเบียนที่ห้องเวชระเบียน หมายเลข 19 ชั้น 1 อาคารเฉลิมพระบารมีค่ะ', zh:'请在 Chalerm Phra Baramee 大楼一楼19号病历室登记。', phonetic_en:'พลีส เรจิสเตอร์ แอท เดอะ เมดิเคิล เรคคอร์ดส รูม นัมเบอร์ ไนน์ทีน เฟิร์สท์ ฟลอร์ เฉลิมพระบารมี บิลดิ้ง', phonetic_zh:'ชิ่ง ไจ่ Chalerm Phra Baramee ต้าโหลว อี้หลาว ซือ่จิ่ว เฮ่า ปิ้งลี่ซือ่ เติงจี้', context:'Directing to registration', contextTh:'บอกทางไปลงทะเบียน' },
       { id:'d2', en:'Please contact customer service centre, 1st floor, Chalerm Phra Baramee Building.', th:'กรุณาติดต่อ customer service centre ชั้น 1 อาคารเฉลิมพระบารมีค่ะ', zh:'请联系 Chalerm Phra Baramee 大楼一楼的客户服务中心。', phonetic_en:'พลีส คอนแทค คัสตอมเมอร์ เซอร์วิส เซนเทอร์ เฟิร์สท์ ฟลอร์ เฉลิมพระบารมี บิลดิ้ง', phonetic_zh:'ชิ่ง เหลียนซี่ Chalerm Phra Baramee ต้าโหลว อี้หลาว ตี่ เค้าฮู้ ฝูอู้ จงซิน', context:'Directing to customer service', contextTh:'บอกทางไปศูนย์บริการลูกค้า' },
-      { id:'d3', en:'Please contact cashier number 1 on the first floor of Sujinno Building.', th:'กรุณาติดต่อแคชเชียร์หมายเลข 1 ชั้น 1 อาคารสุจิณโณค่ะ', zh:'请联系 Sujinno 大楼一楼的1号收费处。', phonetic_en:'พลีส คอนแทค แคชเชียร์ นัมเบอร์ วัน ออน เดอะ เฟิร์สท์ ฟลอร์ ออฟ สุจิณโณ บิลดิ้ง', phonetic_zh:'ชิ่ง เหลียนซี่ Sujinno ต้าโหลว อี้หลาว ตี่ อีเฮ่า โซ่วเฟ่ยชู่', context:'Directing to cashier at Sujinno', contextTh:'บอกทางไปศูนย์รับเงินอาคารสุจิณโณ' },
-      { id:'d4', en:'Please contact cashier number 2 on the first floor of Chalerm Phra Baramee Building.', th:'กรุณาติดต่อแคชเชียร์หมายเลข 2 ชั้น 1 อาคารเฉลิมพระบารมีค่ะ', zh:'请联系 Chalerm Phra Baramee 大楼一楼的2号收费处。', phonetic_en:'พลีส คอนแทค แคชเชียร์ นัมเบอร์ ทู ออน เดอะ เฟิร์สท์ ฟลอร์ ออฟ เฉลิมพระบารมี บิลดิ้ง', phonetic_zh:'ชิ่ง เหลียนซี่ Chalerm Phra Baramee ต้าโหลว อี้หลาว ตี่ เอ้อร์เฮ่า โซ่วเฟ่ยชู่', context:'Directing to cashier at Chalerm Phra Baramee', contextTh:'บอกทางไปศูนย์รับเงินอาคารเฉลิมพระบารมี' },
-      { id:'d5', en:'Please contact cashier number 3 on the first floor of Sriphat Building.', th:'กรุณาติดต่อแคชเชียร์หมายเลข 3 ชั้น 1 อาคารศรีพัฒน์ค่ะ', zh:'请联系 Sriphat 大楼一楼的3号收费处。', phonetic_en:'พลีส คอนแทค แคชเชียร์ นัมเบอร์ ทรี ออน เดอะ เฟิร์สท์ ฟลอร์ ออฟ ศรีพัฒน์ บิลดิ้ง', phonetic_zh:'ชิ่ง เหลียนซี่ Sriphat ต้าโหลว อี้หลาว ตี่ ซานเฮ่า โซ่วเฟ่ยชู่', context:'Directing to cashier at Sriphat', contextTh:'บอกทางไปศูนย์รับเงินอาคารศรีพัฒน์' },
+      { id:'d3', en:'Please contact cashier number 1 on the first floor of Sujinno Building.', th:'กรุณาติดต่อแคชเชียร์หมายเลข 1 ชั้น 1 อาคารสุจิณโณค่ะ', zh:'请联系 Sujinno 大楼一楼的1号收费处。', phonetic_en:'พลีส คอนแทค แคชเชียร์ นัมเบอร์ วัน ออน เดอะ เฟิร์สท์ ฟลอร์ ออฟ สุจิณโณ บิลดิ้ง', phonetic_zh:'ชิ่ง เหลียนซี่ Sujinno ต้าโหลว อี้หลาว ตี่ อีเฮ่า โซ่วเฟ่ยชู่', context:'Directing to cashier at Sujinno', contextTh:'บอกทางไปแคชเชียร์อาคารสุจิณโณ' },
+      { id:'d4', en:'Please contact cashier number 2 on the first floor of Chalerm Phra Baramee Building.', th:'กรุณาติดต่อแคชเชียร์หมายเลข 2 ชั้น 1 อาคารเฉลิมพระบารมีค่ะ', zh:'请联系 Chalerm Phra Baramee 大楼一楼的2号收费处。', phonetic_en:'พลีส คอนแทค แคชเชียร์ นัมเบอร์ ทู ออน เดอะ เฟิร์สท์ ฟลอร์ ออฟ เฉลิมพระบารมี บิลดิ้ง', phonetic_zh:'ชิ่ง เหลียนซี่ Chalerm Phra Baramee ต้าโหลว อี้หลาว ตี่ เอ้อร์เฮ่า โซ่วเฟ่ยชู่', context:'Directing to cashier at Chalerm Phra Baramee', contextTh:'บอกทางไปแคชเชียร์อาคารเฉลิมพระบารมี' },
+      { id:'d5', en:'Please contact cashier number 3 on the first floor of Sriphat Building.', th:'กรุณาติดต่อแคชเชียร์หมายเลข 3 ชั้น 1 อาคารศรีพัฒน์ค่ะ', zh:'请联系 Sriphat 大楼一楼的3号收费处。', phonetic_en:'พลีส คอนแทค แคชเชียร์ นัมเบอร์ ทรี ออน เดอะ เฟิร์สท์ ฟลอร์ ออฟ ศรีพัฒน์ บิลดิ้ง', phonetic_zh:'ชิ่ง เหลียนซี่ Sriphat ต้าโหลว อี้หลาว ตี่ ซานเฮ่า โซ่วเฟ่ยชู่', context:'Directing to cashier at Sriphat', contextTh:'บอกทางไปแคชเชียร์อาคารศรีพัฒน์' },
       { id:'d6', en:'The laboratory room number 11 is on the first floor of Chalerm Phra Baramee Building.', th:'ห้องปฏิบัติการหมายเลข 11 อยู่ที่ชั้น 1 อาคารเฉลิมพระบารมีค่ะ', zh:'11号化验室在 Chalerm Phra Baramee 大楼一楼。', phonetic_en:'เดอะ แล็บโบระทอรี รูม นัมเบอร์ อิเลฟเวิน อิซ ออน เดอะ เฟิร์สท์ ฟลอร์ ออฟ เฉลิมพระบารมี บิลดิ้ง', phonetic_zh:'ซือ่อีเฮ่า ฮวาเยี่ยนซือ่ ไจ่ Chalerm Phra Baramee ต้าโหลว อี้หลาว', context:'Directing to lab', contextTh:'บอกทางไปห้องแล็บ' },
       { id:'d7', en:'X-ray is at room number 33 on the first floor of Boonsom Martin Building.', th:'เอกซ์เรย์ที่ห้องหมายเลข 33 ชั้น 1 อาคารบุญสม มาร์ตินค่ะ', zh:'X光室在 Boonsom Martin 大楼一楼33号房。', phonetic_en:'เอกซ์เรย์ อิซ แอท รูม นัมเบอร์ เทอร์ตี้ ทรี ออน เดอะ เฟิร์สท์ ฟลอร์ ออฟ บุญสม มาร์ติน บิลดิ้ง', phonetic_zh:'เอกซ์กวาง ไจ่ Boonsom Martin ต้าโหลว อี้หลาว ซานซือ่ซาน เฮ่าฝาง', context:'Directing to X-ray', contextTh:'บอกทางไปห้องเอกซ์เรย์' },
       { id:'d8', en:'Please contact for EKG at room number 110 on the first floor of Boonsom Martin Building.', th:'ติดต่อตรวจคลื่นไฟฟ้าหัวใจที่ห้องหมายเลข 110 ชั้น 1 อาคารบุญสม มาร์ตินค่ะ', zh:'请到 Boonsom Martin 大楼一楼110号房做心电图检查。', phonetic_en:'พลีส คอนแทค ฟอร์ อีเคจี แอท รูม นัมเบอร์ วัน ฮันเดรด แอนด์ เท็น ออน เดอะ เฟิร์สท์ ฟลอร์ ออฟ บุญสม มาร์ติน บิลดิ้ง', phonetic_zh:'ชิ่ง ต้าว Boonsom Martin ต้าโหลว อี้หลาว อี้ไป๋อี่ซือ่ เฮ่าฝาง จ้วว ซินเตียนถู เจียนฉา', context:'Directing to EKG', contextTh:'บอกทางไปตรวจคลื่นไฟฟ้าหัวใจ' },
@@ -81,7 +81,7 @@ const defaultScenarios = [
 
 let scenarios = [];
 let activeScenarioId = 'greeting';
-let practiceTarget = '';
+let practiceTarget = { text: '', lang: 'en' };
 let isRecording = false;
 let isChatMic = false;
 let isAddModalRecording = false;
@@ -130,7 +130,7 @@ function renderScenarios() {
 
 function selectScenario(id) {
   activeScenarioId = id;
-  practiceTarget = '';
+  practiceTarget = { text: '', lang: 'en' };
   renderScenarios();
   renderPhrases();
   renderPracticeSelect();
@@ -457,41 +457,54 @@ function renderPracticeSelect() {
     const og = document.createElement('optgroup');
     og.label = s.icon + ' ' + s.labelEn + ' · ' + s.labelTh;
     s.phrases.forEach(p => {
-      const opt = document.createElement('option');
-      opt.value = p.en;
-      opt.textContent = p.en.length > 60 ? p.en.slice(0, 60) + '…' : p.en;
-      opt.dataset.ph = JSON.stringify({ phonetic_en: p.phonetic_en || '' });
-      og.appendChild(opt);
+      // English option
+      const optEn = document.createElement('option');
+      optEn.value = 'en|' + p.en;
+      optEn.textContent = '🇬🇧 ' + (p.en.length > 50 ? p.en.slice(0, 50) + '…' : p.en);
+      og.appendChild(optEn);
+      
+      // Chinese option
+      const optZh = document.createElement('option');
+      optZh.value = 'zh|' + p.zh;
+      optZh.textContent = '🇨🇳 ' + (p.zh.length > 50 ? p.zh.slice(0, 50) + '…' : p.zh);
+      og.appendChild(optZh);
     });
     sel.appendChild(og);
   });
-  if (practiceTarget) sel.value = practiceTarget;
+  if (practiceTarget.text) sel.value = practiceTarget.lang + '|' + practiceTarget.text;
 }
 
 function onPracticeSelectChange() {
   const sel = document.getElementById('practiceSelect');
   const val = sel.value;
   if (!val) {
-    practiceTarget = '';
+    practiceTarget = { text: '', lang: 'en' };
     document.getElementById('targetBox').style.display = 'none';
     document.getElementById('scoreBox').style.display = 'none';
     document.getElementById('recResult').style.display = 'none';
     document.getElementById('recPlaceholder').style.display = '';
     return;
   }
-  practiceTarget = val;
+  
+  const [lang, text] = val.split('|');
+  practiceTarget = { text, lang };
+  
   let foundPhrase = null;
   for (const s of scenarios) {
-    const p = s.phrases.find(p => p.en === val);
+    const p = s.phrases.find(p => p[lang] === text);
     if (p) { foundPhrase = p; break; }
   }
+  
   document.getElementById('targetBox').style.display = 'flex';
-  document.getElementById('targetText').textContent = val;
+  document.getElementById('targetText').textContent = text;
+  
   const pe = document.getElementById('targetPhonetic');
-  if (foundPhrase && foundPhrase.phonetic_en) {
-    pe.textContent = '🔤 ' + foundPhrase.phonetic_en;
+  const phoneticKey = lang === 'en' ? 'phonetic_en' : 'phonetic_zh';
+  if (foundPhrase && foundPhrase[phoneticKey]) {
+    pe.textContent = '🔤 ' + foundPhrase[phoneticKey];
     pe.style.display = 'block';
   } else { pe.style.display = 'none'; }
+  
   document.getElementById('scoreBox').style.display = 'none';
   document.getElementById('recResult').style.display = 'none';
   document.getElementById('recPlaceholder').style.display = '';
@@ -500,25 +513,30 @@ function onPracticeSelectChange() {
 function goToPractice() {
   const s = currentScenario();
   if (s.phrases.length) {
-    practiceTarget = s.phrases[0].en;
+    practiceTarget = { text: s.phrases[0].en, lang: 'en' };
     const sel = document.getElementById('practiceSelect');
-    if (sel) sel.value = practiceTarget;
+    if (sel) sel.value = 'en|' + practiceTarget.text;
     onPracticeSelectChange();
   }
   switchTab('practice', document.querySelector('[data-tab="practice"]'));
 }
-function playPracticeAudio() { if (practiceTarget) speakText(practiceTarget, 'en'); }
+function playPracticeAudio() { if (practiceTarget.text) speakText(practiceTarget.text, practiceTarget.lang); }
 
 /* ── Recording ────────────────────────────────────────────── */
 function toggleRecording() {
-  if (!practiceTarget) {
+  if (!practiceTarget.text) {
     alert('กรุณาเลือกประโยคที่ต้องการฝึกก่อนค่ะ');
     return;
   }
   if (isRecording) { recRef && recRef.stop(); return; }
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
   if (!SR) { showRecResult('Browser ไม่รองรับ กรุณาใช้ Chrome'); return; }
-  const rec = new SR(); rec.lang = 'en-US'; rec.continuous = false; rec.interimResults = false; recRef = rec;
+  const rec = new SR(); 
+  rec.lang = practiceTarget.lang === 'en' ? 'en-US' : 'zh-CN'; 
+  rec.continuous = false; 
+  rec.interimResults = false; 
+  recRef = rec;
+  
   rec.onstart = () => {
     isRecording = true;
     document.getElementById('recBtn').classList.add('recording');
@@ -554,7 +572,7 @@ function showRecResult(text) {
 
 /* ── Score + Word Analysis ────────────────────────────────── */
 function showScore(spoken) {
-  const pct = calcScore(spoken, practiceTarget);
+  const pct = calcScore(spoken, practiceTarget.text);
   const box = document.getElementById('scoreBox');
   box.style.display = 'block'; box.className = 'score-box';
   let cls, msg;
@@ -568,26 +586,38 @@ function showScore(spoken) {
   const fill = document.getElementById('scoreBarFill');
   fill.style.width = '0';
   setTimeout(() => fill.style.width = pct + '%', 60);
-  buildWordAnalysis(spoken, practiceTarget);
+  buildWordAnalysis(spoken, practiceTarget.text, practiceTarget.lang);
 }
 
-function buildWordAnalysis(spoken, target) {
+function buildWordAnalysis(spoken, target, lang) {
   const wa = document.getElementById('wordAnalysis');
   if (!target) { wa.innerHTML = ''; return; }
-  const tw = target.toLowerCase().replace(/[^a-z ]/g, '').split(' ').filter(Boolean);
-  const sw = spoken.toLowerCase().replace(/[^a-z ]/g, '').split(' ').filter(Boolean);
+  
+  let tw, sw;
+  if (lang === 'zh') {
+    // Chinese character split
+    tw = target.replace(/[^\u4e00-\u9fa5]/g, '').split('');
+    sw = spoken.replace(/[^\u4e00-\u9fa5]/g, '').split('');
+  } else {
+    // English word split
+    tw = target.toLowerCase().replace(/[^a-z ]/g, '').split(' ').filter(Boolean);
+    sw = spoken.toLowerCase().replace(/[^a-z ]/g, '').split(' ').filter(Boolean);
+  }
+  
   const results = tw.map(t => {
     let best = 0;
     sw.forEach(s => { const sc = wordSim(s, t); if (sc > best) best = sc; });
     return { word: t, correct: best >= 0.8 };
   });
+  
   const wrong = results.filter(r => !r.correct);
   let html = `<div class="word-analysis-title"><i class="fas fa-spell-check"></i> วิเคราะห์รายคำ (กดคำเพื่อฟัง):</div>`;
   html += `<div class="word-tokens">${results.map(r =>
-    `<div class="word-token ${r.correct ? 'correct' : 'wrong'}" onclick="speakText('${ea(r.word)}','en')">
+    `<div class="word-token ${r.correct ? 'correct' : 'wrong'}" onclick="speakText('${ea(r.word)}','${lang}')">
       ${esc(r.word)}<span class="token-hint">${r.correct ? '✓' : '✗'}</span>
     </div>`).join('')}</div>`;
-  if (wrong.length > 0) {
+    
+  if (wrong.length > 0 && lang === 'en') {
     html += `<div class="wrong-tips">`;
     wrong.slice(0, 4).forEach(r => {
       const ph = genPhonetics(r.word);
@@ -630,7 +660,7 @@ function editDist(s1, s2) {
   return c[s2.length];
 }
 
-/* ── Chat (Smart AI Role Play) ───────────────────────────── */
+/* ── Chat (Smart AI Role Play - ChatGPT-like Logic) ──────── */
 function initChat() {
   chatHistory = [];
   const box = document.getElementById('chatBox');
@@ -650,100 +680,76 @@ function resetChat() {
   initChat();
 }
 
-/* Smart AI — pattern rules with context tracking */
-const aiPatterns = [
-  {
-    keys: /help|hello|hi\b|สวัสดี|ช่วย|excuse me|good (morning|afternoon|evening)/i,
+/* Advanced AI Response Logic */
+const aiScenarios = {
+  stomach: {
+    active: false,
+    keywords: /stomach|belly|abdomen|ปวดท้อง|ท้อง/i,
     replies: [
-      { en: "Oh, thank goodness. I've been having a terrible stomachache since last night. The pain is really bad.", th: "โอ้โห ขอบคุณมากเลยค่ะ ฉันปวดท้องมากตั้งแต่เมื่อคืนค่ะ ปวดมากจริงๆ" },
-      { en: "Thank you so much for coming. I have a very bad headache and feel dizzy. I'm a tourist and I don't know what to do.", th: "ขอบคุณที่มาช่วยค่ะ ฉันปวดหัวและเวียนหัวมากค่ะ ฉันเป็นนักท่องเที่ยวและไม่รู้จะทำอย่างไรค่ะ" }
+      { en: "It hurts right here in my lower abdomen, on the right side. It's a sharp pain.", th: "เจ็บตรงท้องน้อยด้านขวาค่ะ เจ็บแบบเสียดๆ" },
+      { en: "I feel nauseous and I vomited once an hour ago. I can't eat anything.", th: "รู้สึกคลื่นไส้และอาเจียนไปครั้งนึงเมื่อชั่วโมงก่อน กินอะไรไม่ได้เลยค่ะ" }
     ]
   },
-  {
-    keys: /your name|ชื่อ|who are you|name is/i,
+  headache: {
+    active: false,
+    keywords: /head|dizzy|faint|ปวดหัว|เวียนหัว/i,
     replies: [
-      { en: "My name is Sarah Mitchell. I'm from the United Kingdom. I'm here on holiday and suddenly feel very unwell.", th: "ชื่อเซาร์ร่า มิทเชลล์ค่ะ มาจากสหราชอาณาจักรค่ะ มาท่องเที่ยวแล้วรู้สึกไม่สบายกะทันหันค่ะ" },
-      { en: "I'm James Brown, from Australia. My passport number is AB123456 if you need it.", th: "ฉันชื่อเจมส์ บราวน์ค่ะ มาจากออสเตรเลียค่ะ หมายเลขพาสปอร์ต AB123456 ถ้าต้องการค่ะ" }
-    ]
-  },
-  {
-    keys: /where.*hurt|hurt|pain|ปวด|เจ็บ|which part|ตรงไหน|where does|ไหน/i,
-    replies: [
-      { en: "It hurts right here — in my lower abdomen, on the right side. The pain started about 4 hours ago and it keeps getting worse. It's sharp, like a stabbing feeling.", th: "เจ็บตรงนี้เลยค่ะ ท้องน้อยด้านขวาค่ะ อาการเริ่มมาประมาณ 4 ชั่วโมงแล้ว และเจ็บมากขึ้นเรื่อยๆ ปวดแบบเสียดมากค่ะ" },
-      { en: "It's my stomach, here in the middle. Also my chest feels tight and I find it hard to breathe sometimes.", th: "ปวดบริเวณท้องตรงกลางค่ะ แล้วก็รู้สึกแน่นหน้าอกด้วย หายใจได้ไม่สะดวกบางครั้งค่ะ" }
-    ]
-  },
-  {
-    keys: /how.*pain|pain.*scale|1 to 10|score|severe|มากแค่ไหน|คะแนน/i,
-    replies: [
-      { en: "I would say it's about a 7 out of 10. It's quite bad. I tried to rest and drink water but it didn't help at all.", th: "ประมาณ 7 จาก 10 ค่ะ ปวดมากทีเดียวค่ะ พยายามนอนพักและดื่มน้ำแล้วแต่ไม่ดีขึ้นเลยค่ะ" },
-      { en: "Honestly it's an 8. I've never felt pain like this before. It started as a dull ache and got much worse.", th: "จริงๆ แล้วประมาณ 8 ค่ะ ไม่เคยปวดแบบนี้มาก่อนเลยค่ะ เริ่มจากปวดตื้อๆ แล้วก็แย่ลงมากค่ะ" }
-    ]
-  },
-  {
-    keys: /symptom|feel|better|worse|อาการ|รู้สึก|ดีขึ้น|แย่ลง|nausea|vomit|คลื่นไส้|อาเจียน/i,
-    replies: [
-      { en: "No, not better at all. I also feel nauseous and I vomited once about an hour ago. I can't eat anything right now.", th: "ไม่ดีขึ้นเลยค่ะ ยังคลื่นไส้อยู่ด้วย และอาเจียนครั้งนึงเมื่อชั่วโมงที่แล้วค่ะ ตอนนี้กินอะไรไม่ได้เลยค่ะ" },
-      { en: "I feel a bit dizzy and my whole body aches. I also have a slight fever, I think. I feel very hot.", th: "รู้สึกเวียนหัวนิดหน่อยและปวดเมื่อยทั้งตัวค่ะ คิดว่ามีไข้เล็กน้อยด้วย รู้สึกร้อนมากค่ะ" }
-    ]
-  },
-  {
-    keys: /medication|medicine|drug|ยา|ทาน|กิน|taking|currently|presently/i,
-    replies: [
-      { en: "Yes, I take amlodipine 5mg every morning for my blood pressure. I also took two paracetamol about two hours ago for the pain but it didn't help.", th: "ค่ะ ฉันทานแอมโลดิพีน 5mg ทุกเช้าสำหรับความดันโลหิตค่ะ แล้วก็ทานพาราเซตามอล 2 เม็ดเมื่อ 2 ชั่วโมงที่แล้วแต่ไม่ดีขึ้นค่ะ" },
-      { en: "I'm not taking any regular medication. I'm generally healthy. I just took some ibuprofen this morning but it hasn't helped much.", th: "ฉันไม่ได้ทานยาประจำค่ะ สุขภาพดีโดยปกติค่ะ ทานไอบูโพรเฟนเมื่อเช้าแต่ไม่ค่อยได้ผลค่ะ" }
-    ]
-  },
-  {
-    keys: /allergy|allergic|แพ้/i,
-    replies: [
-      { en: "Yes! I'm very allergic to penicillin. I had a severe anaphylactic reaction to it 10 years ago. Please make sure the doctor knows.", th: "ใช่ค่ะ! ฉันแพ้เพนิซิลลินรุนแรงมากค่ะ เคยมีอาการแพ้รุนแรงเมื่อ 10 ปีก่อน ช่วยบอกคุณหมอด้วยนะคะ" },
-      { en: "I don't have any known drug allergies, but I am allergic to peanuts and shellfish.", th: "ไม่มีประวัติแพ้ยาค่ะ แต่แพ้ถั่วลิสงและอาหารทะเลประเภทเปลือกค่ะ" }
-    ]
-  },
-  {
-    keys: /wait|long|queue|คอย|รอ|นาน/i,
-    replies: [
-      { en: "Okay, I'll wait. Is there somewhere comfortable I can sit? I still feel quite unwell and a little weak.", th: "โอเคค่ะ จะรอค่ะ มีที่นั่งสบายๆ ไหมคะ? ยังรู้สึกไม่ดีและอ่อนเพลียอยู่นิดหน่อยค่ะ" }
-    ]
-  },
-  {
-    keys: /thank|ขอบคุณ|okay|understand|เข้าใจ|alright|got it/i,
-    replies: [
-      { en: "Thank you so much for explaining. You've been very helpful and patient with me. I really appreciate your kindness.", th: "ขอบคุณมากที่อธิบายค่ะ คุณช่วยเหลือได้ดีมากและอดทนกับฉันค่ะ ขอบคุณสำหรับความใจดีจริงๆ ค่ะ" },
-      { en: "I understand. Thank you. One more question — can my friend come in with me? She speaks a little Thai.", th: "เข้าใจค่ะ ขอบคุณค่ะ ขอถามอีกอย่างนะคะ เพื่อนฉันสามารถเข้ามาด้วยได้ไหมคะ? เธอพูดภาษาไทยได้นิดหน่อยค่ะ" }
-    ]
-  },
-  {
-    keys: /question|ask|สงสัย|ถาม/i,
-    replies: [
-      { en: "Yes, I want to know — will the doctor speak English? And how long will the whole process take? I have a flight tonight.", th: "ค่ะ อยากทราบว่าหมอพูดภาษาอังกฤษได้ไหมคะ? แล้วกระบวนการทั้งหมดจะใช้เวลานานเท่าไรคะ? มีเที่ยวบินคืนนี้ค่ะ" }
+      { en: "I have a very bad headache and the world is spinning. I feel like I might faint.", th: "ปวดหัวมากและโลกหมุนเลยค่ะ รู้สึกเหมือนจะเป็นลม" },
+      { en: "It started this morning. I also feel very sensitive to light.", th: "เริ่มเป็นตั้งแต่เมื่อเช้าค่ะ แล้วก็รู้สึกสู้แสงไม่ได้ด้วย" }
     ]
   }
-];
+};
 
 function getAIReply(text) {
-  for (const p of aiPatterns) {
-    if (p.keys.test(text)) {
-      const replies = p.replies;
-      return replies[Math.floor(Math.random() * replies.length)];
+  const t = text.toLowerCase();
+  
+  // Greeting & Identity
+  if (/hello|hi|สวัสดี|ช่วย|help|excuse/i.test(t)) {
+    return { en: "Thank you for coming. I'm Sarah, a tourist from London. I'm feeling very sick.", th: "ขอบคุณที่มาค่ะ ฉันชื่อซาร่า เป็นนักท่องเที่ยวจากลอนดอน รู้สึกไม่สบายมากเลยค่ะ" };
+  }
+  
+  // Pain Location
+  if (/where.*hurt|hurt|pain|ปวด|เจ็บ|ตรงไหน/i.test(t)) {
+    if (t.includes('ท้อง') || t.includes('stomach')) {
+      aiScenarios.stomach.active = true;
+      return aiScenarios.stomach.replies[0];
     }
+    if (t.includes('หัว') || t.includes('head')) {
+      aiScenarios.headache.active = true;
+      return aiScenarios.headache.replies[0];
+    }
+    return { en: "It hurts in my chest and I find it hard to breathe sometimes.", th: "เจ็บหน้าอกและบางครั้งหายใจลำบากค่ะ" };
   }
-  /* Context-aware fallbacks based on chat history */
-  const allText = chatHistory.join(' ').toLowerCase();
-  if (allText.includes('pain') || allText.includes('hurt')) {
-    const follow = [
-      { en: "The pain is still the same. It hasn't gotten any better. What will happen next?", th: "อาการยังเหมือนเดิมค่ะ ไม่ดีขึ้นเลยค่ะ ขั้นต่อไปจะทำอะไรคะ?" },
-      { en: "Could you ask the doctor to come quickly? I'm really not feeling well at all.", th: "ช่วยเรียกหมอให้เร็วขึ้นได้ไหมคะ? ฉันรู้สึกไม่ดีมากเลยค่ะ" }
-    ];
-    return follow[Math.floor(Math.random() * follow.length)];
+  
+  // Pain Scale
+  if (/scale|score|1 to 10|ปวดมากไหม|คะแนน/i.test(t)) {
+    return { en: "I would say it's an 8 out of 10. It's very severe.", th: "ประมาณ 8 เต็ม 10 ค่ะ ปวดรุนแรงมาก" };
   }
-  const defaults = [
-    { en: "I'm sorry, I didn't quite understand that. Could you speak a little slower? My Thai isn't very good.", th: "ขอโทษนะคะ ฉันไม่ค่อยเข้าใจค่ะ ช่วยพูดช้าลงนิดได้ไหมคะ? ภาษาไทยฉันไม่ค่อยดีค่ะ" },
-    { en: "Excuse me? Could you repeat that please? I want to make sure I understand correctly.", th: "ขอโทษนะคะ ช่วยพูดซ้ำได้ไหมคะ? อยากให้แน่ใจว่าเข้าใจถูกต้องค่ะ" },
-    { en: "I'm still feeling quite unwell. Is there anything else I need to do right now?", th: "ฉันยังรู้สึกไม่สบายอยู่ค่ะ มีอะไรอีกไหมที่ต้องทำตอนนี้คะ?" }
-  ];
-  return defaults[Math.floor(Math.random() * defaults.length)];
+  
+  // Medication
+  if (/medication|medicine|drug|ยา|กิน|taking/i.test(t)) {
+    return { en: "I took some aspirin two hours ago, but it didn't help at all.", th: "ทานแอสไพรินไปเมื่อ 2 ชั่วโมงก่อน แต่ไม่ช่วยเลยค่ะ" };
+  }
+  
+  // Allergy
+  if (/allergy|allergic|แพ้/i.test(t)) {
+    return { en: "Yes, I am allergic to Penicillin. Please be careful.", th: "ใช่ค่ะ ฉันแพ้เพนิซิลลิน ช่วยระวังด้วยนะคะ" };
+  }
+  
+  // Wait / Procedure
+  if (/wait|doctor|queue|รอ|หมอ/i.test(t)) {
+    return { en: "Okay, I'll wait. How long will it take to see the doctor?", th: "ตกลงค่ะจะรอ นานไหมคะกว่าจะได้พบหมอ?" };
+  }
+
+  // Follow-up context based
+  if (aiScenarios.stomach.active) return aiScenarios.stomach.replies[1];
+  if (aiScenarios.headache.active) return aiScenarios.headache.replies[1];
+
+  // Default smart fallback
+  return { 
+    en: "I'm sorry, I'm in a lot of pain and can't understand well. Could you explain that again simply?", 
+    th: "ขอโทษนะคะ ฉันปวดมากจนไม่ค่อยเข้าใจ ช่วยอธิบายง่ายๆ อีกรอบได้ไหมคะ?" 
+  };
 }
 
 function sendChat() {
@@ -911,22 +917,13 @@ function speakText(text, lang) {
   const synth = window.speechSynthesis;
   if (!synth) return;
   
-  // iOS/Safari fix: Must be triggered by user gesture and cancel previous
   synth.cancel();
 
   const doSpeak = () => {
     const utt = new SpeechSynthesisUtterance(text);
-    
-    // Map internal lang codes to BCP 47
-    const langMap = {
-      'th': 'th-TH',
-      'en': 'en-US',
-      'zh': 'zh-CN',
-      'zh-CN': 'zh-CN'
-    };
+    const langMap = { 'th': 'th-TH', 'en': 'en-US', 'zh': 'zh-CN', 'zh-CN': 'zh-CN' };
     const targetLang = langMap[lang] || lang || 'en-US';
     
-    // Voice selection with fallback for iOS/Android
     const voices = synth.getVoices();
     let voice = voices.find(v => v.lang.replace('_', '-') === targetLang);
     if (!voice) voice = voices.find(v => v.lang.startsWith(targetLang.split('-')[0]));
@@ -937,7 +934,6 @@ function speakText(text, lang) {
     utt.pitch = 1.0;
     utt.volume = 1.0;
 
-    // Android fix: Resume if paused
     if (synth.paused) synth.resume();
     synth.speak(utt);
   };
@@ -945,9 +941,7 @@ function speakText(text, lang) {
   if (synth.getVoices().length > 0) {
     doSpeak();
   } else {
-    // Wait for voices to load (Chrome/Android)
     synth.onvoiceschanged = doSpeak;
-    // Fallback if event doesn't fire
     setTimeout(doSpeak, 300);
   }
 }
