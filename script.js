@@ -90,6 +90,7 @@ let chatHistory = [];
 let translateDebounce = null;
 let modalAutoTimer = null;
 let editingId = null;
+let geminiApiKey = '';
 
 function init() {
   const saved = localStorage.getItem(STORAGE_KEY);
@@ -98,10 +99,18 @@ function init() {
       const parsed = JSON.parse(saved);
       scenarios = parsed.scenarios || defaultScenarios;
       activeScenarioId = parsed.activeScenarioId || 'greeting';
+      geminiApiKey = parsed.geminiApiKey || '';
     } catch (e) { scenarios = defaultScenarios; }
   } else {
     scenarios = JSON.parse(JSON.stringify(defaultScenarios));
   }
+  
+  if (geminiApiKey) {
+    const keyInput = document.getElementById('geminiApiKey');
+    if (keyInput) keyInput.value = geminiApiKey;
+    updateGeminiStatus('active', 'Gemini AI พร้อมใช้งาน');
+  }
+
   renderScenarios();
   renderPhrases();
   renderPracticeSelect();
@@ -110,7 +119,35 @@ function init() {
 }
 
 function save() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify({ scenarios, activeScenarioId }));
+  localStorage.setItem(STORAGE_KEY, JSON.stringify({ 
+    scenarios, 
+    activeScenarioId,
+    geminiApiKey
+  }));
+}
+
+function toggleGeminiConfig() {
+  const body = document.getElementById('geminiConfigBody');
+  const icon = document.getElementById('gemini-config-icon');
+  const isOpen = body.classList.toggle('open');
+  icon.style.transform = isOpen ? 'rotate(180deg)' : 'rotate(0deg)';
+}
+
+function saveGeminiKey() {
+  geminiApiKey = document.getElementById('geminiApiKey').value.trim();
+  save();
+  if (geminiApiKey) {
+    updateGeminiStatus('active', 'บันทึก Key เรียบร้อยแล้ว');
+  } else {
+    updateGeminiStatus('', '');
+  }
+}
+
+function updateGeminiStatus(type, msg) {
+  const status = document.getElementById('geminiStatus');
+  if (!status) return;
+  status.className = 'gemini-status ' + type;
+  status.textContent = msg;
 }
 
 function currentScenario() {
@@ -159,7 +196,7 @@ function renderPhrases() {
             <span class="badge-mini en">EN</span>
             <div class="phrase-col">
               <div class="phrase-en-text">${esc(p.en)}</div>
-              ${p.phonetic_en ? `<span class="phrase-phonetic">🔤 ${esc(p.phonetic_en)}</span>` : ''}
+              ${p.phonetic_en ? `<span class="phrase-phonetic">${esc(p.phonetic_en)}</span>` : ''}
             </div>
           </div>
           <div class="phrase-row">
@@ -170,13 +207,13 @@ function renderPhrases() {
             <span class="badge-mini zh">中</span>
             <div class="phrase-col">
               <div class="phrase-zh-text">${esc(p.zh)}</div>
-              ${p.phonetic_zh ? `<span class="phrase-phonetic">🔤 ${esc(p.phonetic_zh)}</span>` : ''}
+              ${p.phonetic_zh ? `<span class="phrase-phonetic">${esc(p.phonetic_zh)}</span>` : ''}
             </div>
           </div>
         </div>
         <div class="phrase-actions">
           <button class="btn-icon blue" onclick="speakText('${ea(p.en)}','en')" title="ฟัง EN"><i class="fas fa-volume-up"></i></button>
-          <button class="btn-icon yellow" onclick="speakText('${ea(p.zh)}','zh')" title="ฟัง ZH"><i class="fas fa-volume-up"></i></button>
+          <button class="btn-icon yellow" onclick="speakText('${ea(p.zh)}','zh')" title="ฟัง ZH">中</button>
           <button class="btn-icon green" onclick="openEditModal('${ea(p.id)}')" title="แก้ไข"><i class="fas fa-pen"></i></button>
           <button class="btn-icon red" onclick="openDeleteModal('${ea(p.id)}')" title="ลบ"><i class="fas fa-trash"></i></button>
         </div>
@@ -294,7 +331,7 @@ async function doAutoTranslate(th) {
         <div class="auto-preview-text" onclick="speakText('${ea(en)}','en')" style="cursor:pointer">
           <i class="fas fa-volume-up" style="color:var(--primary);margin-right:4px"></i> ${esc(en)}
         </div>
-        ${phonEn ? `<span class="auto-preview-phonetic">🔤 ${esc(phonEn)}</span>` : ''}
+        ${phonEn ? `<span class="auto-preview-phonetic">${esc(phonEn)}</span>` : ''}
       </div>
       <div class="auto-preview-row">
         <div class="auto-preview-label">🇨🇳 中文</div>
@@ -501,7 +538,7 @@ function onPracticeSelectChange() {
   const pe = document.getElementById('targetPhonetic');
   const phoneticKey = lang === 'en' ? 'phonetic_en' : 'phonetic_zh';
   if (foundPhrase && foundPhrase[phoneticKey]) {
-    pe.textContent = '🔤 ' + foundPhrase[phoneticKey];
+    pe.textContent = foundPhrase[phoneticKey];
     pe.style.display = 'block';
   } else { pe.style.display = 'none'; }
   
@@ -752,20 +789,76 @@ function getAIReply(text) {
   };
 }
 
-function sendChat() {
+async function sendChat() {
   const input = document.getElementById('chatInput');
   const text = input.value.trim();
   if (!text) return;
   input.value = '';
-  chatHistory.push(text);
+  
+  // Add user message to history
+  chatHistory.push({ role: 'user', content: text });
   appendMsg('user', text);
+  
   const typId = appendTyping();
-  setTimeout(() => {
+  
+  try {
+    let reply;
+    if (geminiApiKey) {
+      reply = await getGeminiReply(text);
+    } else {
+      // Fallback to local logic if no API key
+      const localReply = getAIReply(text);
+      reply = { en: localReply.en, th: localReply.th };
+    }
+    
     removeTyping(typId);
-    const reply = getAIReply(text);
+    chatHistory.push({ role: 'assistant', content: reply.en });
     appendMsg('ai', reply.en, reply.th);
     speakText(reply.en, 'en');
-  }, 700 + Math.random() * 600);
+  } catch (error) {
+    console.error('Chat Error:', error);
+    removeTyping(typId);
+    const fallback = getAIReply(text);
+    appendMsg('ai', fallback.en, fallback.th);
+    speakText(fallback.en, 'en');
+  }
+}
+
+async function getGeminiReply(userInput) {
+  const systemPrompt = `You are Sarah, a 30-year-old female tourist from London. You are currently at a hospital in Thailand because you feel very unwell. 
+Your goal is to role-play with a nurse or medical staff. 
+Rules:
+1. Respond naturally like a patient in pain or distress.
+2. If asked about pain location, be specific (e.g., lower right abdomen, or spinning head).
+3. If asked about pain scale (1-10), give a realistic number (e.g., 8/10) and describe the feeling (e.g., sharp, throbbing).
+4. Keep responses relatively short (1-3 sentences).
+5. IMPORTANT: You must provide your response in a JSON format with two fields: "en" (English response) and "th" (Thai translation).
+Example: {"en": "I have a sharp pain in my stomach, it's about an 8 out of 10.", "th": "ฉันมีอาการปวดเสียดที่ท้องค่ะ ประมาณ 8 เต็ม 10"}
+6. Stay in character. If they ask something unrelated, bring it back to your health.`;
+
+  const history = chatHistory.slice(-6).map(msg => ({
+    role: msg.role === 'user' ? 'user' : 'model',
+    parts: [{ text: msg.content }]
+  }));
+
+  const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiApiKey}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      contents: [
+        { role: 'user', parts: [{ text: systemPrompt }] },
+        ...history
+      ],
+      generationConfig: {
+        response_mime_type: "application/json",
+      }
+    })
+  });
+
+  if (!response.ok) throw new Error('Gemini API Error');
+  const data = await response.json();
+  const content = data.candidates[0].content.parts[0].text;
+  return JSON.parse(content);
 }
 
 function appendMsg(role, en, th = '') {
@@ -887,18 +980,18 @@ function renderQuickPhrases() {
   const s = currentScenario();
   const wrap = document.getElementById('quickPhrases');
   if (!s.phrases.length) { wrap.innerHTML = ''; return; }
-  wrap.innerHTML = `<div class="quick-label">ประโยคด่วน · ${esc(s.labelTh)}</div>
+    wrap.innerHTML = `<div class="quick-label">ประโยคด่วน · ${esc(s.labelTh)}</div>
     ${s.phrases.slice(0, 3).map(p => `
       <div class="quick-phrase-item">
         <div class="q-en" onclick="speakText('${ea(p.en)}','en')" style="cursor:pointer">
           <i class="fas fa-volume-up" style="color:var(--primary);margin-right:4px"></i> ${esc(p.en)}
         </div>
-        ${p.phonetic_en ? `<div class="q-phonetic-en">🔤 ${esc(p.phonetic_en)}</div>` : ''}
+        ${p.phonetic_en ? `<div class="q-phonetic-en">${esc(p.phonetic_en)}</div>` : ''}
         <div class="q-th">🇹🇭 ${esc(p.th)}</div>
         <div class="q-zh" onclick="speakText('${ea(p.zh)}','zh')" style="cursor:pointer;margin-top:2px">
           <i class="fas fa-volume-up" style="color:var(--primary);margin-right:4px"></i> ${esc(p.zh)}
         </div>
-        ${p.phonetic_zh ? `<div class="q-phonetic-zh">🔤 ${esc(p.phonetic_zh)}</div>` : ''}
+        ${p.phonetic_zh ? `<div class="q-phonetic-zh">${esc(p.phonetic_zh)}</div>` : ''}
       </div>`).join('')}`;
 }
 
