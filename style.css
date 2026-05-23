@@ -304,6 +304,18 @@ body { font-family: 'Prompt', sans-serif; background: var(--bg); color: var(--te
 .q-th { color: var(--text); margin-top: 4px; font-size: 11px; }
 .q-zh { color: var(--text); margin-top: 2px; font-size: 11px; }
 
+/* Role Play Selection */
+.chat-scenario-selection { margin-bottom: 16px; background: #fff; padding: 12px; border-radius: 12px; border: 1px solid var(--border); }
+.rp-selector-label { font-size: 11px; font-weight: 700; color: var(--text-sub); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+.rp-selector-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.rp-option { padding: 10px; border: 1.5px solid var(--border); border-radius: 10px; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all 0.2s; background: #f8fafc; }
+.rp-option i { font-size: 14px; color: var(--text-hint); }
+.rp-option span { font-size: 11px; font-weight: 600; color: var(--text-sub); line-height: 1.2; }
+.rp-option.active { border-color: var(--primary); background: #f0fdf9; }
+.rp-option.active i { color: var(--primary); }
+.rp-option.active span { color: var(--primary-dark); }
+.rp-option:hover:not(.active) { background: #f1f5f9; border-color: #cbd5e1; }
+
 /* Gemini Config */
 .gemini-config { background: #f8fafc; border: 1px solid var(--border); border-radius: var(--radius-sm); margin-bottom: 12px; overflow: hidden; }
 .gemini-config-header { padding: 10px 14px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; font-size: 12px; font-weight: 600; color: var(--text-sub); background: #f1f5f9; }
