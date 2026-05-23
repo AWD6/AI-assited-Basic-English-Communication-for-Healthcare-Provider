@@ -87,17 +87,16 @@
       <div class="panel-header">
         <div>
           <div class="panel-title">Speaking Practice</div>
-          <div class="panel-sub">ฝึกออกเสียง · AI วัดความแม่นยำ + ชี้คำที่ผิดสีแดง</div>
+          <div class="panel-sub">เลือกประโยค · กดไมค์ · AI วัดความแม่นยำ</div>
         </div>
       </div>
 
-      <!-- Dropdown to select phrase from ALL scenarios -->
-      <div class="practice-select-wrap">
-        <div class="practice-select-label"><i class="fas fa-list-ul" style="color:var(--primary)"></i> เลือกประโยคที่ต้องการฝึก (ทุกสถานการณ์)</div>
-        <select class="practice-select" id="practiceSelect" onchange="onPracticeSelectChange()">
-          <option value="">— เลือกประโยคที่ต้องการฝึก —</option>
-        </select>
+      <!-- Phrase card selector -->
+      <div class="practice-card-label">
+        <i class="fas fa-list-ul" style="color:var(--primary)"></i>
+        เลือกประโยคที่ต้องการฝึก
       </div>
+      <div class="practice-phrase-list" id="practiceCardList"></div>
 
       <div class="target-box" id="targetBox" style="display:none">
         <div class="target-label"><i class="fas fa-bullseye"></i> ลองพูดประโยคนี้</div>
@@ -108,7 +107,7 @@
         </button>
       </div>
       <div class="recognition-box" id="recBox">
-        <div class="rec-placeholder" id="recPlaceholder">เลือกประโยคแล้วกดไมค์เพื่อฝึกพูด</div>
+        <div class="rec-placeholder" id="recPlaceholder">เลือกประโยคด้านบนแล้วกดไมค์เพื่อฝึกพูด</div>
         <div class="listening-anim" id="listeningAnim" style="display:none">
           <div class="bar"></div><div class="bar"></div><div class="bar"></div>
           <div class="bar"></div><div class="bar"></div>
@@ -130,51 +129,57 @@
       </button>
     </div>
 
-    <!-- Chat Panel -->
+    <!-- Chat / Role Play Panel (Quiz mode) -->
     <div class="tab-panel" id="panel-chat">
       <div class="panel-header">
         <div class="panel-title-row">
           <div class="mini-avatar"><i class="fas fa-robot"></i></div>
           <div>
-            <div class="panel-title">AI Role Play</div>
-            <div class="panel-sub">สนทนากับ AI ที่รับบทเป็นผู้ป่วยต่างชาติ</div>
+            <div class="panel-title">AI Role Play Quiz</div>
+            <div class="panel-sub">เลือกคำตอบที่ถูกต้องเพื่อสนทนากับผู้ป่วย AI</div>
           </div>
         </div>
       </div>
-      <div class="chat-scenario-selection">
-        <div class="rp-selector-label">เลือกสถานการณ์จำลอง:</div>
-        <div class="rp-selector-grid" id="rolePlaySelector">
-          <!-- Role play options will be rendered here -->
+
+      <!-- Scenario Scope Selector -->
+      <div class="chat-scope-wrap">
+        <div class="chat-scope-label">
+          <i class="fas fa-theater-masks"></i>
+          เลือกสถานการณ์สำหรับ Role Play
+          <span class="chat-scope-hint">AI จะตอบตรงตามสถานการณ์ที่เลือก</span>
         </div>
+        <select class="practice-select" id="chatScenarioSelect" onchange="onChatScenarioChange()"></select>
       </div>
+
       <div class="chat-controls">
-        <span class="chat-scenario-badge"><i class="fas fa-user-injured"></i> ผู้ป่วยต่างชาติ (Foreign Patient)</span>
+        <span class="chat-scenario-badge" id="chatScenarioBadge">
+          <i class="fas fa-user-injured"></i>
+          <span id="chatScenarioBadgeText">ผู้ป่วยต่างชาติ</span>
+        </span>
         <button class="chat-reset-btn" onclick="resetChat()"><i class="fas fa-redo"></i> เริ่มใหม่</button>
       </div>
-      <div class="gemini-config">
-        <div class="gemini-config-header" onclick="toggleGeminiConfig()">
-          <span><i class="fas fa-robot"></i> ตั้งค่า AI (Gemini API)</span>
-          <i class="fas fa-chevron-down" id="gemini-config-icon"></i>
+
+      <!-- Hint box -->
+      <div class="chat-hint-box" id="chatHintBox" style="display:none">
+        <div class="chat-hint-title"><i class="fas fa-lightbulb"></i> คำแนะนำสำหรับสถานการณ์นี้</div>
+        <div class="chat-hint-text" id="chatHintText"></div>
+      </div>
+
+      <!-- Quiz progress bar -->
+      <div class="quiz-progress-wrap" id="quizProgressWrap" style="display:none">
+        <div class="quiz-progress-label">
+          <span id="quizProgressText">ข้อที่ 1 / 3</span>
+          <span id="quizScoreText">✓ 0 คะแนน</span>
         </div>
-        <div class="gemini-config-body" id="geminiConfigBody">
-          <p class="gemini-hint">ใส่ API Key เพื่อให้ AI ฉลาดขึ้น (เหมือน ChatGPT)</p>
-          <div class="gemini-input-group">
-            <input type="password" id="geminiApiKey" placeholder="ใส่ Gemini API Key ที่นี่..." onchange="saveGeminiKey()">
-            <a href="https://aistudio.google.com/app/apikey" target="_blank" class="btn-get-key">รับ Key ฟรี</a>
-          </div>
-          <div id="geminiStatus" class="gemini-status"></div>
+        <div class="quiz-progress-bar-bg">
+          <div class="quiz-progress-bar-fill" id="quizProgressFill" style="width:0%"></div>
         </div>
       </div>
+
       <div class="chat-box" id="chatBox"></div>
-      <div class="chat-input-area">
-        <button class="btn-mic-chat" id="chatMicBtn" onclick="toggleChatMic()">
-          <i class="fas fa-microphone"></i>
-        </button>
-        <input type="text" id="chatInput"
-          placeholder="พิมพ์ภาษาอังกฤษหรือไทย เช่น Hello / สวัสดีค่ะ..."
-          onkeydown="if(event.key==='Enter')sendChat()">
-        <button class="btn-chat-send" onclick="sendChat()"><i class="fas fa-paper-plane"></i></button>
-      </div>
+
+      <!-- Quiz options (rendered dynamically) -->
+      <div id="quizOptionsWrap"></div>
     </div>
 
     <!-- Translate Panel -->
@@ -249,12 +254,10 @@
           oninput="onModalThaiInput()">
         <div class="field-error" id="err-th"></div>
       </div>
-
       <div class="auto-preview" id="autoPreview">
         <div class="auto-preview-title"><i class="fas fa-magic"></i> AI แปลให้อัตโนมัติ – แก้ไขได้ด้านล่าง</div>
         <div id="autoPreviewContent"></div>
       </div>
-
       <div class="field-group">
         <label class="field-label"><span class="badge-lang en">EN</span> English (แก้ไขได้)</label>
         <input type="text" id="f-en" class="field-input" placeholder="AI จะแปลให้ หรือคุณพิมพ์เอง">
