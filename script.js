@@ -589,11 +589,14 @@ async function doAutoTranslate(th) {
     const fEn = document.getElementById('f-en'), fZh = document.getElementById('f-zh');
     const fPhEn = document.getElementById('f-phonetic-en');
     const fCtxTh = document.getElementById('f-ctx-th'), fCtxEn = document.getElementById('f-ctx-en');
-    if (fEn && !fEn.value) fEn.value = en;
-    if (fZh && !fZh.value) fZh.value = zh;
-    if (fPhEn && !fPhEn.value) fPhEn.value = phonEn;
-    if (fCtxTh && !fCtxTh.value) fCtxTh.value = ctx.th;
-    if (fCtxEn && !fCtxEn.value) fCtxEn.value = ctx.en;
+    
+    // เปลี่ยนให้อัปเดตค่าเสมอเพื่อให้มันลิงก์เข้าช่องแบบอัตโนมัติ 100% ทันทีที่ผู้ใช้พิมพ์
+    if (fEn) fEn.value = en;
+    if (fZh) fZh.value = zh;
+    if (fPhEn) fPhEn.value = phonEn;
+    if (fCtxTh) fCtxTh.value = ctx.th;
+    if (fCtxEn) fCtxEn.value = ctx.en;
+
     document.getElementById('autoPreviewContent').innerHTML = `
       <div class="auto-preview-row">
         <div class="auto-preview-label">🇬🇧 English</div>
@@ -621,15 +624,27 @@ async function doAutoTranslate(th) {
 async function submitAddPhrase() {
   const th = document.getElementById('f-th').value.trim();
   if (!th) { setErr('err-th','f-th','กรุณากรอกประโยคภาษาไทย'); return; }
+  
+  const btn = document.getElementById('btnConfirmAdd');
+  btn.disabled = true;
+
+  // หากผู้ใช้รีบกดปุ่มบันทึกก่อนที่ระบบแปลอัตโนมัติจะทำงานเสร็จ ให้บังคับแปลทันที
+  if (modalAutoTimer) {
+    clearTimeout(modalAutoTimer);
+    modalAutoTimer = null;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> กำลังแปลภาษา...';
+    await doAutoTranslate(th);
+  }
+
   let en = document.getElementById('f-en').value.trim();
   let zh = document.getElementById('f-zh').value.trim();
   let phonEn = document.getElementById('f-phonetic-en').value.trim();
   let phonZh = document.getElementById('f-phonetic-zh').value.trim();
   let ctxTh = document.getElementById('f-ctx-th').value.trim();
   let ctxEn = document.getElementById('f-ctx-en').value.trim();
-  const btn = document.getElementById('btnConfirmAdd');
-  btn.disabled = true;
+  
   btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> กำลังบันทึก...';
+  
   if (!en || !zh) {
     try {
       const [enR, zhR] = await Promise.all([
@@ -641,11 +656,14 @@ async function submitAddPhrase() {
       if (!ctxTh || !ctxEn) { const c = analyzeCtx(th,en); ctxTh = ctxTh || c.th; ctxEn = ctxEn || c.en; }
     } catch (e) {}
   }
-  btn.disabled = false;
+  
   const isEdit = !!editingId;
   btn.innerHTML = isEdit ? '<i class="fas fa-save"></i> บันทึก' : '<i class="fas fa-plus"></i> เพิ่มประโยค';
+  btn.disabled = false;
+  
   if (!en) { setErr('err-en','f-en','ไม่สามารถแปลได้ กรุณากรอกเอง'); return; }
   if (!zh) { setErr('err-zh','f-zh','ไม่สามารถแปลได้ กรุณากรอกเอง'); return; }
+  
   const s = currentScenario();
   if (isEdit) {
     const idx = s.phrases.findIndex(p => p.id === editingId);
@@ -716,13 +734,47 @@ function genPhonetics(en) {
   return w.map(x => map[x] || '').filter(Boolean).join(' ');
 }
 
+// อัปเกรดฟังก์ชันแยกบริบท (AnalyzeCtx) ให้ฉลาดและครอบคลุมศัพท์โรงพยาบาลมากขึ้น
 function analyzeCtx(th, en) {
   const t = th.toLowerCase(), e = en.toLowerCase();
-  if (t.includes('ทักทาย') || t.includes('สวัสดี') || e.includes('hello') || e.includes('welcome')) return { th:'ใช้ทักทายผู้ป่วย', en:'Greeting the patient' };
-  if (t.includes('ทาง') || t.includes('ชั้น') || e.includes('floor') || e.includes('direction')) return { th:'ใช้บอกทางในโรงพยาบาล', en:'Giving directions' };
-  if (t.includes('ยา') || e.includes('medicine') || e.includes('pharmacy')) return { th:'ใช้แนะนำเรื่องยา', en:'Medication instructions' };
-  if (t.includes('เจ็บ') || t.includes('ปวด') || e.includes('pain') || e.includes('hurt')) return { th:'ใช้สอบถามอาการปวด', en:'Assessing pain' };
-  return { th:'ใช้ในการสนทนาทั่วไปกับผู้ป่วย', en:'General patient interaction' };
+
+  if (t.match(/ทักทาย|สวัสดี|ต้อนรับ|สบายดีไหม/) || e.match(/hello|hi |welcome|good morning|how are you/))
+    return { th: 'ใช้ทักทายและต้อนรับผู้ป่วย', en: 'Greeting and welcoming the patient' };
+
+  if (t.match(/ชื่อ|นามสกุล|บัตร|พาสปอร์ต|เกิด|อายุ|เบอร์โทร|ติดต่อ/) || e.match(/name|passport|id card|birth|age|phone|contact/))
+    return { th: 'ใช้สอบถามข้อมูลส่วนตัวเพื่อลงทะเบียน', en: 'Asking for personal information at registration' };
+
+  if (t.match(/นัด|ทำนัด|คิว|ใบนัด/) || e.match(/appointment|queue/))
+    return { th: 'ใช้สอบถามหรือจัดการเรื่องการนัดหมาย', en: 'Checking or managing appointments' };
+
+  if (t.match(/ความดัน|น้ำหนัก|ส่วนสูง|อุณหภูมิ|ปรอท|ชีพจร|สัญญาณชีพ/) || e.match(/blood pressure|weight|height|temperature|pulse|vital/))
+    return { th: 'ใช้แจ้งการตรวจวัดสัญญาณชีพเบื้องต้น', en: 'Informing about vital signs measurement' };
+
+  if (t.match(/อาการ|เจ็บ|ปวด|แพ้ยา|โรคประจำตัว|ไข้|ไอ|เวียนหัว|คลื่นไส้/) || e.match(/symptom|pain|hurt|allergy|chronic|fever|cough|dizzy|nausea/))
+    return { th: 'ใช้ซักถามประวัติและอาการเจ็บป่วย', en: 'Assessing symptoms and medical history' };
+
+  if (t.match(/นอน|นั่ง|หายใจ|อ้าปาก|ขยับ|กลืน|พับแขน|ตรวจ/) || e.match(/lie down|sit|breath|breathe|open.*mouth|move|swallow|roll up|examine/))
+    return { th: 'ใช้ออกคำสั่งขณะแพทย์/พยาบาลทำการตรวจ', en: 'Giving instructions during physical examination' };
+
+  if (t.match(/รอ|สักครู่|เดี๋ยว/) || e.match(/wait|moment|shortly|soon/))
+    return { th: 'ใช้บอกให้ผู้ป่วยนั่งรอรับบริการ', en: 'Asking the patient to wait' };
+
+  if (t.match(/ยา|เภสัช|กินยา|ทานยา/) || e.match(/medicine|medication|pill|pharmacy/))
+    return { th: 'ใช้แนะนำหรือสอบถามเกี่ยวกับการใช้ยา', en: 'Medication instructions or inquiries' };
+
+  if (t.match(/จ่ายเงิน|การเงิน|ประกัน|ใบเสร็จ|ค่ารักษา/) || e.match(/pay|cashier|insurance|receipt|bill/))
+    return { th: 'ใช้สื่อสารเรื่องค่าใช้จ่ายและประกัน', en: 'Communicating about payment and insurance' };
+
+  if (t.match(/ทาง|ชั้น|ตึก|ห้อง|เลี้ยว|ตรงไป|ป้าย/) || e.match(/direction|floor|building|room|turn|straight|sign/))
+    return { th: 'ใช้บอกทิศทางไปยังแผนกต่างๆ', en: 'Giving directions to other departments' };
+
+  if (t.match(/ขอโทษ|เสียใจ|ไม่เป็นไร/) || e.match(/sorry|apologize|worry/))
+    return { th: 'ใช้แสดงความเห็นใจหรือขออภัย', en: 'Showing empathy or apologizing' };
+
+  if (t.match(/เข้าใจ|คำถาม|เรียบร้อย|เสร็จ/) || e.match(/understand|question|finish|done/))
+    return { th: 'ใช้ตรวจสอบความเข้าใจหรือสิ้นสุดการตรวจ', en: 'Checking understanding or ending the visit' };
+
+  return { th: 'ใช้ในการสนทนาทั่วไปกับผู้ป่วย', en: 'General conversation with the patient' };
 }
 
 /* ── Practice Recording ──────────────────────────────────── */
@@ -895,7 +947,6 @@ function initQuiz() {
   box.innerHTML = '';
   document.getElementById('quizOptionsWrap').innerHTML = '';
 
-  // ล้างการนับครั้งที่ตอบผิดเมื่อเริ่มควิซใหม่
   const rounds = quizRounds[chatScenarioId] || [];
   rounds.forEach(r => {
     if(r.options) { r.options.wrongAttempts = 0; }
@@ -927,10 +978,7 @@ function showQuizRound(roundIdx) {
   const round = rounds[roundIdx];
   quizAnswered = false;
 
-  // Add AI message to chat box
   appendAiMsg(round.aiMsg.en, round.aiMsg.th);
-
-  // Shuffle options
   const opts = shuffle([...round.options]);
   renderQuizOptions(opts);
   updateQuizProgress();
@@ -938,7 +986,6 @@ function showQuizRound(roundIdx) {
 
 function renderQuizOptions(opts) {
   currentQuizOpts = opts;
-  // รีเซ็ตตัวนับการตอบผิดสำหรับข้อใหม่
   currentQuizOpts.wrongAttempts = 0; 
   
   const wrap = document.getElementById('quizOptionsWrap');
@@ -979,15 +1026,13 @@ function onQuizAnswer(clickedIdx) {
   const btns = grid.querySelectorAll('.quiz-option-btn');
   const wrap = document.getElementById('quizOptionsWrap');
 
-  // ปิดปุ่มทั้งหมดชั่วคราว ป้องกันการกดซ้ำซ้อน
   quizAnswered = true;
   btns.forEach(b => b.disabled = true);
 
   if (isCorrect) {
-    // กรณีตอบถูกภายในโควตา 2 ครั้ง
     btns[clickedIdx].classList.add('correct-ans');
 
-    quizScore++; // บวกคะแนนให้เฉพาะตอนที่ตอบถูกเท่านั้น
+    quizScore++; 
     const scoreEl = document.getElementById('quizScoreText');
     if (scoreEl) scoreEl.textContent = `✓ ${quizScore} คะแนน`;
 
@@ -1014,7 +1059,6 @@ function onQuizAnswer(clickedIdx) {
     wrap.appendChild(nextBtn);
 
   } else {
-    // กรณีตอบผิด
     opts.wrongAttempts++;
     btns[clickedIdx].classList.add('wrong-ans');
 
@@ -1024,10 +1068,9 @@ function onQuizAnswer(clickedIdx) {
     wrap.appendChild(fb);
 
     if (opts.wrongAttempts >= 2) {
-      // ตอบผิดครบ 2 ครั้ง หมดสิทธิ์ตอบในข้อนี้
       const correctIdx = opts.findIndex(o => o.correct);
       if (correctIdx !== -1) {
-        btns[correctIdx].classList.add('correct-ans'); // ไฮไลท์ข้อที่ถูกให้ดู
+        btns[correctIdx].classList.add('correct-ans');
       }
 
       const failMsg = document.createElement('div');
@@ -1053,14 +1096,13 @@ function onQuizAnswer(clickedIdx) {
       wrap.appendChild(nextBtn);
 
     } else {
-      // ยังเหลือสิทธิ์ตอบอีก 1 ครั้ง ให้ปลดล็อคปุ่มที่ยังไม่ได้กด
       setTimeout(() => {
         btns.forEach((b) => {
           if (!b.classList.contains('wrong-ans')) {
             b.disabled = false;
           }
         });
-        quizAnswered = false; // รีเซ็ตให้กดใหม่ได้
+        quizAnswered = false; 
       }, 600);
     }
   }
