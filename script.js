@@ -1,6 +1,7 @@
 /* ============================================================
    HEAL English v6 — script.js
-   Quiz-mode Role Play + Phrase Card Selector (Updated to 6 Questions & 2 Attempts)
+   Quiz-mode Role Play + Phrase Card Selector
+   (Upgraded Phonetics Engine for EN & ZH)
    ============================================================ */
 
 const STORAGE_KEY = 'heal_english_v6';
@@ -9,7 +10,7 @@ const defaultScenarios = [
   {
     id: 'greeting', labelEn: 'Greeting', labelTh: 'การทักทาย', icon: '👋',
     phrases: [
-      { id:'g1', en:'Hello, welcome to our hospital.', th:'สวัสดีค่ะ ยินดีต้อนรับสู่โรงพยาบาลค่ะ', zh:'您好，欢迎来到我们医院。', phonetic_en:'เฮลโล เวลคัม ทู เอาเออร์ ฮอสพิเทิล', phonetic_zh:'หนี่ว เฮา ฮวน อิ๋ง ไหลต้าว อู่เหมิน อี้ยวน', context:'First contact with patient at entrance or reception', contextTh:'ใช้เมื่อต้อนรับผู้ป่วยที่ทางเข้าหรือเคาน์เตอร์' },
+      { id:'g1', en:'Hello, welcome to our hospital.', th:'สวัสดีค่ะ ยินดีต้อนรับสู่โรงพยาบาลค่ะ', zh:'您好，欢迎来到我们医院。', phonetic_en:'เฮลโล เวลคัม ทู เอาเออร์ ฮอสพิเทิล', phonetic_zh:'หนีห่าว ฮวนอิ๋ง ไหล เต้า หว่อ เหมิน อี้ย่วน', context:'First contact with patient at entrance or reception', contextTh:'ใช้เมื่อต้อนรับผู้ป่วยที่ทางเข้าหรือเคาน์เตอร์' },
       { id:'g2', en:'How can I help you today?', th:'วันนี้มีอะไรให้ช่วยไหมคะ?', zh:'我今天能帮您什么？', phonetic_en:'เฮา แคน ไอ เฮลป์ ยู ทูเดย์', phonetic_zh:'หว่อ จินเทียน เหนิง ปาง หนิน เสินเมอะ', context:'Opening a patient encounter', contextTh:'ใช้เปิดการสนทนาเพื่อสอบถามความต้องการ' },
       { id:'g3', en:'Please wait here for a moment.', th:'กรุณารอสักครู่ตรงนี้ค่ะ', zh:'请在这里稍等片刻。', phonetic_en:'พลีส เวท เฮียร์ ฟอร์ อะ โมเมินท์', phonetic_zh:'ฉิ่ง จ้าย เจ้อ หลี่ เซาเติ่ง เพี่ยนเค่อ', context:'Asking patient to wait', contextTh:'ใช้ขอให้ผู้ป่วยรอ' },
       { id:'g4', en:'Good morning! How are you feeling today?', th:'สวัสดีตอนเช้าค่ะ วันนี้รู้สึกเป็นอย่างไรบ้างคะ?', zh:'早上好！今天感觉怎么样？', phonetic_en:'กุด มอร์นิ่ง เฮา อาร์ ยู ฟีลิ่ง ทูเดย์', phonetic_zh:'จ้าวซ่างห่าว จินเทียน กั่นเจวี๋ย เจิ่นเมอะย่าง', context:'Morning greeting when visiting a patient', contextTh:'ใช้ทักทายตอนเช้าในหอผู้ป่วย' },
@@ -71,10 +72,7 @@ const defaultScenarios = [
   }
 ];
 
-/* ── Quiz rounds per scenario (6 questions each) ──────────────
-   Each round: aiMsg, options[]{text, correct, hint}
-   One option has correct:true, rest have correct:false + hint
-──────────────────────────────────────────────────────────── */
+/* ── Quiz rounds per scenario (6 questions each) ────────────── */
 const quizRounds = {
   greeting: [
     {
@@ -584,6 +582,8 @@ function onModalThaiInput() {
 async function doAutoTranslate(th) {
   try {
     const [en, zh] = await Promise.all([gTranslate(th,'th','en'), gTranslate(th,'th','zh-CN')]);
+    
+    // ใช้ฟังก์ชันเดาคำอ่านที่อัปเกรดแล้ว
     const phonEn = genPhonetics(en);
     const phonZh = genPhoneticsZh(zh);
     const ctx = analyzeCtx(th, en);
@@ -719,70 +719,94 @@ async function gTranslate(text, sl, tl) {
   const data = await res.json(); return data[0].map(i => i[0]).join('');
 }
 
-/* ── Phonetics ───────────────────────────────────────────── */
-// อัปเกรดพจนานุกรมคำอ่านภาษาอังกฤษให้ครอบคลุม และไม่ลบคำที่ไม่รู้จักทิ้ง
+/* ── Phonetics (อัปเกรดระบบเดาคำอ่าน) ───────────────────────── */
 function genPhonetics(en) {
   if (!en) return '';
+  // เพิ่มคลังศัพท์พื้นฐานและศัพท์แพทย์ที่ใช้บ่อย
   const map = {
     'i':'ไอ', 'you':'ยู', 'he':'ฮี', 'she':'ชี', 'it':'อิท', 'we':'วี', 'they':'เดย์',
     'am':'แอม', 'is':'อิซ', 'are':'อาร์', 'was':'วอส', 'were':'เวิร์', 'be':'บี', 'been':'บีน',
     'do':'ดู', 'does':'ดาส', 'did':'ดิด', 'have':'แฮฟ', 'has':'แฮส', 'had':'แฮด',
     'can':'แคน', 'could':'คูด', 'will':'วิล', 'would':'วูด', 'shall':'แชล', 'should':'ชูด', 'may':'เมย์', 'might':'ไมท์', 'must':'มัสต์',
-    'what':'วอท', 'where':'แวร์', 'when':'เวน', 'why':'วาย', 'who':'ฮู', 'how':'เฮา', 'which':'วิช',
-    'hello':'เฮลโล', 'hi':'ไฮ', 'welcome':'เวลคัม', 'to':'ทู', 'our':'เอาเออร์', 'hospital':'ฮอสพิเทิล',
-    'help':'เฮลป์', 'today':'ทูเดย์', 'please':'พลีส', 'wait':'เวท', 'here':'เฮียร์', 'for':'ฟอร์', 'a':'อะ', 'an':'แอน', 'the':'เดอะ',
-    'moment':'โมเมินท์', 'good':'กุด', 'morning':'มอร์นิ่ง', 'afternoon':'อาฟเตอร์นูน', 'evening':'อีฟวนิ่ง', 'night':'ไนท์',
-    'feeling':'ฟีลิ่ง', 'feel':'ฟีล', 'any':'เอนี', 'some':'ซัม', 'allergies':'อะเลอร์จีส', 'allergy':'อะเลอร์จี',
-    'take':'เทค', 'this':'ดิส', 'that':'แดท', 'these':'ดีซ', 'those':'โดซ',
-    'medicine':'เมดิซิน', 'pill':'พิล', 'twice':'ทไวส์', 'day':'เดย์', 'see':'ซี', 'look':'ลุค',
-    'your':'ยอร์', 'my':'มาย', 'his':'ฮิส', 'her':'เฮอร์', 'their':'แดร์',
-    'passport':'พาสปอร์ท', 'or':'ออร์', 'and':'แอนด์', 'but':'บัท', 'id':'ไอดี', 'card':'การ์ด',
-    'go':'โก', 'straight':'สเตรท', 'turn':'เทิร์น', 'left':'เลฟท์', 'right':'ไรท์',
-    'pharmacy':'ฟาร์มาซี', 'doctor':'ด็อกเตอร์', 'nurse':'เนิร์ส', 'clinic':'คลินิก', 'room':'รูม',
-    'blood':'บลัด', 'pressure':'เพรชเชอร์', 'weight':'เวท', 'height':'ไฮท์', 'temperature':'เทมเพอเรเจอร์',
-    'pain':'เปน', 'hurt':'เฮิร์ท', 'fever':'ฟีเวอร์', 'cough':'คอฟ', 'dizzy':'ดิซซี่',
-    'yes':'เยส', 'no':'โน', 'not':'นอท', 'ok':'โอเค', 'okay':'โอเค', 'thank':'แธงค์', 'thanks':'แธงส์',
-    'name':'เนม', 'age':'เอจ', 'old':'โอลด์', 'symptom':'ซิมทัม', 'sick':'ซิค', 'ill':'อิล',
-    'check':'เช็ก', 'up':'อัพ', 'down':'ดาวน์', 'sit':'ซิท', 'stand':'สแตนด์', 'lie':'ไลย์',
-    'breathe':'บรีธ', 'breath':'เบรธ', 'deep':'ดีพ', 'open':'โอเพ่น', 'mouth':'เมาท์',
-    'time':'ไทม์', 'hour':'เอาเออร์', 'minute':'มินิท', 'now':'นาว', 'later':'เลเทอร์',
-    'appointment':'อะพอยต์เมินท์', 'queue':'คิว', 'number':'นัมเบอร์', 'sign':'ไซน์',
-    'in':'อิน', 'on':'ออน', 'at':'แอท', 'by':'บาย', 'with':'วิธ', 'about':'อะเบาท์', 'from':'ฟรอม'
+    'what':'วอท', 'where':'แวร์', 'when':'เวน', 'why':'วาย', 'who':'ฮู', 'how':'เฮา', 'which':'วิช', 'whose':'ฮูส',
+    
+    'come':'คัม', 'go':'โก', 'went':'เวนท์', 'gone':'กอน', 'want':'วอนท์', 'need':'นีด', 'take':'เทค', 'bring':'บริง',
+    'see':'ซี', 'look':'ลุค', 'watch':'วอทช์', 'make':'เมค', 'use':'ยูส', 'find':'ไฟนด์', 'give':'กิฟ', 'tell':'เทล',
+    'work':'เวิร์ค', 'call':'คอล', 'try':'ไทร', 'ask':'อาสค์', 'feel':'ฟีล', 'leave':'ลีฟ', 'put':'พุท', 'mean':'มีน',
+    
+    'good':'กุด', 'bad':'แบด', 'wrong':'รอง', 'right':'ไรท์', 'true':'ทรู', 'false':'ฟอลส์', 'new':'นิว', 'old':'โอลด์',
+    'high':'ไฮ', 'low':'โลว์', 'big':'บิ๊ก', 'small':'สมอล', 'large':'ลาร์จ', 'long':'ลอง', 'short':'ชอร์ท', 'hot':'ฮอท',
+    'cold':'โคลด์', 'warm':'วอร์ม', 'cool':'คูล', 'fast':'ฟาสต์', 'slow':'สโลว์', 'early':'เออร์ลี', 'late':'เลท', 'easy':'อีซี',
+    'hard':'ฮาร์ด', 'difficult':'ดิฟฟิคัลท์', 'sure':'ชัวร์', 'clear':'เคลียร์', 'free':'ฟรี', 'full':'ฟูล', 'empty':'เอมป์ที',
+    
+    'hospital':'ฮอสพิเทิล', 'doctor':'ด็อกเตอร์', 'nurse':'เนิร์ส', 'patient':'เพเชียนท์', 'clinic':'คลินิก', 'room':'รูม',
+    'blood':'บลัด', 'pressure':'เพรชเชอร์', 'weight':'เวท', 'height':'ไฮท์', 'temperature':'เทมเพอเรเจอร์', 'pain':'เปน',
+    'fever':'ฟีเวอร์', 'cough':'คอฟ', 'dizzy':'ดิซซี่', 'medicine':'เมดิซิน', 'pill':'พิล', 'pharmacy':'ฟาร์มาซี',
+    'symptom':'ซิมทัม', 'allergy':'อะเลอร์จี', 'allergies':'อะเลอร์จีส', 'disease':'ดิซีส', 'illness':'อิลเนส', 'health':'เฮลธ์',
+    'body':'บอดี้', 'head':'เฮด', 'eye':'อาย', 'ear':'เอียร์', 'nose':'โนส', 'mouth':'เมาท์', 'tooth':'ทูธ', 'teeth':'ทีธ',
+    'throat':'โธรท', 'neck':'เนค', 'shoulder':'โชลเดอร์', 'arm':'อาร์ม', 'hand':'แฮนด์', 'finger':'ฟิงเกอร์', 'chest':'เชสท์',
+    'heart':'ฮาร์ท', 'stomach':'สโตมัค', 'back':'แบ็ค', 'leg':'เลก', 'knee':'นี', 'foot':'ฟุท', 'feet':'ฟีท', 'toe':'โท',
+    'skin':'สกิน', 'bone':'โบน', 'muscle':'มัสเซิล', 'brain':'เบรน', 'urine':'ยูรีน', 'stool':'สทูล',
+    'test':'เทสท์', 'result':'รีซัลท์', 'xray':'เอ็กซเรย์', 'scan':'สแกน', 'surgery':'เซอร์เจอรี่', 'operation':'โอเปอเรชัน',
+    'injection':'อินเจคชัน', 'vaccine':'วัคซีน', 'prescription':'พรีสคริปชัน', 'appointment':'อะพอยต์เมินท์', 'queue':'คิว',
+    'number':'นัมเบอร์', 'sign':'ไซน์', 'passport':'พาสปอร์ท', 'card':'การ์ด', 'insurance':'อินชัวรันส์', 'payment':'เพย์เมนท์',
+    
+    'hello':'เฮลโล', 'hi':'ไฮ', 'welcome':'เวลคัม', 'today':'ทูเดย์', 'tomorrow':'ทูมอร์โรว์', 'yesterday':'เยสเทอร์เดย์',
+    'morning':'มอร์นิ่ง', 'afternoon':'อาฟเตอร์นูน', 'evening':'อีฟวนิ่ง', 'night':'ไนท์',
+    'this':'ดิส', 'that':'แดท', 'these':'ดีซ', 'those':'โดซ', 'here':'เฮียร์', 'there':'แดร์',
+    'in':'อิน', 'on':'ออน', 'at':'แอท', 'by':'บาย', 'with':'วิธ', 'about':'อะเบาท์', 'from':'ฟรอม', 'to':'ทู',
+    'of':'ออฟ', 'and':'แอนด์', 'or':'ออร์', 'but':'บัท', 'if':'อิฟ', 'because':'บีคอส', 'for':'ฟอร์', 'a':'อะ', 'an':'แอน', 'the':'เดอะ',
+    'yes':'เยส', 'no':'โน', 'not':'นอท', 'ok':'โอเค', 'okay':'โอเค', 'thank':'แธงค์', 'thanks':'แธงส์', 'sorry':'ซอร์รี่', 'please':'พลีส'
   };
   
-  // กรองเฉพาะตัวอักษร หากไม่เจอคำศัพท์ในดิกชันนารี จะแสดงคำศัพท์ดั้งเดิมแทน ไม่ลบทิ้ง
   const w = en.toLowerCase().replace(/[^a-z0-9 ]/g,'').split(' ').filter(Boolean);
-  return w.map(x => map[x] || x).join(' ');
+  return w.map(word => {
+    // 1. ถ้าคำนั้นมีในดิกชันนารี แปลงให้เลย
+    if (map[word]) return map[word];
+    
+    // 2. ถ้าไม่มี คาดเดาคำอ่านจากคำลงท้าย (Suffix) แทน เพื่อไม่ให้ว่างเปล่า
+    let guessed = word;
+    if (word.endsWith('tion')) guessed = guessed.replace('tion', 'ชัน');
+    else if (word.endsWith('sion')) guessed = guessed.replace('sion', 'ชัน');
+    else if (word.endsWith('ing')) guessed = guessed.replace('ing', 'อิง');
+    else if (word.endsWith('ly')) guessed = guessed.replace('ly', 'ลี');
+    else if (word.endsWith('ment')) guessed = guessed.replace('ment', 'เมินท์');
+    else if (word.endsWith('ness')) guessed = guessed.replace('ness', 'เนส');
+    else if (word.endsWith('able')) guessed = guessed.replace('able', 'เอเบิล');
+    else if (word.endsWith('ful')) guessed = guessed.replace('ful', 'ฟูล');
+    else if (word.endsWith('less')) guessed = guessed.replace('less', 'เลส');
+    
+    // 3. ป้องกันปัญหาคำหาย ถ้าไม่มีทางเลือก ให้ส่งกลับเป็นตัวอักษรภาษาอังกฤษ
+    return guessed;
+  }).join(' ');
 }
 
-// สร้างระบบเพิ่มคำอ่านสำหรับภาษาจีนโดยเฉพาะ
+// ฟังก์ชันสำหรับแปลงภาษาจีนเป็นคำอ่านภาษาไทยเบื้องต้น
 function genPhoneticsZh(zh) {
   if (!zh) return '';
   const dict = [
     {z:'早上好', t:'จ้าวซ่างห่าว'}, {z:'下午好', t:'เซี่ยอู่ห่าว'}, {z:'晚上好', t:'หว่านซ่างห่าว'},
     {z:'对不起', t:'ตุ้ยปู้ฉี่'}, {z:'没关系', t:'เหมยกวนซี'}, {z:'洗手间', t:'สีโส่วเจียน'},
     {z:'什么时候', t:'เสินเมอะสือโฮ่ว'}, {z:'为什么', t:'เว่ยเสินเมอะ'}, {z:'多少钱', t:'ตัวเส่าเฉียน'},
-    {z:'你好', t:'หนีห่าว'}, {z:'欢迎', t:'ฮวนอิ๋ง'}, {z:'谢谢', t:'เซี่ยเซี่ย'},
-    {z:'再见', t:'จ้ายเจี้ยน'}, {z:'医生', t:'อี้เซิง'}, {z:'护士', t:'ฮู่ซื่อ'},
-    {z:'医院', t:'อี้ย่วน'}, {z:'什么', t:'เสินเมอะ'}, {z:'哪里', t:'หนาหลี่'},
-    {z:'怎么', t:'เจิ่นเมอะ'}, {z:'发烧', t:'ฟาเซา'}, {z:'感冒', t:'กั่นเม่า'},
-    {z:'咳嗽', t:'เขอโซ่ว'}, {z:'头晕', t:'โถวยุน'}, {z:'今天', t:'จินเทียน'},
-    {z:'明天', t:'หมิงเทียน'}, {z:'昨天', t:'จั๋วเทียน'}, {z:'现在', t:'เซี่ยนจ้าย'},
-    {z:'血压', t:'เสวี่ยยา'}, {z:'检查', t:'เจี่ยนฉา'}, {z:'药房', t:'เย่าฝาง'},
-    {z:'打针', t:'ต่าเจิน'}, {z:'吃药', t:'ชือเย่า'}, {z:'稍等', t:'เซาเติ่ง'},
-    {z:'预约', t:'อวี้เยวีย'}, {z:'名字', t:'หมิงจื้อ'}, {z:'护照', t:'ฮู่จ้าว'},
-    {z:'请', t:'ฉิ่ง'}, {z:'你', t:'หนี่'}, {z:'您', t:'หนิน'}, {z:'我', t:'หว่อ'},
-    {z:'他', t:'ทา'}, {z:'她', t:'ทา'}, {z:'们', t:'เหมิน'}, {z:'的', t:'เตอ'},
-    {z:'是', t:'ซื่อ'}, {z:'在', t:'จ้าย'}, {z:'这', t:'เจ้อ'}, {z:'那', t:'น่า'},
-    {z:'里', t:'หลี่'}, {z:'有', t:'โหย่ว'}, {z:'没', t:'เหมย'}, {z:'要', t:'เย่า'},
-    {z:'不', t:'ปู้'}, {z:'好', t:'ห่าว'}, {z:'吗', t:'มะ'}, {z:'疼', t:'เถิง'},
-    {z:'痛', t:'ท่ง'}, {z:'药', t:'เย่า'}, {z:'吃', t:'ชือ'}, {z:'喝', t:'ฮือ'},
-    {z:'水', t:'สุ่ย'}, {z:'等', t:'เติ่ง'}, {z:'来', t:'ไหล'}, {z:'去', t:'ชวี่'},
-    {z:'做', t:'จั้ว'}, {z:'看', t:'คั่น'}, {z:'能', t:'เหนิง'}, {z:'会', t:'ฮุ่ย'},
-    {z:'和', t:'เหอ'}, {z:'也', t:'เหย่'}, {z:'很', t:'เหิ่น'}, {z:'太', t:'ไท่'}
+    {z:'你好', t:'หนีห่าว'}, {z:'欢迎', t:'ฮวนอิ๋ง'}, {z:'谢谢', t:'เซี่ยเซี่ย'}, {z:'再见', t:'จ้ายเจี้ยน'}, 
+    {z:'医生', t:'อี้เซิง'}, {z:'护士', t:'ฮู่ซื่อ'}, {z:'医院', t:'อี้ย่วน'}, {z:'什么', t:'เสินเมอะ'}, 
+    {z:'哪里', t:'หนาหลี่'}, {z:'怎么', t:'เจิ่นเมอะ'}, {z:'发烧', t:'ฟาเซา'}, {z:'感冒', t:'กั่นเม่า'},
+    {z:'咳嗽', t:'เขอโซ่ว'}, {z:'头晕', t:'โถวยุน'}, {z:'今天', t:'จินเทียน'}, {z:'明天', t:'หมิงเทียน'}, 
+    {z:'昨天', t:'จั๋วเทียน'}, {z:'现在', t:'เซี่ยนจ้าย'}, {z:'血压', t:'เสวี่ยยา'}, {z:'检查', t:'เจี่ยนฉา'}, 
+    {z:'药房', t:'เย่าฝาง'}, {z:'打针', t:'ต่าเจิน'}, {z:'吃药', t:'ชือเย่า'}, {z:'稍等', t:'เซาเติ่ง'},
+    {z:'预约', t:'อวี้เยวีย'}, {z:'名字', t:'หมิงจื้อ'}, {z:'护照', t:'ฮู่จ้าว'}, {z:'请问', t:'ฉิ่งเวิ่น'},
+    {z:'请', t:'ฉิ่ง'}, {z:'你', t:'หนี่'}, {z:'您', t:'หนิน'}, {z:'我', t:'หว่อ'}, {z:'他', t:'ทา'}, 
+    {z:'她', t:'ทา'}, {z:'们', t:'เหมิน'}, {z:'的', t:'เตอ'}, {z:'是', t:'ซื่อ'}, {z:'在', t:'จ้าย'}, 
+    {z:'这', t:'เจ้อ'}, {z:'那', t:'น่า'}, {z:'里', t:'หลี่'}, {z:'有', t:'โหย่ว'}, {z:'没', t:'เหมย'}, 
+    {z:'要', t:'เย่า'}, {z:'不', t:'ปู้'}, {z:'好', t:'ห่าว'}, {z:'吗', t:'มะ'}, {z:'疼', t:'เถิง'},
+    {z:'痛', t:'ท่ง'}, {z:'药', t:'เย่า'}, {z:'吃', t:'ชือ'}, {z:'喝', t:'ฮือ'}, {z:'水', t:'สุ่ย'}, 
+    {z:'等', t:'เติ่ง'}, {z:'来', t:'ไหล'}, {z:'去', t:'ชวี่'}, {z:'做', t:'จั้ว'}, {z:'看', t:'คั่น'}, 
+    {z:'能', t:'เหนิง'}, {z:'会', t:'ฮุ่ย'}, {z:'和', t:'เหอ'}, {z:'也', t:'เหย่'}, {z:'很', t:'เหิ่น'}, 
+    {z:'太', t:'ไท่'}, {z:'吗', t:'มะ'}, {z:'了', t:'เลอะ'}, {z:'吧', t:'ปะ'}, {z:'呢', t:'เนอะ'}
   ];
   
   let res = zh;
+  // แปลงทีละคำจากฐานข้อมูล
   for (const item of dict) {
     res = res.split(item.z).join(item.t + ' ');
   }
@@ -1290,7 +1314,7 @@ function renderQuickPhrases() {
   const s = currentScenario();
   const wrap = document.getElementById('quickPhrases');
   if (!s.phrases.length) { wrap.innerHTML = ''; return; }
-  wrap.innerHTML = `<div class="quick-label">ประโยดด่วน · ${esc(s.labelTh)}</div>
+  wrap.innerHTML = `<div class="quick-label">ประโยคด่วน · ${esc(s.labelTh)}</div>
     ${s.phrases.slice(0,3).map(p => `
       <div class="quick-phrase-item">
         <div class="q-en" onclick="speakText('${ea(p.en)}','en')" style="cursor:pointer">
