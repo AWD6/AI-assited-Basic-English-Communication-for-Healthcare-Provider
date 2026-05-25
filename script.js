@@ -1223,7 +1223,6 @@ function appendAiMsg(en, th) {
     </div>`;
   box.appendChild(d);
   box.scrollTop = box.scrollHeight;
-  speakText(en, 'en');
 }
 
 function appendUserMsg(text) {
@@ -1341,22 +1340,87 @@ function switchTab(tabId, btnEl) {
 /* ── Speech ───────────────────────────────────────────────── */
 function speakText(text, lang) {
   if (!text) return;
-  const synth = window.speechSynthesis; if(!synth) return;
+  const synth = window.speechSynthesis;
+  if (!synth) return;
+
   synth.cancel();
-  const doSpeak = () => {
+
+  // Android Chrome requires a short gap after cancel() before speak()
+  setTimeout(function () {
     const utt = new SpeechSynthesisUtterance(text);
-    const langMap = {'th':'th-TH','en':'en-US','zh':'zh-CN','zh-CN':'zh-CN'};
+    const langMap = { 'th': 'th-TH', 'en': 'en-US', 'zh': 'zh-CN', 'zh-CN': 'zh-CN' };
     const targetLang = langMap[lang] || lang || 'en-US';
+    utt.lang = targetLang;
+    utt.rate = 0.9;
+    utt.pitch = 1.0;
+    utt.volume = 1.0;
+
+    function pickVoiceAndSpeak() {
+      const voices = synth.getVoices();
+      let chosen = null;
+
+      if (targetLang === 'en-US') {
+        // Female US English — priority order (covers iOS, Android, Windows, macOS)
+        const femaleUS = [
+          'Samantha',           // macOS / iOS
+          'Google US English',  // Android Chrome
+          'Microsoft Zira Desktop', 'Microsoft Zira', // Windows
+          'Karen',              // macOS (AU accent but female & clear)
+          'Victoria', 'Moira', 'Fiona', 'Tessa'
+        ];
+        for (const name of femaleUS) {
+          chosen = voices.find(v => v.name.includes(name) && v.lang.startsWith('en'));
+          if (chosen) break;
+        }
+        if (!chosen) chosen = voices.find(v => v.lang === 'en-US' || v.lang === 'en_US');
+        if (!chosen) chosen = voices.find(v => v.lang.startsWith('en'));
+
+      } else if (targetLang === 'zh-CN') {
+        // Female Mandarin — priority order
+        const femaleZH = [
+          'Ting-Ting', 'Tingting',            // macOS / iOS
+          'Google 普通话（中国大陆）',            // Android Chrome (Simplified)
+          'Google Chinese (Simplified)',
+          'Microsoft Huihui Desktop', 'Microsoft Huihui', // Windows
+          'Microsoft Yaoyao',
+          'Mei-Jia', 'Li-mu', '普通话'
+        ];
+        for (const name of femaleZH) {
+          chosen = voices.find(v => v.name.includes(name));
+          if (chosen) break;
+        }
+        if (!chosen) chosen = voices.find(v => v.lang === 'zh-CN' || v.lang === 'zh_CN');
+        if (!chosen) chosen = voices.find(v => v.lang.startsWith('zh'));
+
+      } else {
+        chosen = voices.find(v => v.lang.replace('_', '-') === targetLang);
+        if (!chosen) chosen = voices.find(v => v.lang.startsWith(targetLang.split('-')[0]));
+      }
+
+      if (chosen) utt.voice = chosen;
+      if (synth.paused) synth.resume();
+      synth.speak(utt);
+    }
+
     const voices = synth.getVoices();
-    let voice = voices.find(v => v.lang.replace('_','-') === targetLang);
-    if (!voice) voice = voices.find(v => v.lang.startsWith(targetLang.split('-')[0]));
-    if (voice) utt.voice = voice;
-    utt.lang = targetLang; utt.rate = 0.9; utt.pitch = 1.0; utt.volume = 1.0;
-    if (synth.paused) synth.resume();
-    synth.speak(utt);
-  };
-  if (synth.getVoices().length > 0) doSpeak();
-  else { synth.onvoiceschanged = doSpeak; setTimeout(doSpeak, 300); }
+    if (voices.length > 0) {
+      pickVoiceAndSpeak();
+    } else {
+      // Voices not yet loaded — wait for voiceschanged event
+      let done = false;
+      const onVC = function () {
+        if (done) return;
+        done = true;
+        synth.removeEventListener('voiceschanged', onVC);
+        pickVoiceAndSpeak();
+      };
+      synth.addEventListener('voiceschanged', onVC);
+      // Safety fallback: speak anyway after 500 ms
+      setTimeout(function () {
+        if (!done) { done = true; synth.removeEventListener('voiceschanged', onVC); pickVoiceAndSpeak(); }
+      }, 500);
+    }
+  }, 80); // 80 ms gap lets Android finish the cancel()
 }
 
 /* ── Helpers ──────────────────────────────────────────────── */
