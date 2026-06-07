@@ -46,11 +46,11 @@ const defaultScenarios = [
   {
     id: 'direction', labelEn: 'Direction', labelTh: 'การบอกทาง', icon: '🗺️',
     phrases: [
-      { id:'d1', en:'Please register at the Medical Records Room, Number 19, 1st floor, Chalerm Phra Baramee Building.', th:'ลงทะเบียนที่ห้องเวชระเบียน หมายเลข 19 ชั้น 1 อาคารเฉลิมพระบารมีค่ะ', zh:'请在 Chalerm Phra Baramee 大楼一楼19号病历室登记。', phonetic_en:'พลีส เรจิสเตอร์ แอท เดอะ เมดิเคิล เรคคอร์ดส รูม', phonetic_zh:'ฉิ่ง จ้าย Chalerm Phra Baramee ต้าโหลว', context:'Directing to registration', contextTh:'บอกทางไปลงทะเบียน' },
-      { id:'d2', en:'Please contact customer service centre, 1st floor, Chalerm Phra Baramee Building.', th:'กรุณาติดต่อ customer service centre ชั้น 1 อาคารเฉลิมพระบารมีค่ะ', zh:'请联系 Chalerm Phra Baramee 大楼一楼的客户服务中心。', phonetic_en:'พลีส คอนแทค คัสตอมเมอร์ เซอร์วิส เซนเทอร์', phonetic_zh:'ฉิ่ง เหลียนซี่ เค่อฮู่ ฝูอู้ จงซิน', context:'Directing to customer service', contextTh:'บอกทางไปศูนย์บริการลูกค้า' },
-      { id:'d3', en:'The laboratory room number 11 is on the first floor of Chalerm Phra Baramee Building.', th:'ห้องปฏิบัติการหมายเลข 11 อยู่ที่ชั้น 1 อาคารเฉลิมพระบารมีค่ะ', zh:'11号化验室在 Chalerm Phra Baramee 大楼一楼。', phonetic_en:'เดอะ แล็บโบระทอรี รูม นัมเบอร์ อิเลฟเวิน', phonetic_zh:'สืออี ห้าว ฮว่าเยี่ยนซื่อ จ้าย Chalerm Phra Baramee ต้าโหลว', context:'Directing to lab', contextTh:'บอกทางไปห้องแล็บ' },
-      { id:'d4', en:'X-ray is at room number 33 on the first floor of Boonsom Martin Building.', th:'เอกซ์เรย์ที่ห้องหมายเลข 33 ชั้น 1 อาคารบุญสม มาร์ตินค่ะ', zh:'X光室在 Boonsom Martin 大楼一楼33号房。', phonetic_en:'เอกซ์เรย์ อิซ แอท รูม นัมเบอร์ เทอร์ตี้ ทรี', phonetic_zh:'เอกซ์กวงซื่อ จ้าย Boonsom Martin ต้าโหลว', context:'Directing to X-ray', contextTh:'บอกทางไปห้องเอกซ์เรย์' },
-      { id:'d5', en:'The pharmacy number 30 is on the first floor of Chalerm Phra Baramee Building.', th:'ห้องยาหมายเลข 30 อยู่ที่ชั้น 1 อาคารเฉลิมพระบารมีค่ะ', zh:'30号药房在 Chalerm Phra Baramee 大楼一楼。', phonetic_en:'เดอะ ฟาร์มาซี นัมเบอร์ เทอร์ตี้', phonetic_zh:'ซานสือ ห้าว เย่าฝาง จ้าย Chalerm Phra Baramee ต้าโหลว', context:'Directing to pharmacy', contextTh:'บอกทางไปห้องยา' },
+      { id:'d1', en:'Please register at the Medical Records Room, Number 19, 1st floor, Chalerm Phra Baramee Building.', th:'ลงทะเบียนที่ห้องเวชระเบียน หมายเลข 19 ชั้น 1 อาคารเฉลิมพระบารมีค่ะ', zh:'请在 Chalerm Phra Baramee 大楼一楼19号病历室登记。', phonetic_en:'พลีส เรจิสเตอร์ แอท เดอะ เมดิเคิล เรคคอร์ดส รูม นัมเบอร์ ไนน์ทีน เฟิร์สต์ ฟลอร์ เฉลิมพระบารมี บิลดิ้ง', phonetic_zh:'ฉิ่ง จ้าย Chalerm Phra Baramee ต้าโหลว อีโหลว สือจิ่ว ห้าว ปิ้งลี่ซื่อ เติงจี้', context:'Directing to registration', contextTh:'บอกทางไปลงทะเบียน' },
+      { id:'d2', en:'Please contact customer service centre, 1st floor, Chalerm Phra Baramee Building.', th:'กรุณาติดต่อ customer service centre ชั้น 1 อาคารเฉลิมพระบารมีค่ะ', zh:'请联系 Chalerm Phra Baramee 大楼一楼的客户服务中心。', phonetic_en:'พลีส คอนแทค คัสตอมเมอร์ เซอร์วิส เซนเทอร์ เฟิร์สต์ ฟลอร์ เฉลิมพระบารมี บิลดิ้ง', phonetic_zh:'ฉิ่ง เหลียนซี่ Chalerm Phra Baramee ต้าโหลว อีโหลว เตอ เค่อฮู่ ฝูอู้ จงซิน', context:'Directing to customer service', contextTh:'บอกทางไปศูนย์บริการลูกค้า' },
+      { id:'d3', en:'The laboratory room number 11 is on the first floor of Chalerm Phra Baramee Building.', th:'ห้องปฏิบัติการหมายเลข 11 อยู่ที่ชั้น 1 อาคารเฉลิมพระบารมีค่ะ', zh:'11号化验室在 Chalerm Phra Baramee 大楼一楼。', phonetic_en:'เดอะ แล็บโบระทอรี รูม นัมเบอร์ อิเลฟเวิน อิซ ออน เดอะ เฟิร์สต์ ฟลอร์ ออฟ เฉลิมพระบารมี บิลดิ้ง', phonetic_zh:'สืออี ห้าว ฮว่าเยี่ยนซื่อ จ้าย Chalerm Phra Baramee ต้าโหลว อีโหลว', context:'Directing to lab', contextTh:'บอกทางไปห้องแล็บ' },
+      { id:'d4', en:'X-ray is at room number 33 on the first floor of Boonsom Martin Building.', th:'เอกซ์เรย์ที่ห้องหมายเลข 33 ชั้น 1 อาคารบุญสม มาร์ตินค่ะ', zh:'X光室在 Boonsom Martin 大楼一楼33号房。', phonetic_en:'เอกซ์เรย์ อิซ แอท รูม นัมเบอร์ เทอร์ตี้ ทรี ออน เดอะ เฟิร์สต์ ฟลอร์ ออฟ บุญสม มาร์ติน บิลดิ้ง', phonetic_zh:'เอกซ์กวงซื่อ จ้าย Boonsom Martin ต้าโหลว อีโหลว ซานสือซาน ห้าว ฝาง', context:'Directing to X-ray', contextTh:'บอกทางไปห้องเอกซ์เรย์' },
+      { id:'d5', en:'The pharmacy number 30 is on the first floor of Chalerm Phra Baramee Building.', th:'ห้องยาหมายเลข 30 อยู่ที่ชั้น 1 อาคารเฉลิมพระบารมีค่ะ', zh:'30号药房在 Chalerm Phra Baramee 大楼一楼。', phonetic_en:'เดอะ ฟาร์มาซี นัมเบอร์ เทอร์ตี้ อิซ ออน เดอะ เฟิร์สต์ ฟลอร์ ออฟ เฉลิมพระบารมี บิลดิ้ง', phonetic_zh:'ซานสือ ห้าว เย่าฝาง จ้าย Chalerm Phra Baramee ต้าโหลว อีโหลว', context:'Directing to pharmacy', contextTh:'บอกทางไปห้องยา' },
       { id:'d6', en:'Please follow the signs.', th:'กรุณาเดินตามป้ายบอกทางค่ะ', zh:'请随指示牌走。', phonetic_en:'พลีส ฟอลโล เดอะ ไซน์ส', phonetic_zh:'ฉิ่ง สุย จื่อซื่อไผ โจ่ว', context:'General direction', contextTh:'บอกให้เดินตามป้าย' },
       { id:'d7', en:'Please contact cashier number 1 on the first floor of Sujinno Building.', th:'กรุณาติดต่อแคชเชียร์หมายเลข 1 ชั้น 1 อาคารสุจินโณค่ะ', zh:'请联系 Sujinno 大楼一楼1号收银台。', phonetic_en:'พลีส คอนแทค แคชเชียร์ นัมเบอร์ วัน ออน เดอะ เฟิร์สต์ ฟลอร์ ออฟ สุจินโณ บิลดิ้ง', phonetic_zh:'ฉิ่ง เหลียนซี่ Sujinno ต้าโหลว อีโหลว อี ห้าว โซ่วอิ๋นถาย', context:'Directing to cashier 1', contextTh:'บอกทางไปแคชเชียร์ 1 อาคารสุจินโณ' },
       { id:'d8', en:'Please contact cashier number 2 on the first floor of Chalerm Phra Baramee Building.', th:'กรุณาติดต่อแคชเชียร์หมายเลข 2 ชั้น 1 อาคารเฉลิมพระบารมีค่ะ', zh:'请联系 Chalerm Phra Baramee 大楼一楼2号收银台。', phonetic_en:'พลีส คอนแทค แคชเชียร์ นัมเบอร์ ทู ออน เดอะ เฟิร์สต์ ฟลอร์ ออฟ เฉลิมพระบารมี บิลดิ้ง', phonetic_zh:'ฉิ่ง เหลียนซี่ Chalerm Phra Baramee ต้าโหลว อีโหลว เอ้อร์ ห้าว โซ่วอิ๋นถาย', context:'Directing to cashier 2', contextTh:'บอกทางไปแคชเชียร์ 2 อาคารเฉลิมพระบารมี' },
@@ -337,6 +337,9 @@ let quizScore = 0;
 let quizAnswered = false;
 let currentQuizOpts = [];
 
+let speechRate = 0.75;
+let currentGoogleAudio = null;
+
 /* ── Init ───────────────────────────────────────────────────── */
 function init() {
   const saved = localStorage.getItem(STORAGE_KEY);
@@ -432,6 +435,12 @@ function renderPhrases() {
           <button class="btn-icon green" onclick="openEditModal('${ea(p.id)}')"><i class="fas fa-pen"></i></button>
           <button class="btn-icon red" onclick="openDeleteModal('${ea(p.id)}')"><i class="fas fa-trash"></i></button>
         </div>
+      </div>
+      <div class="card-speed-row">
+        <span class="card-speed-label"><i class="fas fa-tachometer-alt"></i> ความเร็ว</span>
+        <button class="card-speed-btn ${speechRate===0.6?'active':''}" data-speed="slow" onclick="setSpeechRate(0.6,'slow')">🐢 ช้ามาก</button>
+        <button class="card-speed-btn ${speechRate===0.75?'active':''}" data-speed="normal" onclick="setSpeechRate(0.75,'normal')">🎵 ช้า</button>
+        <button class="card-speed-btn ${speechRate===0.9?'active':''}" data-speed="fast" onclick="setSpeechRate(0.9,'fast')">⚡ ปกติ</button>
       </div>
       ${(p.context || p.contextTh) ? `
       <button class="phrase-context-toggle" onclick="toggleCtx('${p.id}')">
@@ -1344,11 +1353,42 @@ function switchTab(tabId, btnEl) {
   const panel = document.getElementById('panel-'+tabId); if(panel) panel.classList.add('active');
 }
 
+/* ── Speech Rate Control ──────────────────────────────────── */
+function setSpeechRate(rate, key) {
+  speechRate = rate;
+  document.querySelectorAll('.card-speed-btn').forEach(function(b) {
+    b.classList.toggle('active', b.dataset.speed === key);
+  });
+}
+
+/* ── Google TTS Audio Fallback (for devices without zh voice) ─ */
+function playGoogleTts(text, tl) {
+  try {
+    if (currentGoogleAudio) { currentGoogleAudio.pause(); currentGoogleAudio = null; }
+    const url = 'https://translate.googleapis.com/translate_tts?ie=UTF-8&client=tw-ob'
+      + '&tl=' + encodeURIComponent(tl)
+      + '&q=' + encodeURIComponent(text);
+    const audio = new Audio(url);
+    audio.playbackRate = Math.min(2.0, Math.max(0.5, speechRate + 0.1));
+    currentGoogleAudio = audio;
+    audio.play().catch(function() {});
+  } catch(e) {}
+}
+
 /* ── Speech ───────────────────────────────────────────────── */
 function speakText(text, lang) {
   if (!text) return;
   const synth = window.speechSynthesis;
-  if (!synth) return;
+
+  // Stop any playing Google TTS audio
+  if (currentGoogleAudio) { currentGoogleAudio.pause(); currentGoogleAudio = null; }
+
+  // No Web Speech API — use Google TTS for en/zh
+  if (!synth) {
+    const langMap2 = { 'en': 'en-US', 'zh': 'zh-CN', 'zh-CN': 'zh-CN', 'th': 'th-TH' };
+    playGoogleTts(text, langMap2[lang] || 'en-US');
+    return;
+  }
 
   synth.cancel();
 
@@ -1358,7 +1398,7 @@ function speakText(text, lang) {
     const langMap = { 'th': 'th-TH', 'en': 'en-US', 'zh': 'zh-CN', 'zh-CN': 'zh-CN' };
     const targetLang = langMap[lang] || lang || 'en-US';
     utt.lang = targetLang;
-    utt.rate = 0.9;
+    utt.rate = speechRate;
     utt.pitch = 1.0;
     utt.volume = 1.0;
 
@@ -1381,6 +1421,9 @@ function speakText(text, lang) {
         }
         if (!chosen) chosen = voices.find(v => v.lang === 'en-US' || v.lang === 'en_US');
         if (!chosen) chosen = voices.find(v => v.lang.startsWith('en'));
+        if (chosen) utt.voice = chosen;
+        if (synth.paused) synth.resume();
+        synth.speak(utt);
 
       } else if (targetLang === 'zh-CN') {
         // Female Mandarin — priority order
@@ -1399,14 +1442,22 @@ function speakText(text, lang) {
         if (!chosen) chosen = voices.find(v => v.lang === 'zh-CN' || v.lang === 'zh_CN');
         if (!chosen) chosen = voices.find(v => v.lang.startsWith('zh'));
 
+        if (chosen) {
+          utt.voice = chosen;
+          if (synth.paused) synth.resume();
+          synth.speak(utt);
+        } else {
+          // No Chinese voice on this device — fall back to Google TTS Audio
+          playGoogleTts(text, 'zh-CN');
+        }
+
       } else {
         chosen = voices.find(v => v.lang.replace('_', '-') === targetLang);
         if (!chosen) chosen = voices.find(v => v.lang.startsWith(targetLang.split('-')[0]));
+        if (chosen) utt.voice = chosen;
+        if (synth.paused) synth.resume();
+        synth.speak(utt);
       }
-
-      if (chosen) utt.voice = chosen;
-      if (synth.paused) synth.resume();
-      synth.speak(utt);
     }
 
     const voices = synth.getVoices();
@@ -1422,10 +1473,18 @@ function speakText(text, lang) {
         pickVoiceAndSpeak();
       };
       synth.addEventListener('voiceschanged', onVC);
-      // Safety fallback: speak anyway after 500 ms
+      // Safety fallback: if voices never fire, try Google TTS for zh
       setTimeout(function () {
-        if (!done) { done = true; synth.removeEventListener('voiceschanged', onVC); pickVoiceAndSpeak(); }
-      }, 500);
+        if (!done) {
+          done = true;
+          synth.removeEventListener('voiceschanged', onVC);
+          if (targetLang === 'zh-CN') {
+            playGoogleTts(text, 'zh-CN');
+          } else {
+            pickVoiceAndSpeak();
+          }
+        }
+      }, 600);
     }
   }, 80); // 80 ms gap lets Android finish the cancel()
 }
