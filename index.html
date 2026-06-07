@@ -102,6 +102,11 @@
         <div class="target-label"><i class="fas fa-bullseye"></i> ลองพูดประโยคนี้</div>
         <div class="target-text" id="targetText"></div>
         <div class="target-phonetic" id="targetPhonetic" style="display:none"></div>
+        <div class="target-speed-row">
+          <button class="card-speed-btn" data-speed="slow" onclick="setSpeechRate(0.6,'slow')">🐢 ช้ามาก</button>
+          <button class="card-speed-btn active" data-speed="normal" onclick="setSpeechRate(0.75,'normal')">🎵 ช้า</button>
+          <button class="card-speed-btn" data-speed="fast" onclick="setSpeechRate(0.9,'fast')">⚡ ปกติ</button>
+        </div>
         <button class="btn-play-audio" onclick="playPracticeAudio()">
           <i class="fas fa-volume-up"></i> ฟังตัวอย่าง
         </button>
