@@ -21,10 +21,97 @@
   --phonetic-color: #7c3aed;
   --phonetic-bg: #f3e8ff;
 }
+
+/* ── Banner Styles ──────────────────────────────────────── */
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes glow {
+  0%, 100% {
+    box-shadow: 0 4px 20px rgba(13,148,136,0.2), inset 0 1px 0 rgba(255,255,255,0.5);
+  }
+  50% {
+    box-shadow: 0 8px 30px rgba(13,148,136,0.4), inset 0 1px 0 rgba(255,255,255,0.8);
+  }
+}
+
+.banner-container {
+  width: 100%;
+  padding: 0 16px;
+  margin-bottom: 20px;
+  animation: float 3s ease-in-out infinite;
+}
+
+.banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 14px 20px;
+  background: linear-gradient(90deg, #fff 0%, #f0fdf9 25%, #f0fdf9 75%, #fff 100%);
+  border: 1.5px solid rgba(13,148,136,0.15);
+  border-radius: 50px;
+  box-shadow: 0 4px 20px rgba(13,148,136,0.2), inset 0 1px 0 rgba(255,255,255,0.5);
+  animation: glow 3s ease-in-out infinite;
+  backdrop-filter: blur(8px);
+  position: relative;
+  overflow: hidden;
+}
+
+.banner::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  animation: shimmer 3s infinite;
+  pointer-events: none;
+}
+
+.banner-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 14px;
+  background: var(--gradient);
+  color: #fff;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(13,148,136,0.3);
+}
+
+.banner-text {
+  font-size: 13px;
+  font-weight: 500;
+  color: #78716c;
+  letter-spacing: 0.3px;
+}
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+.banner::before { z-index: 1; }
 body { font-family: 'Prompt', sans-serif; background: var(--bg); color: var(--text); line-height: 1.5; min-height: 100vh; }
 .app-bg { min-height: 100vh; background: linear-gradient(160deg, #f0fdf9 0%, #e6f8f5 40%, #f0f9ff 100%); display: flex; justify-content: center; padding-bottom: 40px; }
 .app-container { width: 100%; max-width: 520px; padding: 0 16px; }
+.app-container > .banner-container { margin-left: -16px; margin-right: -16px; padding-left: 0; padding-right: 0; width: calc(100% + 32px); }
 
 /* Header */
 .app-header { text-align: center; padding: 36px 0 24px; }
